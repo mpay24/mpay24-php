@@ -1,6 +1,6 @@
 # mPAY24 PHP API
 ## Documentation
-## Open the mPAY24 payment window in 5 steps!
+## Open the mPAY24 pay page in 5 steps!
 
 ### ABSTRACT
 
