@@ -5,8 +5,7 @@
  * @filesource        confirm.php
  * @license           http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
-
-include("test.php");
+include ("test.php");
 
 foreach($_GET as $key => $value)
   if($key !== 'TID')

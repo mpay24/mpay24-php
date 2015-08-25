@@ -5,7 +5,6 @@
  * @filesource          success.php
  * @license             http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
-
 echo "<!DOCTYPE html PUBLIC \"HTML\">
 <html>
 <head>
@@ -13,7 +12,7 @@ echo "<!DOCTYPE html PUBLIC \"HTML\">
 </head>
 <body><textarea rows=\"25\" cols=\"120\">";
 $file_handle = fopen("result.txt", "r");
-while (!feof($file_handle)) {
+while(! feof($file_handle)) {
   $line = fgets($file_handle);
   echo $line;
 }

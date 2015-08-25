@@ -1,288 +1,544 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta name="viewport"
+  content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 <meta charset="utf-8">
 <title>mPAY24 PHP APIs » \ManagePaymentResponse</title>
 <meta name="author" content="Mike van Riel">
 <meta name="description" content="">
 <link href="../css/template.css" rel="stylesheet" media="all">
-<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+<script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+<script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.js" type="text/javascript"></script>
+<script src="../js/template.js" type="text/javascript"></script>
+<script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+<link rel="shortcut icon" href="../img/favicon.ico">
 <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="72x72"
+  href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114"
+  href="../img/apple-touch-icon-114x114.png">
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
-<div class="navbar-inner"><div class="container">
-<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">mPAY24 PHP APIs</a><div class="nav-collapse"><ul class="nav">
-<li class="dropdown">
-<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
-                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
-<li><a>Packages</a></li>
-<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
-</ul>
-</li>
-<li class="dropdown" id="charts-menu">
-<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
-                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
-</li>
-<li class="dropdown" id="reports-menu">
-<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
-                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
-<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
-                <span class="label label-info">0</span></a></li>
-<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
-                <ul></ul></a></li>
-<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
-                <span class="label label-info">0</span></a></li>
-</ul>
-</li>
-</ul></div>
-</div></div>
-<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
-</div>
-<div id="___" class="container">
-<noscript><div class="alert alert-warning">
-                            Javascript is disabled; several features are only available
-                            if Javascript is enabled.
-                        </div></noscript>
-<div class="row">
-<div class="span4">
-<div xmlns:php="http://php.net/xsl" class="btn-toolbar">
-<div class="btn-group visibility" data-toggle="buttons-checkbox">
-<button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button>
-</div>
-<div class="btn-group view pull-right" data-toggle="buttons-radio">
-<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
-</div>
-</div>
-<ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
-<li class="nav-header">
-<i title="Methods" class="icon-custom icon-method"></i> Methods
-                    <ul>
-<li class="method public inherited"><a href="#method_GeneralResponse" title="GeneralResponse() :: Sets the basic values from the response from mPAY24: status and return code"><span class="description">Sets the basic values from the response from mPAY24: status and return code</span><pre>GeneralResponse()</pre></a></li>
-<li class="method public "><a href="#method_ManagePaymentResponse" title="ManagePaymentResponse() :: Sets the values for a payment from the response from mPAY24: mPAY transaction IDand transaction ID from the shop"><span class="description">Sets the values for a payment from the response from mPAY24: mPAY transaction IDand transaction ID from the shop</span><pre>ManagePaymentResponse()</pre></a></li>
-<li class="method public "><a href="#method_getGeneralResponse" title="getGeneralResponse() :: Get the object, that contains the basic values from the response from mPAY24: status and return code"><span class="description">Get the object, that contains the basic values from the response from mPAY24: status and return code</span><pre>getGeneralResponse()</pre></a></li>
-<li class="method public "><a href="#method_getMpayTID" title="getMpayTID() :: Get the mPAY transaction ID, returned from mPAY24"><span class="description">Get the mPAY transaction ID, returned from mPAY24</span><pre>getMpayTID()</pre></a></li>
-<li class="method public inherited"><a href="#method_getReturnCode" title="getReturnCode() :: Get the return code from the request, which was sent to mPAY24"><span class="description">Get the return code from the request, which was sent to mPAY24</span><pre>getReturnCode()</pre></a></li>
-<li class="method public inherited"><a href="#method_getStatus" title="getStatus() :: Get the status of the request, which was sent to mPAY24"><span class="description">Get the status of the request, which was sent to mPAY24</span><pre>getStatus()</pre></a></li>
-<li class="method public "><a href="#method_getTid" title="getTid() :: Get the transaction ID of the shop, returned from mPAY24"><span class="description">Get the transaction ID of the shop, returned from mPAY24</span><pre>getTid()</pre></a></li>
-<li class="method public inherited"><a href="#method_setReturnCode" title="setReturnCode() :: Set the return code in the response, which was delivered by mPAY24"><span class="description">Set the return code in the response, which was delivered by mPAY24</span><pre>setReturnCode()</pre></a></li>
-<li class="method public inherited"><a href="#method_setStatus" title="setStatus() :: Set the status in the response, which was delivered by mPAY24"><span class="description">Set the status in the response, which was delivered by mPAY24</span><pre>setStatus()</pre></a></li>
-</ul>
-</li>
-<li class="nav-header">
-<i title="Properties" class="icon-custom icon-property"></i> Properties
-                    <ul>
-<li class="property public "><a href="#property_generalResponse" title="$generalResponse() :: An object, that represents the basic values from the response from mPAY24: status and return code"><span class="description"></span><pre>$generalResponse</pre></a></li>
-<li class="property public "><a href="#property_mpayTID" title="$mpayTID() :: The mPAY transaction ID"><span class="description"></span><pre>$mpayTID</pre></a></li>
-<li class="property public "><a href="#property_returnCode" title="$returnCode() :: The return code from the request, which was sent to mPAY24"><span class="description"></span><pre>$returnCode</pre></a></li>
-<li class="property public "><a href="#property_status" title="$status() :: The status of the request, which was sent to mPAY24"><span class="description"></span><pre>$status</pre></a></li>
-<li class="property public "><a href="#property_tid" title="$tid() :: The transaction ID of the shop"><span class="description"></span><pre>$tid</pre></a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="span8">
-<a xmlns:php="http://php.net/xsl" id="\ManagePaymentResponse"></a><ul xmlns:php="http://php.net/xsl" class="breadcrumb">
-<li>
-<a href="../index.html"><i title="Classes" class="icon-custom icon-class"></i></a><span class="divider">\</span>
-</li>
-<li class="active">
-<span class="divider">\</span><a href="../classes/ManagePaymentResponse.html">ManagePaymentResponse</a>
-</li>
-</ul>
-<div xmlns:php="http://php.net/xsl" class="element class">
-<p class="short_description">The ManagePaymentResponse class contains a generalResponse object and the mPAYTID and/or tid of the transaction which was managed</p>
-<div class="details">
-<div class="long_description"></div>
-<table class="table table-bordered">
-<tr>
-<th>author</th>
-<td><a href="mailto:support@mpay24.com">mPAY24 GmbH</a></td>
-</tr>
-<tr>
-<th>version</th>
-<td>$Id: MPay24Api.php 6231 2015-03-13 16:29:56Z anna $</td>
-</tr>
-<tr>
-<th>filesource</th>
-<td>MPay24Api.php</td>
-</tr>
-<tr>
-<th>license</th>
-<td><a href="http://ec.europa.eu/idabc/eupl.html">EUPL, Version 1.1</a></td>
-</tr>
-<tr>
-<th>package</th>
-<td><a href="../packages/Default.html">Default</a></td>
-</tr>
-<tr>
-<th>inherited_from</th>
-<td>\GeneralResponse</td>
-</tr>
-</table>
-<h3>
-<i title="Methods" class="icon-custom icon-method"></i> Methods</h3>
-<a id="method_GeneralResponse"></a><div class="element clickable method public method_GeneralResponse inherited" data-toggle="collapse" data-target=".method_GeneralResponse .collapse" title="public">
-<h2>Sets the basic values from the response from mPAY24: status and return code</h2>
-<pre>GeneralResponse(string $response) </pre>
-<div class="labels"><span class="label">Inherited</span></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$response</h4>
-<code>string</code><p>The SOAP response from mPAY24 (in XML form)</p></div>
-</div></div>
-</div>
-<a id="method_ManagePaymentResponse"></a><div class="element clickable method public method_ManagePaymentResponse " data-toggle="collapse" data-target=".method_ManagePaymentResponse .collapse" title="public">
-<h2>Sets the values for a payment from the response from mPAY24: mPAY transaction IDand transaction ID from the shop</h2>
-<pre>ManagePaymentResponse(string $response) </pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$response</h4>
-<code>string</code><p>The SOAP response from mPAY24 (in XML form)</p></div>
-</div></div>
-</div>
-<a id="method_getGeneralResponse"></a><div class="element clickable method public method_getGeneralResponse " data-toggle="collapse" data-target=".method_getGeneralResponse .collapse" title="public">
-<h2>Get the object, that contains the basic values from the response from mPAY24: status and return code</h2>
-<pre>getGeneralResponse() : string</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
-<a id="method_getMpayTID"></a><div class="element clickable method public method_getMpayTID " data-toggle="collapse" data-target=".method_getMpayTID .collapse" title="public">
-<h2>Get the mPAY transaction ID, returned from mPAY24</h2>
-<pre>getMpayTID() : string</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
-<a id="method_getReturnCode"></a><div class="element clickable method public method_getReturnCode inherited" data-toggle="collapse" data-target=".method_getReturnCode .collapse" title="public">
-<h2>Get the return code from the request, which was sent to mPAY24</h2>
-<pre>getReturnCode() : string</pre>
-<div class="labels"><span class="label">Inherited</span></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
-<a id="method_getStatus"></a><div class="element clickable method public method_getStatus inherited" data-toggle="collapse" data-target=".method_getStatus .collapse" title="public">
-<h2>Get the status of the request, which was sent to mPAY24</h2>
-<pre>getStatus() : string</pre>
-<div class="labels"><span class="label">Inherited</span></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
-<a id="method_getTid"></a><div class="element clickable method public method_getTid " data-toggle="collapse" data-target=".method_getTid .collapse" title="public">
-<h2>Get the transaction ID of the shop, returned from mPAY24</h2>
-<pre>getTid() : string</pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Returns</h3>
-<div class="subelement response"><code>string</code></div>
-</div></div>
-</div>
-<a id="method_setReturnCode"></a><div class="element clickable method public method_setReturnCode inherited" data-toggle="collapse" data-target=".method_setReturnCode .collapse" title="public">
-<h2>Set the return code in the response, which was delivered by mPAY24</h2>
-<pre>setReturnCode(string $returnCode) </pre>
-<div class="labels"><span class="label">Inherited</span></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$returnCode</h4>
-<code>string</code><p>Return code</p></div>
-</div></div>
-</div>
-<a id="method_setStatus"></a><div class="element clickable method public method_setStatus inherited" data-toggle="collapse" data-target=".method_setStatus .collapse" title="public">
-<h2>Set the status in the response, which was delivered by mPAY24</h2>
-<pre>setStatus(string $status) </pre>
-<div class="labels"><span class="label">Inherited</span></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<h3>Parameters</h3>
-<div class="subelement argument">
-<h4>$status</h4>
-<code>string</code><p>Status</p></div>
-</div></div>
-</div>
-<h3>
-<i title="Properties" class="icon-custom icon-property"></i> Properties</h3>
-<a id="property_generalResponse"> </a><div class="element clickable property public property_generalResponse" data-toggle="collapse" data-target=".property_generalResponse .collapse" title="public">
-<h2>An object, that represents the basic values from the response from mPAY24: status and return code</h2>
-<pre>$generalResponse : string</pre>
-<div class="row collapse"><div class="detail-description">
-<h3>Default</h3>
-<div class="subelement argument"></div>
-</div></div>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
-</div>
-<a id="property_mpayTID"> </a><div class="element clickable property public property_mpayTID" data-toggle="collapse" data-target=".property_mpayTID .collapse" title="public">
-<h2>The mPAY transaction ID</h2>
-<pre>$mpayTID : string</pre>
-<div class="row collapse"><div class="detail-description">
-<h3>Default</h3>
-<div class="subelement argument"></div>
-</div></div>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
-</div>
-<a id="property_returnCode"> </a><div class="element clickable property public property_returnCode" data-toggle="collapse" data-target=".property_returnCode .collapse" title="public">
-<h2>The return code from the request, which was sent to mPAY24</h2>
-<pre>$returnCode : string</pre>
-<div class="row collapse"><div class="detail-description">
-<h3>Default</h3>
-<div class="subelement argument"></div>
-</div></div>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
-</div>
-<a id="property_status"> </a><div class="element clickable property public property_status" data-toggle="collapse" data-target=".property_status .collapse" title="public">
-<h2>The status of the request, which was sent to mPAY24</h2>
-<pre>$status : string</pre>
-<div class="row collapse"><div class="detail-description">
-<h3>Default</h3>
-<div class="subelement argument"></div>
-</div></div>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
-</div>
-<a id="property_tid"> </a><div class="element clickable property public property_tid" data-toggle="collapse" data-target=".property_tid .collapse" title="public">
-<h2>The transaction ID of the shop</h2>
-<pre>$tid : string</pre>
-<div class="row collapse"><div class="detail-description">
-<h3>Default</h3>
-<div class="subelement argument"></div>
-</div></div>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description"><div class="long_description"></div></div></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="row"><footer class="span12">
-            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
-            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.2</a> and<br>
-            generated on 2015-04-09T10:39:37+02:00.<br></footer></div>
-</div>
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse"
+          data-target=".nav-collapse"><span class="icon-bar"></span><span
+          class="icon-bar"></span><span class="icon-bar"></span></a><a
+          class="brand" href="../index.html">mPAY24 PHP APIs</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li class="dropdown"><a href="#api"
+              class="dropdown-toggle" data-toggle="dropdown"> API
+                Documentation <b class="caret"></b>
+            </a>
+              <ul class="dropdown-menu">
+                <li><a>Packages</a></li>
+                <li><a href="../packages/Default.html"><i
+                    class="icon-folder-open"></i> Default</a></li>
+              </ul></li>
+            <li class="dropdown" id="charts-menu"><a href="#charts"
+              class="dropdown-toggle" data-toggle="dropdown"> Charts
+                <b class="caret"></b>
+            </a>
+              <ul class="dropdown-menu">
+                <li><a href="../graph_class.html"><i
+                    class="icon-list-alt"></i> Class hierarchy diagram</a></li>
+              </ul></li>
+            <li class="dropdown" id="reports-menu"><a
+              href="#reports" class="dropdown-toggle"
+              data-toggle="dropdown"> Reports <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="../errors.html"><i
+                    class="icon-remove-sign"></i> Errors  <span
+                    class="label label-info">0</span></a></li>
+                <li><a href="../markers.html"><i
+                    class="icon-map-marker"></i> Markers 
+                    <ul></ul></a></li>
+                <li><a href="../deprecated.html"><i
+                    class="icon-stop"></i> Deprecated elements  <span
+                    class="label label-info">0</span></a></li>
+              </ul></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="go_to_top">
+      <a href="#___" style="color: inherit">Back to top  <i
+        class="icon-upload icon-white"></i></a>
+    </div>
+  </div>
+  <div id="___" class="container">
+    <noscript>
+      <div class="alert alert-warning">Javascript is disabled;
+        several features are only available if Javascript is enabled.</div>
+    </noscript>
+    <div class="row">
+      <div class="span4">
+        <div xmlns:php="http://php.net/xsl" class="btn-toolbar">
+          <div class="btn-group visibility"
+            data-toggle="buttons-checkbox">
+            <button class="btn public active"
+              title="Show public elements">Public</button>
+            <button class="btn protected"
+              title="Show protected elements">Protected</button>
+            <button class="btn private" title="Show private elements">Private</button>
+            <button class="btn inherited active"
+              title="Show inherited elements">Inherited</button>
+          </div>
+          <div class="btn-group view pull-right"
+            data-toggle="buttons-radio">
+            <button class="btn details"
+              title="Show descriptions and method names">
+              <i class="icon-list"></i>
+            </button>
+            <button class="btn simple" title="Show only method names">
+              <i class="icon-align-justify"></i>
+            </button>
+          </div>
+        </div>
+        <ul xmlns:php="http://php.net/xsl" class="side-nav nav nav-list">
+          <li class="nav-header"><i title="Methods"
+            class="icon-custom icon-method"></i> Methods
+            <ul>
+              <li class="method public inherited"><a
+                href="#method_GeneralResponse"
+                title="GeneralResponse() :: Sets the basic values from the response from mPAY24: status and return code"><span
+                  class="description">Sets the basic values from
+                    the response from mPAY24: status and return code</span> <pre>GeneralResponse()</pre></a></li>
+              <li class="method public "><a
+                href="#method_ManagePaymentResponse"
+                title="ManagePaymentResponse() :: Sets the values for a payment from the response from mPAY24: mPAY transaction IDand transaction ID from the shop"><span
+                  class="description">Sets the values for a
+                    payment from the response from mPAY24: mPAY
+                    transaction IDand transaction ID from the shop</span> <pre>ManagePaymentResponse()</pre></a></li>
+              <li class="method public "><a
+                href="#method_getGeneralResponse"
+                title="getGeneralResponse() :: Get the object, that contains the basic values from the response from mPAY24: status and return code"><span
+                  class="description">Get the object, that
+                    contains the basic values from the response from
+                    mPAY24: status and return code</span> <pre>getGeneralResponse()</pre></a></li>
+              <li class="method public "><a
+                href="#method_getMpayTID"
+                title="getMpayTID() :: Get the mPAY transaction ID, returned from mPAY24"><span
+                  class="description">Get the mPAY transaction
+                    ID, returned from mPAY24</span> <pre>getMpayTID()</pre></a></li>
+              <li class="method public inherited"><a
+                href="#method_getReturnCode"
+                title="getReturnCode() :: Get the return code from the request, which was sent to mPAY24"><span
+                  class="description">Get the return code from
+                    the request, which was sent to mPAY24</span> <pre>getReturnCode()</pre></a></li>
+              <li class="method public inherited"><a
+                href="#method_getStatus"
+                title="getStatus() :: Get the status of the request, which was sent to mPAY24"><span
+                  class="description">Get the status of the
+                    request, which was sent to mPAY24</span> <pre>getStatus()</pre></a></li>
+              <li class="method public "><a href="#method_getTid"
+                title="getTid() :: Get the transaction ID of the shop, returned from mPAY24"><span
+                  class="description">Get the transaction ID of
+                    the shop, returned from mPAY24</span> <pre>getTid()</pre></a></li>
+              <li class="method public inherited"><a
+                href="#method_setReturnCode"
+                title="setReturnCode() :: Set the return code in the response, which was delivered by mPAY24"><span
+                  class="description">Set the return code in the
+                    response, which was delivered by mPAY24</span> <pre>setReturnCode()</pre></a></li>
+              <li class="method public inherited"><a
+                href="#method_setStatus"
+                title="setStatus() :: Set the status in the response, which was delivered by mPAY24"><span
+                  class="description">Set the status in the
+                    response, which was delivered by mPAY24</span> <pre>setStatus()</pre></a></li>
+            </ul></li>
+          <li class="nav-header"><i title="Properties"
+            class="icon-custom icon-property"></i> Properties
+            <ul>
+              <li class="property public "><a
+                href="#property_generalResponse"
+                title="$generalResponse() :: An object, that represents the basic values from the response from mPAY24: status and return code"><span
+                  class="description"></span> <pre>$generalResponse</pre></a></li>
+              <li class="property public "><a
+                href="#property_mpayTID"
+                title="$mpayTID() :: The mPAY transaction ID"><span
+                  class="description"></span> <pre>$mpayTID</pre></a></li>
+              <li class="property public "><a
+                href="#property_returnCode"
+                title="$returnCode() :: The return code from the request, which was sent to mPAY24"><span
+                  class="description"></span> <pre>$returnCode</pre></a></li>
+              <li class="property public "><a
+                href="#property_status"
+                title="$status() :: The status of the request, which was sent to mPAY24"><span
+                  class="description"></span> <pre>$status</pre></a></li>
+              <li class="property public "><a href="#property_tid"
+                title="$tid() :: The transaction ID of the shop"><span
+                  class="description"></span> <pre>$tid</pre></a></li>
+            </ul></li>
+        </ul>
+      </div>
+      <div class="span8">
+        <a xmlns:php="http://php.net/xsl" id="\ManagePaymentResponse"></a>
+        <ul xmlns:php="http://php.net/xsl" class="breadcrumb">
+          <li><a href="../index.html"><i title="Classes"
+              class="icon-custom icon-class"></i></a><span class="divider">\</span>
+          </li>
+          <li class="active"><span class="divider">\</span><a
+            href="../classes/ManagePaymentResponse.html">ManagePaymentResponse</a>
+          </li>
+        </ul>
+        <div xmlns:php="http://php.net/xsl" class="element class">
+          <p class="short_description">The ManagePaymentResponse
+            class contains a generalResponse object and the mPAYTID
+            and/or tid of the transaction which was managed</p>
+          <div class="details">
+            <div class="long_description"></div>
+            <table class="table table-bordered">
+              <tr>
+                <th>author</th>
+                <td><a href="mailto:support@mpay24.com">mPAY24
+                    GmbH</a></td>
+              </tr>
+              <tr>
+                <th>version</th>
+                <td>$Id: MPay24Api.php 6231 2015-03-13 16:29:56Z
+                  anna $</td>
+              </tr>
+              <tr>
+                <th>filesource</th>
+                <td>MPay24Api.php</td>
+              </tr>
+              <tr>
+                <th>license</th>
+                <td><a href="http://ec.europa.eu/idabc/eupl.html">EUPL,
+                    Version 1.1</a></td>
+              </tr>
+              <tr>
+                <th>package</th>
+                <td><a href="../packages/Default.html">Default</a></td>
+              </tr>
+              <tr>
+                <th>inherited_from</th>
+                <td>\GeneralResponse</td>
+              </tr>
+            </table>
+            <h3>
+              <i title="Methods" class="icon-custom icon-method"></i> Methods
+            </h3>
+            <a id="method_GeneralResponse"></a>
+            <div
+              class="element clickable method public method_GeneralResponse inherited"
+              data-toggle="collapse"
+              data-target=".method_GeneralResponse .collapse"
+              title="public">
+              <h2>Sets the basic values from the response from
+                mPAY24: status and return code</h2>
+              <pre>GeneralResponse(string $response) </pre>
+              <div class="labels">
+                <span class="label">Inherited</span>
+              </div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Parameters</h3>
+                  <div class="subelement argument">
+                    <h4>$response</h4>
+                    <code>string</code>
+                    <p>The SOAP response from mPAY24 (in XML form)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_ManagePaymentResponse"></a>
+            <div
+              class="element clickable method public method_ManagePaymentResponse "
+              data-toggle="collapse"
+              data-target=".method_ManagePaymentResponse .collapse"
+              title="public">
+              <h2>Sets the values for a payment from the response
+                from mPAY24: mPAY transaction IDand transaction ID from
+                the shop</h2>
+              <pre>ManagePaymentResponse(string $response) </pre>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Parameters</h3>
+                  <div class="subelement argument">
+                    <h4>$response</h4>
+                    <code>string</code>
+                    <p>The SOAP response from mPAY24 (in XML form)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_getGeneralResponse"></a>
+            <div
+              class="element clickable method public method_getGeneralResponse "
+              data-toggle="collapse"
+              data-target=".method_getGeneralResponse .collapse"
+              title="public">
+              <h2>Get the object, that contains the basic values
+                from the response from mPAY24: status and return code</h2>
+              <pre>getGeneralResponse() : string</pre>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Returns</h3>
+                  <div class="subelement response">
+                    <code>string</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_getMpayTID"></a>
+            <div
+              class="element clickable method public method_getMpayTID "
+              data-toggle="collapse"
+              data-target=".method_getMpayTID .collapse" title="public">
+              <h2>Get the mPAY transaction ID, returned from mPAY24</h2>
+              <pre>getMpayTID() : string</pre>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Returns</h3>
+                  <div class="subelement response">
+                    <code>string</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_getReturnCode"></a>
+            <div
+              class="element clickable method public method_getReturnCode inherited"
+              data-toggle="collapse"
+              data-target=".method_getReturnCode .collapse"
+              title="public">
+              <h2>Get the return code from the request, which was
+                sent to mPAY24</h2>
+              <pre>getReturnCode() : string</pre>
+              <div class="labels">
+                <span class="label">Inherited</span>
+              </div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Returns</h3>
+                  <div class="subelement response">
+                    <code>string</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_getStatus"></a>
+            <div
+              class="element clickable method public method_getStatus inherited"
+              data-toggle="collapse"
+              data-target=".method_getStatus .collapse" title="public">
+              <h2>Get the status of the request, which was sent to
+                mPAY24</h2>
+              <pre>getStatus() : string</pre>
+              <div class="labels">
+                <span class="label">Inherited</span>
+              </div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Returns</h3>
+                  <div class="subelement response">
+                    <code>string</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_getTid"></a>
+            <div class="element clickable method public method_getTid "
+              data-toggle="collapse"
+              data-target=".method_getTid .collapse" title="public">
+              <h2>Get the transaction ID of the shop, returned from
+                mPAY24</h2>
+              <pre>getTid() : string</pre>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Returns</h3>
+                  <div class="subelement response">
+                    <code>string</code>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_setReturnCode"></a>
+            <div
+              class="element clickable method public method_setReturnCode inherited"
+              data-toggle="collapse"
+              data-target=".method_setReturnCode .collapse"
+              title="public">
+              <h2>Set the return code in the response, which was
+                delivered by mPAY24</h2>
+              <pre>setReturnCode(string $returnCode) </pre>
+              <div class="labels">
+                <span class="label">Inherited</span>
+              </div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Parameters</h3>
+                  <div class="subelement argument">
+                    <h4>$returnCode</h4>
+                    <code>string</code>
+                    <p>Return code</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <a id="method_setStatus"></a>
+            <div
+              class="element clickable method public method_setStatus inherited"
+              data-toggle="collapse"
+              data-target=".method_setStatus .collapse" title="public">
+              <h2>Set the status in the response, which was
+                delivered by mPAY24</h2>
+              <pre>setStatus(string $status) </pre>
+              <div class="labels">
+                <span class="label">Inherited</span>
+              </div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                  <h3>Parameters</h3>
+                  <div class="subelement argument">
+                    <h4>$status</h4>
+                    <code>string</code>
+                    <p>Status</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h3>
+              <i title="Properties" class="icon-custom icon-property"></i> Properties
+            </h3>
+            <a id="property_generalResponse"> </a>
+            <div
+              class="element clickable property public property_generalResponse"
+              data-toggle="collapse"
+              data-target=".property_generalResponse .collapse"
+              title="public">
+              <h2>An object, that represents the basic values from
+                the response from mPAY24: status and return code</h2>
+              <pre>$generalResponse : string</pre>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <h3>Default</h3>
+                  <div class="subelement argument"></div>
+                </div>
+              </div>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                </div>
+              </div>
+            </div>
+            <a id="property_mpayTID"> </a>
+            <div
+              class="element clickable property public property_mpayTID"
+              data-toggle="collapse"
+              data-target=".property_mpayTID .collapse" title="public">
+              <h2>The mPAY transaction ID</h2>
+              <pre>$mpayTID : string</pre>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <h3>Default</h3>
+                  <div class="subelement argument"></div>
+                </div>
+              </div>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                </div>
+              </div>
+            </div>
+            <a id="property_returnCode"> </a>
+            <div
+              class="element clickable property public property_returnCode"
+              data-toggle="collapse"
+              data-target=".property_returnCode .collapse"
+              title="public">
+              <h2>The return code from the request, which was sent
+                to mPAY24</h2>
+              <pre>$returnCode : string</pre>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <h3>Default</h3>
+                  <div class="subelement argument"></div>
+                </div>
+              </div>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                </div>
+              </div>
+            </div>
+            <a id="property_status"> </a>
+            <div
+              class="element clickable property public property_status"
+              data-toggle="collapse"
+              data-target=".property_status .collapse" title="public">
+              <h2>The status of the request, which was sent to
+                mPAY24</h2>
+              <pre>$status : string</pre>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <h3>Default</h3>
+                  <div class="subelement argument"></div>
+                </div>
+              </div>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                </div>
+              </div>
+            </div>
+            <a id="property_tid"> </a>
+            <div class="element clickable property public property_tid"
+              data-toggle="collapse"
+              data-target=".property_tid .collapse" title="public">
+              <h2>The transaction ID of the shop</h2>
+              <pre>$tid : string</pre>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <h3>Default</h3>
+                  <div class="subelement argument"></div>
+                </div>
+              </div>
+              <div class="labels"></div>
+              <div class="row collapse">
+                <div class="detail-description">
+                  <div class="long_description"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <footer class="span12">
+        Template is built using <a
+          href="http://twitter.github.com/bootstrap/">Twitter
+          Bootstrap 2</a> and icons provided by <a
+          href="http://glyphicons.com/">Glyphicons</a>.<br>
+        Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor
+          2.8.2</a> and<br> generated on 2015-04-09T10:39:37+02:00.<br>
+      </footer>
+    </div>
+  </div>
 </body>
 </html>

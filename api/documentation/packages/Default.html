@@ -1,254 +1,424 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta name="viewport"
+  content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
 <meta charset="utf-8">
 <title>mPAY24 PHP APIs » Default</title>
 <meta name="author" content="Mike van Riel">
 <meta name="description" content="">
 <link href="../css/template.css" rel="stylesheet" media="all">
-<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
+<script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
+<script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
+<script src="../js/bootstrap.js" type="text/javascript"></script>
+<script src="../js/template.js" type="text/javascript"></script>
+<script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+<link rel="shortcut icon" href="../img/favicon.ico">
 <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="72x72"
+  href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114"
+  href="../img/apple-touch-icon-114x114.png">
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
-<div class="navbar-inner"><div class="container">
-<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">mPAY24 PHP APIs</a><div class="nav-collapse"><ul class="nav">
-<li class="dropdown">
-<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
-                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu">
-<li><a>Packages</a></li>
-<li><a href="../packages/Default.html"><i class="icon-folder-open"></i> Default</a></li>
-</ul>
-</li>
-<li class="dropdown" id="charts-menu">
-<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
-                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
-</li>
-<li class="dropdown" id="reports-menu">
-<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
-                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
-<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors 
-                <span class="label label-info">0</span></a></li>
-<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers 
-                <ul></ul></a></li>
-<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements 
-                <span class="label label-info">0</span></a></li>
-</ul>
-</li>
-</ul></div>
-</div></div>
-<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
-</div>
-<div id="___" class="container">
-<noscript><div class="alert alert-warning">
-                            Javascript is disabled; several features are only available
-                            if Javascript is enabled.
-                        </div></noscript>
-<div class="row">
-<div class="span4">
-<div class="btn-group view pull-right" data-toggle="buttons-radio">
-<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
-</div>
-<ul class="side-nav nav nav-list">
-<li class="nav-header">
-<i class="icon-map-marker"></i> Packages</li>
-<li>
-<a href="../packages/Default.html" title="Default"><i class="icon-folder-open"></i>Default</a><ul class="nav nav-list nav-packages"></ul>
-</li>
-<li class="nav-header">
-<i title="Classes" class="icon-custom icon-class"></i> Classes</li>
-<li><a href="#MPay24Shop" title="The abstract MPay24Shop class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24">MPay24Shop</a></li>
-<li><a href="#Transaction" title="The Transaction class allows you to set and get different trnasaction's properties - see details">Transaction</a></li>
-<li><a href="#MPay24flexLINK" title="The abstract MPay24flexLINK class provides abstract functions, which are used from the other functions in order to create a flexLINK">MPay24flexLINK</a></li>
-<li><a href="#ORDER" title="The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd">ORDER</a></li>
-<li><a href="#MPay24Api" title="Main mPAY24 PHP APIs Class.">MPay24Api</a></li>
-<li><a href="#GeneralResponse" title="The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request">GeneralResponse</a></li>
-<li><a href="#PaymentResponse" title="The PaymentResponse class contains a generalResponse object and the location(URL), which will be used for the payment session">PaymentResponse</a></li>
-<li><a href="#ManagePaymentResponse" title="The ManagePaymentResponse class contains a generalResponse object and the mPAYTID and/or tid of the transaction which was managed">ManagePaymentResponse</a></li>
-<li><a href="#ListPaymentMethodsResponse" title="The ListPaymentMethodsResponse class contains a generalResponse object and all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)">ListPaymentMethodsResponse</a></li>
-<li><a href="#TransactionStatusResponse" title="The TransactionStatusResponse class contains a generalResponse object and all the parameters, returned with the confirmation from mPAY24">TransactionStatusResponse</a></li>
-<li><a href="#MyFlexLINK" title="The class MyFlexLINK extends the abstract class MPay24flexLINK and implements the log-fuction for this class">MyFlexLINK</a></li>
-<li><a href="#MyShop" title="The class MyShop extends the abstract class MPay24Shop and implements some of the basic functions in order to be able to make a payment">MyShop</a></li>
-<li class="nav-header">
-<i title="Constants" class="icon-custom icon-constant"></i> Constants</li>
-<li class="constant  "><a href="#constant_LIVE_ERROR_MSG" title="LIVE_ERROR_MSG() :: An error message, that will be displayed to the user in case you are using the LIVE system"><span class="description">An error message, that will be displayed to the user in case you are using the LIVE system</span><pre>LIVE_ERROR_MSG</pre></a></li>
-<li class="constant  "><a href="#constant_MDXI_SCHEMA" title="MDXI_SCHEMA() :: The URL specified from mPAY24, where MDXI schema will be download from"><span class="description">The URL specified from mPAY24, where MDXI schema will be download from</span><pre>MDXI_SCHEMA</pre></a></li>
-<li class="constant  "><a href="#constant_TRANSACTION_PROPERTIES" title="TRANSACTION_PROPERTIES() :: The properties, which are allowed for a transaction"><span class="description">The properties, which are allowed for a transaction</span><pre>TRANSACTION_PROPERTIES</pre></a></li>
-<li class="constant  "><a href="#constant___DIR__" title="__DIR__() :: "><span class="description">__DIR__</span><pre>__DIR__</pre></a></li>
-</ul>
-</div>
-<div class="span8 package-contents">
-<ul class="breadcrumb"><li>
-<a href="../index.html"><i class="icon-folder-open"></i></a><span class="divider">\</span><li class="active"><a href="../packages/Default.html">Default</a></li>
-</li></ul>
-<div class="package-indent">
-<h3>
-<i title="Classes" class="icon-custom icon-class"></i> Classes, interfaces, and traits</h3>
-<div xmlns:php="http://php.net/xsl" id="GeneralResponse" class="element ajax clickable class">
-<h1>GeneralResponse<a href="../classes/GeneralResponse.html">¶</a>
-</h1>
-<p class="short_description">The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request</p>
-<div class="details collapse"></div>
-<a href="../classes/GeneralResponse.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="ListPaymentMethodsResponse" class="element ajax clickable class">
-<h1>ListPaymentMethodsResponse<a href="../classes/ListPaymentMethodsResponse.html">¶</a>
-</h1>
-<p class="short_description">The ListPaymentMethodsResponse class contains a generalResponse object and all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)</p>
-<div class="details collapse"></div>
-<a href="../classes/ListPaymentMethodsResponse.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="MPay24Api" class="element ajax clickable class">
-<h1>MPay24Api<a href="../classes/MPay24Api.html">¶</a>
-</h1>
-<p class="short_description">Main mPAY24 PHP APIs Class.</p>
-<div class="details collapse"></div>
-<a href="../classes/MPay24Api.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="MPay24Shop" class="element ajax clickable class">
-<h1>MPay24Shop<a href="../classes/MPay24Shop.html">¶</a>
-</h1>
-<p class="short_description">The abstract MPay24Shop class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24</p>
-<div class="details collapse"></div>
-<a href="../classes/MPay24Shop.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="MPay24flexLINK" class="element ajax clickable class">
-<h1>MPay24flexLINK<a href="../classes/MPay24flexLINK.html">¶</a>
-</h1>
-<p class="short_description">The abstract MPay24flexLINK class provides abstract functions, which are used from the other functions in order to create a flexLINK</p>
-<div class="details collapse"></div>
-<a href="../classes/MPay24flexLINK.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="ManagePaymentResponse" class="element ajax clickable class">
-<h1>ManagePaymentResponse<a href="../classes/ManagePaymentResponse.html">¶</a>
-</h1>
-<p class="short_description">The ManagePaymentResponse class contains a generalResponse object and the mPAYTID and/or tid of the transaction which was managed</p>
-<div class="details collapse"></div>
-<a href="../classes/ManagePaymentResponse.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="MyFlexLINK" class="element ajax clickable class">
-<h1>MyFlexLINK<a href="../classes/MyFlexLINK.html">¶</a>
-</h1>
-<p class="short_description">The class MyFlexLINK extends the abstract class MPay24flexLINK and implements the log-fuction for this class</p>
-<div class="details collapse"></div>
-<a href="../classes/MyFlexLINK.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="MyShop" class="element ajax clickable class">
-<h1>MyShop<a href="../classes/MyShop.html">¶</a>
-</h1>
-<p class="short_description">The class MyShop extends the abstract class MPay24Shop and implements some of the basic functions in order to be able to make a payment</p>
-<div class="details collapse"></div>
-<a href="../classes/MyShop.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="ORDER" class="element ajax clickable class">
-<h1>ORDER<a href="../classes/ORDER.html">¶</a>
-</h1>
-<p class="short_description">The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd</p>
-<div class="details collapse"></div>
-<a href="../classes/ORDER.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="PaymentResponse" class="element ajax clickable class">
-<h1>PaymentResponse<a href="../classes/PaymentResponse.html">¶</a>
-</h1>
-<p class="short_description">The PaymentResponse class contains a generalResponse object and the location(URL), which will be used for the payment session</p>
-<div class="details collapse"></div>
-<a href="../classes/PaymentResponse.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="Transaction" class="element ajax clickable class">
-<h1>Transaction<a href="../classes/Transaction.html">¶</a>
-</h1>
-<p class="short_description">The Transaction class allows you to set and get different trnasaction's properties - see details</p>
-<div class="details collapse"></div>
-<a href="../classes/Transaction.html" class="more">« More »</a>
-</div>
-<div xmlns:php="http://php.net/xsl" id="TransactionStatusResponse" class="element ajax clickable class">
-<h1>TransactionStatusResponse<a href="../classes/TransactionStatusResponse.html">¶</a>
-</h1>
-<p class="short_description">The TransactionStatusResponse class contains a generalResponse object and all the parameters, returned with the confirmation from mPAY24</p>
-<div class="details collapse"></div>
-<a href="../classes/TransactionStatusResponse.html" class="more">« More »</a>
-</div>
-<h3>
-<i title="Constants" class="icon-custom icon-constant"></i> Constants</h3>
-<a xmlns:php="http://php.net/xsl" id="constant_LIVE_ERROR_MSG"> </a><div xmlns:php="http://php.net/xsl" class="element clickable constant  constant_LIVE_ERROR_MSG" data-toggle="collapse" data-target=".constant_LIVE_ERROR_MSG .collapse" title="">
-<h2>An error message, that will be displayed to the user in case you are using the LIVE system</h2>
-<pre>LIVE_ERROR_MSG = "We are sorry, an error occured - please contact the merchant!" </pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<table class="table table-bordered">
-<tr>
-<th>const</th>
-<td>LIVE_ERROR_MSG</td>
-</tr>
-<tr>
-<th>package</th>
-<td><a href="../packages/Default.html">Default</a></td>
-</tr>
-</table>
-</div></div>
-</div>
-<a xmlns:php="http://php.net/xsl" id="constant_MDXI_SCHEMA"> </a><div xmlns:php="http://php.net/xsl" class="element clickable constant  constant_MDXI_SCHEMA" data-toggle="collapse" data-target=".constant_MDXI_SCHEMA .collapse" title="">
-<h2>The URL specified from mPAY24, where MDXI schema will be download from</h2>
-<pre>MDXI_SCHEMA = "https://www.mpay24.com/schemas/MDXI/v3.0/MDXI.xsd" </pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<table class="table table-bordered">
-<tr>
-<th>const</th>
-<td>MDXI_SCHEMA</td>
-</tr>
-<tr>
-<th>package</th>
-<td><a href="../packages/Default.html">Default</a></td>
-</tr>
-</table>
-</div></div>
-</div>
-<a xmlns:php="http://php.net/xsl" id="constant_TRANSACTION_PROPERTIES"> </a><div xmlns:php="http://php.net/xsl" class="element clickable constant  constant_TRANSACTION_PROPERTIES" data-toggle="collapse" data-target=".constant_TRANSACTION_PROPERTIES .collapse" title="">
-<h2>The properties, which are allowed for a transaction</h2>
-<pre>TRANSACTION_PROPERTIES = "SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse"
+          data-target=".nav-collapse"><span class="icon-bar"></span><span
+          class="icon-bar"></span><span class="icon-bar"></span></a><a
+          class="brand" href="../index.html">mPAY24 PHP APIs</a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li class="dropdown"><a href="#api"
+              class="dropdown-toggle" data-toggle="dropdown"> API
+                Documentation <b class="caret"></b>
+            </a>
+              <ul class="dropdown-menu">
+                <li><a>Packages</a></li>
+                <li><a href="../packages/Default.html"><i
+                    class="icon-folder-open"></i> Default</a></li>
+              </ul></li>
+            <li class="dropdown" id="charts-menu"><a href="#charts"
+              class="dropdown-toggle" data-toggle="dropdown"> Charts
+                <b class="caret"></b>
+            </a>
+              <ul class="dropdown-menu">
+                <li><a href="../graph_class.html"><i
+                    class="icon-list-alt"></i> Class hierarchy diagram</a></li>
+              </ul></li>
+            <li class="dropdown" id="reports-menu"><a
+              href="#reports" class="dropdown-toggle"
+              data-toggle="dropdown"> Reports <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="../errors.html"><i
+                    class="icon-remove-sign"></i> Errors  <span
+                    class="label label-info">0</span></a></li>
+                <li><a href="../markers.html"><i
+                    class="icon-map-marker"></i> Markers 
+                    <ul></ul></a></li>
+                <li><a href="../deprecated.html"><i
+                    class="icon-stop"></i> Deprecated elements  <span
+                    class="label label-info">0</span></a></li>
+              </ul></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="go_to_top">
+      <a href="#___" style="color: inherit">Back to top  <i
+        class="icon-upload icon-white"></i></a>
+    </div>
+  </div>
+  <div id="___" class="container">
+    <noscript>
+      <div class="alert alert-warning">Javascript is disabled;
+        several features are only available if Javascript is enabled.</div>
+    </noscript>
+    <div class="row">
+      <div class="span4">
+        <div class="btn-group view pull-right"
+          data-toggle="buttons-radio">
+          <button class="btn details"
+            title="Show descriptions and method names">
+            <i class="icon-list"></i>
+          </button>
+          <button class="btn simple" title="Show only method names">
+            <i class="icon-align-justify"></i>
+          </button>
+        </div>
+        <ul class="side-nav nav nav-list">
+          <li class="nav-header"><i class="icon-map-marker"></i>
+            Packages</li>
+          <li><a href="../packages/Default.html" title="Default"><i
+              class="icon-folder-open"></i>Default</a>
+            <ul class="nav nav-list nav-packages"></ul></li>
+          <li class="nav-header"><i title="Classes"
+            class="icon-custom icon-class"></i> Classes</li>
+          <li><a href="#MPay24Shop"
+            title="The abstract MPay24Shop class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24">MPay24Shop</a></li>
+          <li><a href="#Transaction"
+            title="The Transaction class allows you to set and get different trnasaction's properties - see details">Transaction</a></li>
+          <li><a href="#MPay24flexLINK"
+            title="The abstract MPay24flexLINK class provides abstract functions, which are used from the other functions in order to create a flexLINK">MPay24flexLINK</a></li>
+          <li><a href="#ORDER"
+            title="The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd">ORDER</a></li>
+          <li><a href="#MPay24Api"
+            title="Main mPAY24 PHP APIs Class.">MPay24Api</a></li>
+          <li><a href="#GeneralResponse"
+            title="The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request">GeneralResponse</a></li>
+          <li><a href="#PaymentResponse"
+            title="The PaymentResponse class contains a generalResponse object and the location(URL), which will be used for the payment session">PaymentResponse</a></li>
+          <li><a href="#ManagePaymentResponse"
+            title="The ManagePaymentResponse class contains a generalResponse object and the mPAYTID and/or tid of the transaction which was managed">ManagePaymentResponse</a></li>
+          <li><a href="#ListPaymentMethodsResponse"
+            title="The ListPaymentMethodsResponse class contains a generalResponse object and all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)">ListPaymentMethodsResponse</a></li>
+          <li><a href="#TransactionStatusResponse"
+            title="The TransactionStatusResponse class contains a generalResponse object and all the parameters, returned with the confirmation from mPAY24">TransactionStatusResponse</a></li>
+          <li><a href="#MyFlexLINK"
+            title="The class MyFlexLINK extends the abstract class MPay24flexLINK and implements the log-fuction for this class">MyFlexLINK</a></li>
+          <li><a href="#MyShop"
+            title="The class MyShop extends the abstract class MPay24Shop and implements some of the basic functions in order to be able to make a payment">MyShop</a></li>
+          <li class="nav-header"><i title="Constants"
+            class="icon-custom icon-constant"></i> Constants</li>
+          <li class="constant  "><a href="#constant_LIVE_ERROR_MSG"
+            title="LIVE_ERROR_MSG() :: An error message, that will be displayed to the user in case you are using the LIVE system"><span
+              class="description">An error message, that will be
+                displayed to the user in case you are using the LIVE
+                system</span> <pre>LIVE_ERROR_MSG</pre></a></li>
+          <li class="constant  "><a href="#constant_MDXI_SCHEMA"
+            title="MDXI_SCHEMA() :: The URL specified from mPAY24, where MDXI schema will be download from"><span
+              class="description">The URL specified from mPAY24,
+                where MDXI schema will be download from</span> <pre>MDXI_SCHEMA</pre></a></li>
+          <li class="constant  "><a
+            href="#constant_TRANSACTION_PROPERTIES"
+            title="TRANSACTION_PROPERTIES() :: The properties, which are allowed for a transaction"><span
+              class="description">The properties, which are
+                allowed for a transaction</span> <pre>TRANSACTION_PROPERTIES</pre></a></li>
+          <li class="constant  "><a href="#constant___DIR__"
+            title="__DIR__() :: "><span class="description">__DIR__</span>
+              <pre>__DIR__</pre></a></li>
+        </ul>
+      </div>
+      <div class="span8 package-contents">
+        <ul class="breadcrumb">
+          <li><a href="../index.html"><i
+              class="icon-folder-open"></i></a><span class="divider">\</span>
+          <li class="active"><a href="../packages/Default.html">Default</a></li>
+          </li>
+        </ul>
+        <div class="package-indent">
+          <h3>
+            <i title="Classes" class="icon-custom icon-class"></i>
+            Classes, interfaces, and traits
+          </h3>
+          <div xmlns:php="http://php.net/xsl" id="GeneralResponse"
+            class="element ajax clickable class">
+            <h1>
+              GeneralResponse<a href="../classes/GeneralResponse.html">¶</a>
+            </h1>
+            <p class="short_description">The GeneralResponse class
+              contains the status of a response and return code, which
+              was delivered by mPAY24 as an answer of your request</p>
+            <div class="details collapse"></div>
+            <a href="../classes/GeneralResponse.html" class="more">«
+              More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl"
+            id="ListPaymentMethodsResponse"
+            class="element ajax clickable class">
+            <h1>
+              ListPaymentMethodsResponse<a
+                href="../classes/ListPaymentMethodsResponse.html">¶</a>
+            </h1>
+            <p class="short_description">The
+              ListPaymentMethodsResponse class contains a
+              generalResponse object and all the needed informarion for
+              the active payment mothods (payment methods count, payment
+              types, brands and descriptions)</p>
+            <div class="details collapse"></div>
+            <a href="../classes/ListPaymentMethodsResponse.html"
+              class="more">« More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="MPay24Api"
+            class="element ajax clickable class">
+            <h1>
+              MPay24Api<a href="../classes/MPay24Api.html">¶</a>
+            </h1>
+            <p class="short_description">Main mPAY24 PHP APIs Class.</p>
+            <div class="details collapse"></div>
+            <a href="../classes/MPay24Api.html" class="more">« More
+              »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="MPay24Shop"
+            class="element ajax clickable class">
+            <h1>
+              MPay24Shop<a href="../classes/MPay24Shop.html">¶</a>
+            </h1>
+            <p class="short_description">The abstract MPay24Shop
+              class provides abstract functions, which are used from the
+              other functions in order to make a payment or a request to
+              mPAY24</p>
+            <div class="details collapse"></div>
+            <a href="../classes/MPay24Shop.html" class="more">« More
+              »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="MPay24flexLINK"
+            class="element ajax clickable class">
+            <h1>
+              MPay24flexLINK<a href="../classes/MPay24flexLINK.html">¶</a>
+            </h1>
+            <p class="short_description">The abstract MPay24flexLINK
+              class provides abstract functions, which are used from the
+              other functions in order to create a flexLINK</p>
+            <div class="details collapse"></div>
+            <a href="../classes/MPay24flexLINK.html" class="more">«
+              More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="ManagePaymentResponse"
+            class="element ajax clickable class">
+            <h1>
+              ManagePaymentResponse<a
+                href="../classes/ManagePaymentResponse.html">¶</a>
+            </h1>
+            <p class="short_description">The ManagePaymentResponse
+              class contains a generalResponse object and the mPAYTID
+              and/or tid of the transaction which was managed</p>
+            <div class="details collapse"></div>
+            <a href="../classes/ManagePaymentResponse.html" class="more">«
+              More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="MyFlexLINK"
+            class="element ajax clickable class">
+            <h1>
+              MyFlexLINK<a href="../classes/MyFlexLINK.html">¶</a>
+            </h1>
+            <p class="short_description">The class MyFlexLINK
+              extends the abstract class MPay24flexLINK and implements
+              the log-fuction for this class</p>
+            <div class="details collapse"></div>
+            <a href="../classes/MyFlexLINK.html" class="more">« More
+              »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="MyShop"
+            class="element ajax clickable class">
+            <h1>
+              MyShop<a href="../classes/MyShop.html">¶</a>
+            </h1>
+            <p class="short_description">The class MyShop extends
+              the abstract class MPay24Shop and implements some of the
+              basic functions in order to be able to make a payment</p>
+            <div class="details collapse"></div>
+            <a href="../classes/MyShop.html" class="more">« More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="ORDER"
+            class="element ajax clickable class">
+            <h1>
+              ORDER<a href="../classes/ORDER.html">¶</a>
+            </h1>
+            <p class="short_description">The ORDER class provides
+              the functioanallity to create a XML, which is validatable
+              with the MDXI.xsd</p>
+            <div class="details collapse"></div>
+            <a href="../classes/ORDER.html" class="more">« More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="PaymentResponse"
+            class="element ajax clickable class">
+            <h1>
+              PaymentResponse<a href="../classes/PaymentResponse.html">¶</a>
+            </h1>
+            <p class="short_description">The PaymentResponse class
+              contains a generalResponse object and the location(URL),
+              which will be used for the payment session</p>
+            <div class="details collapse"></div>
+            <a href="../classes/PaymentResponse.html" class="more">«
+              More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl" id="Transaction"
+            class="element ajax clickable class">
+            <h1>
+              Transaction<a href="../classes/Transaction.html">¶</a>
+            </h1>
+            <p class="short_description">The Transaction class
+              allows you to set and get different trnasaction's
+              properties - see details</p>
+            <div class="details collapse"></div>
+            <a href="../classes/Transaction.html" class="more">«
+              More »</a>
+          </div>
+          <div xmlns:php="http://php.net/xsl"
+            id="TransactionStatusResponse"
+            class="element ajax clickable class">
+            <h1>
+              TransactionStatusResponse<a
+                href="../classes/TransactionStatusResponse.html">¶</a>
+            </h1>
+            <p class="short_description">The
+              TransactionStatusResponse class contains a generalResponse
+              object and all the parameters, returned with the
+              confirmation from mPAY24</p>
+            <div class="details collapse"></div>
+            <a href="../classes/TransactionStatusResponse.html"
+              class="more">« More »</a>
+          </div>
+          <h3>
+            <i title="Constants" class="icon-custom icon-constant"></i>
+            Constants
+          </h3>
+          <a xmlns:php="http://php.net/xsl" id="constant_LIVE_ERROR_MSG"> </a>
+          <div xmlns:php="http://php.net/xsl"
+            class="element clickable constant  constant_LIVE_ERROR_MSG"
+            data-toggle="collapse"
+            data-target=".constant_LIVE_ERROR_MSG .collapse" title="">
+            <h2>An error message, that will be displayed to the
+              user in case you are using the LIVE system</h2>
+            <pre>LIVE_ERROR_MSG = "We are sorry, an error occured - please contact the merchant!" </pre>
+            <div class="labels"></div>
+            <div class="row collapse">
+              <div class="detail-description">
+                <div class="long_description"></div>
+                <table class="table table-bordered">
+                  <tr>
+                    <th>const</th>
+                    <td>LIVE_ERROR_MSG</td>
+                  </tr>
+                  <tr>
+                    <th>package</th>
+                    <td><a href="../packages/Default.html">Default</a></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <a xmlns:php="http://php.net/xsl" id="constant_MDXI_SCHEMA"> </a>
+          <div xmlns:php="http://php.net/xsl"
+            class="element clickable constant  constant_MDXI_SCHEMA"
+            data-toggle="collapse"
+            data-target=".constant_MDXI_SCHEMA .collapse" title="">
+            <h2>The URL specified from mPAY24, where MDXI schema
+              will be download from</h2>
+            <pre>MDXI_SCHEMA = "https://www.mpay24.com/schemas/MDXI/v3.0/MDXI.xsd" </pre>
+            <div class="labels"></div>
+            <div class="row collapse">
+              <div class="detail-description">
+                <div class="long_description"></div>
+                <table class="table table-bordered">
+                  <tr>
+                    <th>const</th>
+                    <td>MDXI_SCHEMA</td>
+                  </tr>
+                  <tr>
+                    <th>package</th>
+                    <td><a href="../packages/Default.html">Default</a></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <a xmlns:php="http://php.net/xsl"
+            id="constant_TRANSACTION_PROPERTIES"> </a>
+          <div xmlns:php="http://php.net/xsl"
+            class="element clickable constant  constant_TRANSACTION_PROPERTIES"
+            data-toggle="collapse"
+            data-target=".constant_TRANSACTION_PROPERTIES .collapse"
+            title="">
+            <h2>The properties, which are allowed for a transaction</h2>
+            <pre>TRANSACTION_PROPERTIES = "SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,
                                   BRAND,PRICE,CURRENCY,OPERATION,LANGUAGE,
                                   USER_FIELD,ORDERDESC,CUSTOMER,CUSTOMER_EMAIL,
                                   CUSTOMER_ID,PROFILE_STATUS,FILTER_STATUS,TSTATUS" </pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<table class="table table-bordered">
-<tr>
-<th>const</th>
-<td>TRANSACTION_PROPERTIES</td>
-</tr>
-<tr>
-<th>package</th>
-<td><a href="../packages/Default.html">Default</a></td>
-</tr>
-</table>
-</div></div>
-</div>
-<a xmlns:php="http://php.net/xsl" id="constant___DIR__"> </a><div xmlns:php="http://php.net/xsl" class="element clickable constant  constant___DIR__" data-toggle="collapse" data-target=".constant___DIR__ .collapse" title="">
-<h2>__DIR__</h2>
-<pre>__DIR__ = dirname(__FILE__) </pre>
-<div class="labels"></div>
-<div class="row collapse"><div class="detail-description">
-<div class="long_description"></div>
-<table class="table table-bordered"><tr>
-<th>package</th>
-<td><a href="../packages/Default.html">Default</a></td>
-</tr></table>
-</div></div>
-</div>
-</div>
-</div>
-</div>
-<div class="row"><footer class="span12">
-            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
-            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.8.2</a> and<br>
-            generated on 2015-04-09T10:39:36+02:00.<br></footer></div>
-</div>
+            <div class="labels"></div>
+            <div class="row collapse">
+              <div class="detail-description">
+                <div class="long_description"></div>
+                <table class="table table-bordered">
+                  <tr>
+                    <th>const</th>
+                    <td>TRANSACTION_PROPERTIES</td>
+                  </tr>
+                  <tr>
+                    <th>package</th>
+                    <td><a href="../packages/Default.html">Default</a></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <a xmlns:php="http://php.net/xsl" id="constant___DIR__"> </a>
+          <div xmlns:php="http://php.net/xsl"
+            class="element clickable constant  constant___DIR__"
+            data-toggle="collapse"
+            data-target=".constant___DIR__ .collapse" title="">
+            <h2>__DIR__</h2>
+            <pre>__DIR__ = dirname(__FILE__) </pre>
+            <div class="labels"></div>
+            <div class="row collapse">
+              <div class="detail-description">
+                <div class="long_description"></div>
+                <table class="table table-bordered">
+                  <tr>
+                    <th>package</th>
+                    <td><a href="../packages/Default.html">Default</a></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <footer class="span12">
+        Template is built using <a
+          href="http://twitter.github.com/bootstrap/">Twitter
+          Bootstrap 2</a> and icons provided by <a
+          href="http://glyphicons.com/">Glyphicons</a>.<br>
+        Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor
+          2.8.2</a> and<br> generated on 2015-04-09T10:39:36+02:00.<br>
+      </footer>
+    </div>
+  </div>
 </body>
 </html>

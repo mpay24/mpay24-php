@@ -5,7 +5,6 @@
  * @filesource          error.php
  * @license             http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
-
 echo "<!DOCTYPE html PUBLIC \"HTML\">
 <html>
 <head>

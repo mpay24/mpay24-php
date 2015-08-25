@@ -11,7 +11,8 @@
   display: none;
   visibility: hidden;
 }
-@media (max-width: 480px) {
+
+@media ( max-width : 480px) {
   .nav-collapse {
     -webkit-transform: translate3d(0, 0, 0);
   }
@@ -19,37 +20,30 @@
     display: block;
     line-height: 18px;
   }
-  input[class*="span"],
-  select[class*="span"],
-  textarea[class*="span"],
-  .uneditable-input {
+  input[class*="span"], select[class*="span"], textarea[class*="span"],
+    .uneditable-input {
     display: block;
     width: 100%;
     height: 28px;
     /* Make inputs at least the height of their button counterpart */
-  
     /* Makes inputs behave like true block-level elements */
-  
     -webkit-box-sizing: border-box;
     /* Older Webkit */
-  
     -moz-box-sizing: border-box;
     /* Older FF */
-  
     -ms-box-sizing: border-box;
     /* IE8 */
-  
     box-sizing: border-box;
     /* CSS3 spec*/
-  
   }
-  .input-prepend input[class*="span"], .input-append input[class*="span"] {
+  .input-prepend input[class*="span"], .input-append input[class*="span"]
+    {
     width: auto;
   }
   input[type="checkbox"], input[type="radio"] {
     border: 1px solid #ccc;
   }
-  .form-horizontal .control-group > label {
+  .form-horizontal .control-group>label {
     float: none;
     width: auto;
     padding-top: 0;
@@ -84,7 +78,8 @@
     position: static;
   }
 }
-@media (max-width: 768px) {
+
+@media ( max-width : 768px) {
   .container {
     width: auto;
     padding: 0 20px;
@@ -95,14 +90,15 @@
   .row {
     margin-left: 0;
   }
-  .row > [class*="span"], .row-fluid > [class*="span"] {
+  .row>[class*="span"], .row-fluid>[class*="span"] {
     float: none;
     display: block;
     width: auto;
     margin: 0;
   }
 }
-@media (min-width: 768px) and (max-width: 980px) {
+
+@media ( min-width : 768px) and (max-width: 980px) {
   .row {
     margin-left: -20px;
     *zoom: 1;
@@ -198,11 +194,11 @@
   .row-fluid:after {
     clear: both;
   }
-  .row-fluid > [class*="span"] {
+  .row-fluid>[class*="span"] {
     float: left;
     margin-left: 2.762430939%;
   }
-  .row-fluid > [class*="span"]:first-child {
+  .row-fluid>[class*="span"]:first-child {
     margin-left: 0;
   }
   .row-fluid .span1 {
@@ -278,7 +274,8 @@
     width: 714px;
   }
 }
-@media (max-width: 980px) {
+
+@media ( max-width : 980px) {
   body {
     padding-top: 0;
   }
@@ -305,16 +302,16 @@
     float: none;
     margin: 0 0 9px;
   }
-  .navbar .nav > li {
+  .navbar .nav>li {
     float: none;
   }
-  .navbar .nav > li > a {
+  .navbar .nav>li>a {
     margin-bottom: 2px;
   }
-  .navbar .nav > .divider-vertical {
+  .navbar .nav>.divider-vertical {
     display: none;
   }
-  .navbar .nav > li > a, .navbar .dropdown-menu a {
+  .navbar .nav>li>a, .navbar .dropdown-menu a {
     padding: 6px 15px;
     font-weight: bold;
     color: #999999;
@@ -322,10 +319,10 @@
     -moz-border-radius: 3px;
     border-radius: 3px;
   }
-  .navbar .dropdown-menu li + li a {
+  .navbar .dropdown-menu li+li a {
     margin-bottom: 2px;
   }
-  .navbar .nav > li > a:hover, .navbar .dropdown-menu a:hover {
+  .navbar .nav>li>a:hover, .navbar .dropdown-menu a:hover {
     background-color: #222222;
   }
   .navbar .dropdown-menu {
@@ -358,9 +355,12 @@
     margin: 9px 0;
     border-top: 1px solid #222222;
     border-bottom: 1px solid #222222;
-    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0
+      rgba(255, 255, 255, 0.1);
+    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0
+      rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0
+      rgba(255, 255, 255, 0.1);
   }
   .navbar .nav.pull-right {
     float: none;
@@ -378,12 +378,14 @@
     height: 0;
   }
 }
-@media (min-width: 980px) {
+
+@media ( min-width : 980px) {
   .nav-collapse.collapse {
     height: auto !important;
   }
 }
-@media (min-width: 1200px) {
+
+@media ( min-width : 1200px) {
   .row {
     margin-left: -30px;
     *zoom: 1;
@@ -479,11 +481,11 @@
   .row-fluid:after {
     clear: both;
   }
-  .row-fluid > [class*="span"] {
+  .row-fluid>[class*="span"] {
     float: left;
     margin-left: 2.564102564%;
   }
-  .row-fluid > [class*="span"]:first-child {
+  .row-fluid>[class*="span"]:first-child {
     margin-left: 0;
   }
   .row-fluid .span1 {
@@ -561,7 +563,7 @@
   .thumbnails {
     margin-left: -30px;
   }
-  .thumbnails > li {
+  .thumbnails>li {
     margin-left: 30px;
   }
 }
