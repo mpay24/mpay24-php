@@ -18,3 +18,6 @@ In order for the mPAY24 PHP API to work, your installation will have to meet the
 * [Mcrypt](http://at2.php.net/manual/en/mcrypt)
 
 Please refer to http://www.php.net/phpinfo or consult your systems administrator in order to find out if your system fulfills the prerequisites.
+
+***
+### [See the steps](https://github.com/mPAY24/mpay24_php_api/wiki/STEP-1)
