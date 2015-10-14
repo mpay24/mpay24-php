@@ -823,7 +823,7 @@ if(isset($_POST["submitPay"])) {
     echo "Return Code: " . $result->getGeneralResponse()->getReturnCode();
 }
 // elseif(isset($_POST["submitFlexLINK"])){
-// $myLink = new MyFlexLINK('MerchantID', 'SOAPPassword', TRUE, TRUE);
+// $myLink = new MyFlexLINK('SPID', 'flexLINKPass', TRUE, TRUE);
 // $encryptedParams = $myLink->getEncryptedParams(
 // "my invoice number",
 // "1.00",

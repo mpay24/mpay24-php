@@ -911,7 +911,7 @@ class MPay24Api {
     mcrypt_generic_deinit($td);
     mcrypt_module_close($td);
     
-    return chunk_split(base64_encode('Salted__' . $salt . $encrypted_data), 32, "\r\n");
+    return chunk_split(array_shift( unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
   }
 }
 
