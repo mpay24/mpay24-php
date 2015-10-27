@@ -438,16 +438,18 @@ class MPay24Api {
   }
   
   /**
-   * Start a secure payment using a PayPal Express Checkout, supported by mPAY24 -
+   * Start a secure payment using a PayPal or MasterPass Express Checkout, supported by mPAY24 -
    * the customer doesn't need to be logged in in the shop or to give any data
-   * (addresses or payment information), but will be redirected to the PayPal site,
-   * and all the information from PayPal will be taken for the payment.
+   * (addresses or payment information), but will be redirected to the PayPal or MasterPass site,
+   * and all the information from PayPal or MasterPass will be taken for the payment.
    *
    * @param ORDER $requestString
    *          The order xml, which contains the shopping cart
+   * @param string $paymentType
+   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  public function ExpressCheckoutPayment($requestString) {
+  public function ExpressCheckoutPayment($requestString, $paymentType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
     
@@ -465,7 +467,7 @@ class MPay24Api {
       $operation->appendChild($child);
       
       if($child->nodeName == 'payment')
-        $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:PaymentPAYPAL');
+        $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', "etp:Payment$paymentType");
     }
     
     $this->request = $xml->saveXML();
@@ -482,9 +484,11 @@ class MPay24Api {
    *
    * @param string $requestString
    *          The callback request to mPAY24
+   * @param string $paymentType
+   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  public function CallbackPaypal($requestString) {
+  public function Callback($requestString, $paymentType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
     
@@ -502,7 +506,7 @@ class MPay24Api {
       $operation->appendChild($child);
       
       if($child->nodeName == 'paymentCallback')
-        $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:CallbackPAYPAL');
+        $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', "etp:Callback$paymentType");
     }
     
     $this->request = $xml->saveXML();

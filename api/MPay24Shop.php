@@ -116,7 +116,7 @@ abstract class MPay24Shop extends Transaction {
    * @param array $args
    *          Arrguments with them the transaction is to be updated
    * @param bool $shippingConfirmed
-   *          TRUE if the shipping address is confirmed, FALSE - otherwise (in case of PayPal Express Checkout)
+   *          TRUE if the shipping address is confirmed, FALSE - otherwise (in case of PayPal or MasterPass Express Checkout)
    */
   abstract function updateTransaction($tid, $args, $shippingConfirmed);
   
@@ -148,23 +148,25 @@ abstract class MPay24Shop extends Transaction {
   abstract function createProfileOrder($tid);
   
   /**
-   * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal Express Checkout to be started
+   * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be started
    *
    * @param string $tid
    *          The transaction ID of the transaction you want to make an order transaction XML file for
+   * @param string $paymentType
+   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return XML
    */
-  abstract function createExpressCheckoutOrder($tid);
+  abstract function createExpressCheckoutOrder($tid, $paymentType);
   
   /**
-   * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal Express Checkout to be finished
+   * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be finished
    *
    * @param string $tid
    *          The transaction ID of the transaction you want to make an order transaction XML file for
    * @param string $shippingCosts
-   *          The shipping costs amount for the transaction, provided by PayPal, after changing the shipping address
+   *          The shipping costs amount for the transaction, provided by PayPal or MasterPass, after changing the shipping address
    * @param string $amount
-   *          The new amount for the transaction, provided by PayPal, after changing the shipping address
+   *          The new amount for the transaction, provided by PayPal or MasterPass, after changing the shipping address
    * @param bool $cancel
    *          TRUE if the a cancelation is wanted after renewing the amounts and FALSE otherwise
    * @return XML
@@ -302,24 +304,29 @@ abstract class MPay24Shop extends Transaction {
   }
   
   /**
-   * Start a payment with PayPal Express Checkout
+   * Start a payment with PayPal or MasterPass Express Checkout
    *
+   * @param string $paymentType
+   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  function payWithExpressCheckout() {
+  function payWithExpressCheckout($paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
+    
+    if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS')
+      die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
     
     $transaction = $this->createTransaction();
     
     $this->checkTransaction($transaction);
     
-    $order = $this->createExpressCheckoutOrder($transaction);
+    $order = $this->createExpressCheckoutOrder($transaction, $paymentType);
     
     if(! $order || ! $order instanceof ORDER)
       $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
     
-    $payWithExpressCheckoutResult = $this->mPay24Api->ExpressCheckoutPayment($order->toXML());
+    $payWithExpressCheckoutResult = $this->mPay24Api->ExpressCheckoutPayment($order->toXML(), $paymentType);
     
     if($this->mPay24Api->getDebug()) {
       $this->write_log("PayWithExpressCheckout", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
@@ -341,14 +348,19 @@ abstract class MPay24Shop extends Transaction {
    *          The amount you want to reserve/bill multiply by 100
    * @param string $cancel
    *          ALLOWED: "true" or "false" - in case of 'true' the transaction will be canceled, otherwise reserved/billed
+   * @param string $paymentType
+   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  function finishExpressCheckoutPayment($tid, $shippingCosts, $amount, $cancel) {
+  function finishExpressCheckoutPayment($tid, $shippingCosts, $amount, $cancel, $paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
     if($cancel !== "true" && $cancel !== "false")
       $this->mPay24Api->dieWithMsg("The allowed values for the parameter 'cancel' by finishing a PayPal (Express Checkout) payment are 'true' or 'false'!");
+    
+    if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS')
+      die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
     
     $transaction = $this->getTransaction($tid);
     
@@ -360,7 +372,7 @@ abstract class MPay24Shop extends Transaction {
       $this->mPay24Api->dieWithMsg("The transaction '$tid' you want to finish with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
     
     if(! $amount || ! is_numeric($amount))
-      $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to pay by PayPal is not valid!");
+      $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to pay by '$paymentType' is not valid!");
     
     if(! $shippingCosts || ! is_numeric($shippingCosts))
       $this->mPay24Api->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
@@ -370,7 +382,7 @@ abstract class MPay24Shop extends Transaction {
     if(! $order || ! $order instanceof ORDER)
       $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
     
-    $finishExpressCheckoutResult = $this->mPay24Api->CallbackPaypal($order->toXML());
+    $finishExpressCheckoutResult = $this->mPay24Api->Callback($order->toXML(), $paymentType);
     
     if($this->mPay24Api->getDebug()) {
       $this->write_log("FinishExpressCheckoutResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
