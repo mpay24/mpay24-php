@@ -1,5 +1,6 @@
 <?php
 include_once ("MPay24Shop.php");
+include_once ("config/config.php");
 date_default_timezone_set("Europe/Vienna"); //TODO: to be deleted, tmp workaround
 /**
  * The class MyFlexLINK extends the abstract class MPay24flexLINK and implements the log-fuction for this class
@@ -817,7 +818,7 @@ class MyShop extends MPay24Shop {
 
 if(isset($_POST["token"])) {
   $token = $_POST["token"];
-  $myShop = new MyShop('72169', 'Varna.30122011', FALSE, TRUE, '192.168.10.25', '8888');
+  $myShop = new MyShop(MERCHANT_ID, SOAP_PASS, TEST_SYSTEM, DEBUG, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASS, VERIFY_PEER);
   $result = $myShop->finishTokenPayment($myShop->tid, $myShop->price, $myShop->currency, $token);
   echo "<!DOCTYPE html>
 <html>
@@ -850,7 +851,7 @@ if(isset($_POST["token"])) {
 }
 
 if(isset($_POST["submitPay"])) {
-  $myShop = new MyShop('MerchantID', 'SOAPPassword', TRUE, TRUE);
+  $myShop = new MyShop(MERCHANT_ID, SOAP_PASS, TEST_SYSTEM, DEBUG, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASS, VERIFY_PEER);
   $result = $myShop->pay();
   
   if($result->getGeneralResponse()->getStatus() == "OK")
@@ -858,7 +859,7 @@ if(isset($_POST["submitPay"])) {
   else
     echo "Return Code: " . $result->getGeneralResponse()->getReturnCode();
 } else if(isset($_POST["tokenPay"])) {
-  $myShop = new MyShop('72169', 'Varna.30122011', FALSE, TRUE, '192.168.10.25', '8888');
+  $myShop = new MyShop(MERCHANT_ID, SOAP_PASS, TEST_SYSTEM, DEBUG, PROXY_HOST, PROXY_PORT, PROXY_USER, PROXY_PASS, VERIFY_PEER);
   
   $result = $myShop->payWithToken("CC");
   if($result->getPaymentResponse()->generalResponse->getStatus() == "OK") {
@@ -884,7 +885,7 @@ if(isset($_POST["submitPay"])) {
     echo "Return Code: " . $result->getPaymentResponse()->generalResponse->getReturnCode();
 }
 // elseif(isset($_POST["submitFlexLINK"])){
-// $myLink = new MyFlexLINK('SPID', 'flexLINKPass', TRUE, TRUE);
+// $myLink = new MyFlexLINK(SPID, FLEX_LINK_PASS, TEST_SYSTEM, DEBUG);
 // $encryptedParams = $myLink->getEncryptedParams(
 // "my invoice number",
 // "1.00",
