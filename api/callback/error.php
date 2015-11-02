@@ -16,7 +16,7 @@ foreach($_REQUEST as $key => $value)
   echo "$key = " . utf8_encode(urldecode($value)) . "<br/>";
 
 echo "
-<a href='index.html'>Order again!</a>
+<a href='../index.html'>Order again!</a>
 </body>
 </html>";
 ?>

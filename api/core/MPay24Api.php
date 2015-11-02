@@ -405,7 +405,7 @@ class MPay24Api {
    *
    * @param ORDER $requestString
    *          The order xml, which contains the shopping cart
-   * @return SelectPaymentResponse
+   * @return PaymentResponse
    */
   public function ProfilePayment($requestString) {
     $xml = $this->buildEnvelope();
@@ -438,18 +438,91 @@ class MPay24Api {
   }
   
   /**
-   * Start a secure payment using a PayPal or MasterPass Express Checkout, supported by mPAY24 -
-   * the customer doesn't need to be logged in in the shop or to give any data
-   * (addresses or payment information), but will be redirected to the PayPal or MasterPass site,
-   * and all the information from PayPal or MasterPass will be taken for the payment.
+   * Start a secure payment using the mPAY24 Tokenizer.
+   *
+   * @param string $pType
+   *          The payment type used for the tokenization (currently supported 'CC')
+   * @return PaymentTokenResponse
+   */
+  public function CreateToken($pType) {
+    $xml = $this->buildEnvelope();
+    $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
+    
+    $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:CreatePaymentToken');
+    $operation = $body->appendChild($operation);
+    
+    $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+    $merchantID = $operation->appendChild($merchantID);
+    
+    $pType = $xml->createElement('pType', $pType);
+    $pType = $operation->appendChild($pType);
+    
+    $this->request = $xml->saveXML();
+    
+    $this->send();
+    
+    $result = new PaymentTokenResponse($this->response);
+    
+    return $result;
+  }
+  
+  /**
+   * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
+   *
+   * @param string $tid               The TID used for the transaction
+   * @param string $amount            The AMOUNT used for the transaction
+   * @param string $currency          The CURRENCY used for the transaction
+   * @param string $token             The TOKEN used for the transaction
+   * @return PaymentResponse
+   */
+  public function PayWithToken($tid, $amount, $currency, $token) {
+    $xml = $this->buildEnvelope();
+    $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
+  
+    $operation = $xml->createElement('etp:AcceptPayment');
+    $operation = $body->appendChild($operation);
+    
+    $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+    $merchantID = $operation->appendChild($merchantID);
+
+    $xmlTID = $xml->createElement('tid', $tid);
+    $xmlTID = $operation->appendChild($xmlTID);
+    
+    $xmlPType = $xml->createElement('pType', "TOKEN");
+    $xmlPType = $operation->appendChild($xmlPType);
+    
+    $xmlPayment = $xml->createElement('payment');
+    $xmlPayment = $operation->appendChild($xmlPayment);
+    $xmlPayment->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:PaymentTOKEN');
+    
+    $xmlAmount = $xml->createElement('amount', $amount);
+    $xmlAmount = $xmlPayment->appendChild($xmlAmount);
+    
+    $xmlCurrency = $xml->createElement('currency', $currency);
+    $xmlCurrency = $xmlPayment->appendChild($xmlCurrency);
+    
+    $xmlToken = $xml->createElement('token', $token);
+    $xmlToken = $xmlPayment->appendChild($xmlToken);
+
+    $this->request = $xml->saveXML();
+  
+    $this->send();
+  
+    $result = new PaymentResponse($this->response);
+  
+    return $result;
+  }
+  
+  /**
+   * Start an AcceptPayment transaction, supported by mPAY24.
    *
    * @param ORDER $requestString
    *          The order xml, which contains the shopping cart
    * @param string $paymentType
-   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+   *          The payment type which will be used for the acceptpayment request (EPS, SOFORT, PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  public function ExpressCheckoutPayment($requestString, $paymentType) {
+  public function AcceptPayment($requestString, $paymentType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
     
@@ -839,7 +912,7 @@ class MPay24Api {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     
     if($this->debug) {
-      $fh = fopen(__DIR__ . "/curllog.log", 'a+') or $this->permissionError();
+      $fh = fopen(__DIR__ . "/../logs/curllog.log", 'a+') or $this->permissionError();
       
       curl_setopt($ch, CURLOPT_VERBOSE, 1);
       curl_setopt($ch, CURLOPT_STDERR, $fh);
@@ -1026,6 +1099,12 @@ class PaymentResponse extends GeneralResponse {
    * @var string
    */
   var $location;
+  /**
+   * The unique ID returned by mPAY24 for every transaction
+   *
+   * @var string
+   */
+  var $mpayTID;
   
   /**
    * Sets the values for a payment from the response from mPAY24: mPAY transaction ID, error number and location (URL)
@@ -1042,6 +1121,8 @@ class PaymentResponse extends GeneralResponse {
       
       if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('location')->length != 0)
         $this->location = $responseAsDOM->getElementsByTagName('location')->item(0)->nodeValue;
+      if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('mpayTID')->length != 0)
+        $this->mpayTID = $responseAsDOM->getElementsByTagName('mpayTID')->item(0)->nodeValue;
     } else {
       $this->generalResponse->setStatus("ERROR");
       $this->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
@@ -1058,12 +1139,93 @@ class PaymentResponse extends GeneralResponse {
   }
   
   /**
+   * Get the unique ID, returned from mPAY24
+   *
+   * @return string
+   */
+  public function getMpayTID() {
+    return $this->mpayTID;
+  }
+  
+  /**
    * Get the object, that contains the basic values from the response from mPAY24: status and return code
    *
    * @return string
    */
   public function getGeneralResponse() {
     return $this->generalResponse;
+  }
+}
+
+class PaymentTokenResponse extends PaymentResponse {
+  /**
+   * An object, that represents the basic payment values from the response from mPAY24: status, return code and location
+   *
+   * @var string
+   */
+  var $paymentResponse;
+  /**
+   * The token, got back from mPAY24, which will be used for the actual payment
+   *
+   * @var string
+   */
+  var $token;
+  
+  /**
+   * The api key, got back from mPAY24, which will be used for the actual payment
+   *
+   * @var string
+   */
+  var $apiKey;
+
+  /**
+   * Sets the values for a payment from the response from mPAY24: mPAY transaction ID, error number, location (URL), token and apiKey
+   *
+   * @param string $response
+   *          The SOAP response from mPAY24 (in XML form)
+   */
+  function PaymentTokenResponse($response) {
+    $this->paymentResponse = new PaymentResponse($response);
+
+    if($response != '') {
+      $responseAsDOM = new DOMDocument();
+      $responseAsDOM->loadXML($response);
+
+      if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('token')->length != 0)
+        $this->token = $responseAsDOM->getElementsByTagName('token')->item(0)->nodeValue;
+      if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('apiKey')->length != 0)
+        $this->apiKey = $responseAsDOM->getElementsByTagName('apiKey')->item(0)->nodeValue;
+    } else {
+      $this->paymentResponse->generalResponse->setStatus("ERROR");
+      $this->paymentResponse->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
+    }
+  }
+
+  /**
+   * Get the token, returned from mPAY24
+   *
+   * @return string
+   */
+  public function getToken() {
+    return $this->token;
+  }
+
+  /**
+   * Get the api key, returned from mPAY24
+   *
+   * @return string
+   */
+  public function getApiKey() {
+    return $this->apiKey;
+  }
+  
+  /**
+   * Get the object, that contains the basic payment values from the response from mPAY24: status, return code and location
+   *
+   * @return string
+   */
+  public function getPaymentResponse() {
+    return $this->paymentResponse;
   }
 }
 

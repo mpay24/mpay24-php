@@ -1,6 +1,6 @@
 <?php
 include_once ("MPay24Shop.php");
-
+date_default_timezone_set("Europe/Vienna"); //TODO: to be deleted, tmp workaround
 /**
  * The class MyFlexLINK extends the abstract class MPay24flexLINK and implements the log-fuction for this class
  *
@@ -18,7 +18,7 @@ class MyFlexLINK extends MPay24flexLINK {
    */
   function write_flexLINK_log($info_to_log) {
     // This function should be only implemented in case the flexLINK functionality was implmented and will be used
-    // $fh = fopen("flexLINK.log", 'a+') or die("can't open file");
+    // $fh = fopen("logs/flexLINK.log", 'a+') or die("can't open file");
     // $MessageDate = date("Y-m-d H:i:s");
     // $Message= $MessageDate." ".$_SERVER['SERVER_NAME']." mPAY24 : ";
     // $result = $Message."$info_to_log\n";
@@ -507,7 +507,7 @@ class MyShop extends MPay24Shop {
   var $mPAY24ShoppingCartDescription = "";
   
   /**
-   * Actualize the transaction, writing all the transaction's parameters into result.txt
+   * Actualize the transaction, writing all the transaction's parameters into logs/result.txt
    *
    * @param string $tid
    *          The transaction ID you want to update with the confirmation
@@ -518,7 +518,7 @@ class MyShop extends MPay24Shop {
    */
   function updateTransaction($tid, $args, $shippingConfirmed) {
     try {
-      $fh = fopen("result.txt", 'w') or die("can't open file");
+      $fh = fopen("logs/result.txt", 'w') or die("can't open file");
       
       $result = "TID : " . $tid . "\n\n" . sizeof($args) . " transaction arguments:\n\n";
       
@@ -562,13 +562,15 @@ class MyShop extends MPay24Shop {
   /**
    * NOT IMPLEMENTED
    *
-   * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal Express Checkout to be started
+   * Using the ORDER object from order.php, create a order-xml, which is needed for a backend to backend transaction to be started
    *
    * @param string $tid
    *          The transaction ID of the transaction you want to make an order transaction XML file for
+   * @param string $paymentType
+   *          The payment type which will be used for the backend to backend payment (EPS, SOFORT, PAYPAL or MASTERPASS)
    * @return XML
    */
-  function createExpressCheckoutOrder($tid) {
+  function createBackend2BackendOrder($tid, $paymentType) {
   }
   
   /**
@@ -598,7 +600,7 @@ class MyShop extends MPay24Shop {
    *          The information, which is to log: request, response, etc.
    */
   function write_log($operation, $info_to_log) {
-    $fh = fopen("log.log", 'a+') or die("can't open file");
+    $fh = fopen("logs/log.log", 'a+') or die("can't open file");
     $MessageDate = date("Y-m-d H:i:s");
     $Message = $MessageDate . " " . $_SERVER['SERVER_NAME'] . " mPAY24 : ";
     $result = $Message . "$operation : $info_to_log\n";
@@ -799,18 +801,52 @@ class MyShop extends MPay24Shop {
     $mdxi->Order->ShippingAddr->Country->setCode($this->customer_country);
     $mdxi->Order->ShippingAddr->Email = $transaction->CUSTOMER_EMAIL;
     
-    $mdxi->Order->URL->Success = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'], '/')) . "/success.php";
-    $mdxi->Order->URL->Error = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'], '/')) . "/error.php";
-    $mdxi->Order->URL->Confirmation = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'], '/')) . "/confirm.php?token=";
+    $mdxi->Order->URL->Success = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'], '/')) . "/callback/success.php";
+    $mdxi->Order->URL->Error = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'], '/')) . "/callback/error.php";
+    $mdxi->Order->URL->Confirmation = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'], '/')) . "/callback/confirm.php?token=";
     $mdxi->Order->URL->Cancel = substr($_SERVER['HTTP_REFERER'], 0, strrpos($_SERVER['HTTP_REFERER'], '/')) . "/index.html";
     
-    $myFile = "MDXI.xml";
+    $myFile = "logs/MDXI.xml";
     $fh = fopen($myFile, 'w') or die("can't open file");
     fwrite($fh, $mdxi->toXML());
     fclose($fh);
     
     return $mdxi;
   }
+}
+
+if(isset($_POST["token"])) {
+  $token = $_POST["token"];
+  $myShop = new MyShop('72169', 'Varna.30122011', FALSE, TRUE, '192.168.10.25', '8888');
+  $result = $myShop->finishTokenPayment($myShop->tid, $myShop->price, $myShop->currency, $token);
+  echo "<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='ISO-8859-1'>
+    <title>mPAY24 Paid with token</title>
+  </head>
+  
+  <body>
+    <table>
+      <caption>mPAY24 Tokenizer Response</caption>
+      <tr>
+        <th>Status:</th>
+        <td>" . $result->getGeneralResponse()->getStatus() . "</td>
+      </tr>
+      <tr>
+        <th>Return Code:</th>
+        <td>" . $result->getGeneralResponse()->getReturnCode() . "</td>
+      </tr>
+      <tr>
+        <th>mPAYTID:</th>
+        <td>" . $result->getMpayTID() . "</td>
+      </tr>
+    </table>
+    <hr />
+    <a href='index.html'>new transaction</a>
+  </body>
+  <hr>
+</html>";
 }
 
 if(isset($_POST["submitPay"])) {
@@ -821,6 +857,31 @@ if(isset($_POST["submitPay"])) {
     header('Location: ' . $result->getLocation());
   else
     echo "Return Code: " . $result->getGeneralResponse()->getReturnCode();
+} else if(isset($_POST["tokenPay"])) {
+  $myShop = new MyShop('72169', 'Varna.30122011', FALSE, TRUE, '192.168.10.25', '8888');
+  
+  $result = $myShop->payWithToken("CC");
+  if($result->getPaymentResponse()->generalResponse->getStatus() == "OK") {
+    echo "<!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset='ISO-8859-1'>
+                <title>mPAY24 Tokenizer</title>
+                <link rel='stylesheet' href='styles/tokenizer.css'>
+                <script language='javascript' type='text/javascript' src='js/tokenizer.js'></script>
+              </head>  
+              <body onload='window.addEventListener(\"message\", checkValid, false);'>
+                <div class='main'>";
+    
+    echo "<iframe src='" . $result->getPaymentResponse()->location ."' frameborder='0' width='360' height='160' scrolling='no'> </iframe>";
+    echo '<form action="#" method="POST">
+    <input type="hidden" name="token" value="'.$result->getToken().'"/>
+    <input type="submit" id="pay" value="Pay" disabled/>
+  </form>';
+    
+    echo "</div></body></html>";
+  } else
+    echo "Return Code: " . $result->getPaymentResponse()->generalResponse->getReturnCode();
 }
 // elseif(isset($_POST["submitFlexLINK"])){
 // $myLink = new MyFlexLINK('SPID', 'flexLINKPass', TRUE, TRUE);

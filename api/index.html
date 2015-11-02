@@ -10,12 +10,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Make a request to mPAY24!</title>
+<link rel='stylesheet' href='styles/index.css'>
 </head>
 
 <body>
-  <form method="post" action="test.php">
-    <input name="submitPay" type="submit" value="Start payment!" /><br />
-    <!-- <input name="submitFlexLINK" type="submit" value="FlexLINK payment!" /> -->
-  </form>
+  <div class="main">
+    <form method="post" action="test.php">
+      <input name="submitPay" type="submit" value="Start payment!" /><br />
+      <br /> <input name="tokenPay" type="submit"
+        value="Start token payment!" />
+      <!-- <input name="submitFlexLINK" type="submit" value="FlexLINK payment!" /> -->
+    </form>
+  </div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
-include_once ("MPay24Api.php");
-include_once ("orderXML.php");
+include_once ("core/MPay24Api.php");
+include_once ("core/orderXML.php");
 
 /**
  * The abstract MPay24Shop class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24
@@ -148,15 +148,15 @@ abstract class MPay24Shop extends Transaction {
   abstract function createProfileOrder($tid);
   
   /**
-   * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be started
+   * Using the ORDER object from order.php, create a order-xml, which is needed for a backend to backend transaction to be started
    *
    * @param string $tid
    *          The transaction ID of the transaction you want to make an order transaction XML file for
    * @param string $paymentType
-   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+   *          The payment type which will be used for the backend to backend payment (EPS, SOFORT, PAYPAL or MASTERPASS)
    * @return XML
    */
-  abstract function createExpressCheckoutOrder($tid, $paymentType);
+  abstract function createBackend2BackendOrder($tid, $paymentType);
   
   /**
    * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be finished
@@ -304,36 +304,36 @@ abstract class MPay24Shop extends Transaction {
   }
   
   /**
-   * Start a payment with PayPal or MasterPass Express Checkout
+   * Start a backend to backend payment
    *
    * @param string $paymentType
-   *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+   *          The payment type which will be used for the payment (EPS, SOFORT, PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  function payWithExpressCheckout($paymentType) {
+  function payBackend2Backend($paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
-    if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS')
-      die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
+    if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS' && $paymentType !== 'EPS'  && $paymentType !== 'SOFORT')
+      die("The payment type '$paymentType' is not allowed! Allowed are: 'EPS', 'SOFORT', 'PAYPAL', 'MASTERPASS'");
     
     $transaction = $this->createTransaction();
     
     $this->checkTransaction($transaction);
     
-    $order = $this->createExpressCheckoutOrder($transaction, $paymentType);
+    $order = $this->createBackend2BackendOrder($transaction, $paymentType);
     
     if(! $order || ! $order instanceof ORDER)
       $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
     
-    $payWithExpressCheckoutResult = $this->mPay24Api->ExpressCheckoutPayment($order->toXML(), $paymentType);
+    $payBackend2BackendResult = $this->mPay24Api->AcceptPayment($order->toXML(), $paymentType);
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("PayWithExpressCheckout", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("PayWithExpressCheckout", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->write_log("PayBackend2Backend", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->write_log("PayBackend2Backend", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
-    return $payWithExpressCheckoutResult;
+    return $payBackend2BackendResult;
   }
   
   /**
@@ -390,6 +390,66 @@ abstract class MPay24Shop extends Transaction {
     }
     
     return $finishExpressCheckoutResult;
+  }
+  
+  /**
+   * Return a redirect URL to include in your web page
+   *
+   * @param string $paymentType
+   *          The payment type which will be used for the express checkout (CC)
+   *
+   * @return PaymentTokenResponse
+   */
+  function payWithToken($paymentType) {
+    if(! $this->mPay24Api)
+      die("You are not allowed to define a constructor in the child class of MPay24Shop!");
+  
+    if($paymentType !== 'CC')
+      die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
+    
+    $tokenResult = $this->mPay24Api->CreateToken($paymentType);
+  
+    if($this->mPay24Api->getDebug()) {
+      $this->write_log("CreateToken", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->write_log("CreateToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    }
+  
+    return $tokenResult;
+  }
+  
+  /**
+   * Finish the payment, started with PayPal Express Checkout - reserve, bill or cancel it: Whether are you going to reserve or bill a payment is setted at the beginning of the payment.
+   * With the 'cancel' parameter you are able also to cancel the transaction
+   *
+   * @param string $tid
+   *          The transaction ID in the shop
+   * @param int $amount
+   *          The amount you want to reserve/bill multiply by 100
+   * @param int $currency
+   *          The currency you want to use for the transaction in ISO (EUR, USD, etc)
+   * @param string $token
+   *          The token which was returned by the payWithToken function
+   * @return PaymentResponse
+   */
+  function finishTokenPayment($tid, $amount, $currency, $token) {
+    if(! $this->mPay24Api)
+      die("You are not allowed to define a constructor in the child class of MPay24Shop!");
+  
+    $transaction = $this->getTransaction($tid);
+  
+    $this->checkTransaction($transaction);
+    
+    if(! $amount || ! is_numeric($amount))
+      $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to pay is not valid!");
+  
+    $finishTokenPaymentResult = $this->mPay24Api->PayWithToken($tid, $amount, $currency, $token);
+  
+    if($this->mPay24Api->getDebug()) {
+      $this->write_log("FinishTokenPaymentResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->write_log("FinishTokenPaymentResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    }
+  
+    return $finishTokenPaymentResult;
   }
   
   /**
