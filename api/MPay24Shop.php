@@ -314,8 +314,8 @@ abstract class MPay24Shop extends Transaction {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
-    if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS' && $paymentType !== 'EPS'  && $paymentType !== 'SOFORT')
-      die("The payment type '$paymentType' is not allowed! Allowed are: 'EPS', 'SOFORT', 'PAYPAL', 'MASTERPASS'");
+    if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS' && $paymentType !== 'EPS'  && $paymentType !== 'SOFORT' && $paymentType !== 'TOKEN')
+      die("The payment type '$paymentType' is not allowed! Allowed are: 'EPS', 'SOFORT', 'PAYPAL', 'MASTERPASS', 'TOKEN'!");
     
     $transaction = $this->createTransaction();
     
