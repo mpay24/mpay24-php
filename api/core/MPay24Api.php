@@ -329,7 +329,7 @@ class MPay24Api {
   /**
    * Die with an error message, which show the path in case of read/write permission errors
    */
-  public function permissionError() {
+  public static function permissionError() {
     $errors = error_get_last();
     $message = $errors['message'];
     $path = substr($message, strpos($message, 'fopen(') + 6, strpos($message, ')') - (strpos($message, 'fopen(') + 6));
