@@ -519,7 +519,7 @@ class MPay24Api {
    * @param ORDER $requestString
    *          The order xml, which contains the shopping cart
    * @param string $paymentType
-   *          The payment type which will be used for the acceptpayment request (EPS, SOFORT, PAYPAL or MASTERPASS)
+   *          The payment type which will be used for the acceptpayment request (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return PaymentResponse
    */
   public function AcceptPayment($requestString, $paymentType) {

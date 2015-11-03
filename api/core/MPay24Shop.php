@@ -1,6 +1,6 @@
 <?php
-include_once ("core/MPay24Api.php");
-include_once ("core/orderXML.php");
+include_once ("MPay24Api.php");
+include_once ("orderXML.php");
 
 /**
  * The abstract MPay24Shop class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24
@@ -153,7 +153,7 @@ abstract class MPay24Shop extends Transaction {
    * @param string $tid
    *          The transaction ID of the transaction you want to make an order transaction XML file for
    * @param string $paymentType
-   *          The payment type which will be used for the backend to backend payment (EPS, SOFORT, PAYPAL or MASTERPASS)
+   *          The payment type which will be used for the backend to backend payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return XML
    */
   abstract function createBackend2BackendOrder($tid, $paymentType);
@@ -307,7 +307,7 @@ abstract class MPay24Shop extends Transaction {
    * Start a backend to backend payment
    *
    * @param string $paymentType
-   *          The payment type which will be used for the payment (EPS, SOFORT, PAYPAL or MASTERPASS)
+   *          The payment type which will be used for the payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return PaymentResponse
    */
   function payBackend2Backend($paymentType) {
