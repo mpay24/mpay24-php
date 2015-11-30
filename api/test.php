@@ -1,7 +1,6 @@
 <?php
 include_once ("core/MPay24Shop.php");
 include_once ("config/config.php");
-date_default_timezone_set("Europe/Vienna"); //TODO: to be deleted, tmp workaround
 /**
  * The class MyFlexLINK extends the abstract class MPay24flexLINK and implements the log-fuction for this class
  *
