@@ -11,7 +11,7 @@ echo "<!DOCTYPE html PUBLIC \"HTML\">
 <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">
 </head>
 <body><textarea rows=\"25\" cols=\"120\">";
-$file_handle = fopen("../logs/result.txt", "r");
+$file_handle = fopen(__DIR__ . "/../logs/result.txt", "r");
 while(! feof($file_handle)) {
   $line = fgets($file_handle);
   echo $line;

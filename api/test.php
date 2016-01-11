@@ -518,7 +518,7 @@ class MyShop extends MPay24Shop {
    */
   function updateTransaction($tid, $args, $shippingConfirmed) {
     try {
-      $fh = fopen("logs/result.txt", 'w') or die("can't open file");
+      $fh = fopen(__DIR__ . "/logs/result.txt", 'w') or die("can't open file");
       
       $result = "TID : " . $tid . "\n\n" . sizeof($args) . " transaction arguments:\n\n";
       
@@ -600,7 +600,7 @@ class MyShop extends MPay24Shop {
    *          The information, which is to log: request, response, etc.
    */
   function write_log($operation, $info_to_log) {
-    $fh = fopen("logs/log.log", 'a+') or die("can't open file");
+    $fh = fopen(__DIR__ . "/logs/log.log", 'a+') or die("can't open file");
     $MessageDate = date("Y-m-d H:i:s");
     $Message = $MessageDate . " " . $_SERVER['SERVER_NAME'] . " mPAY24 : ";
     $result = $Message . "$operation : $info_to_log\n";
