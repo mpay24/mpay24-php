@@ -3,12 +3,6 @@
 namespace MPayAPI\core;
 
 /**
- * The URL specified from mPAY24, where MDXI schema will be download from
- * @const               MDXI_SCHEMA
- */
-define("MDXI_SCHEMA", "https://www.mpay24.com/schemas/MDXI/v3.0/MDXI.xsd");
-
-/**
  * The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd
  *
  * @author mPAY24 GmbH <support@mpay24.com>
@@ -17,6 +11,14 @@ define("MDXI_SCHEMA", "https://www.mpay24.com/schemas/MDXI/v3.0/MDXI.xsd");
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
 class ORDER {
+
+
+  /**
+   * The URL specified from mPAY24, where MDXI schema will be download from
+   * @const               MDXI_SCHEMA
+   */
+  const MDXI_SCHEMA = "https://www.mpay24.com/schemas/MDXI/v3.0/MDXI.xsd";
+
   /**
    * The DOMDocument, which the MDXI XML will be build on
    *
@@ -38,11 +40,11 @@ class ORDER {
    * @param DOMNode $node
    *          The child DOMNode
    */
-  public function ORDER($doc = null, $node = null) {
+  public function __construct($doc = null, $node = null) {
     if($doc)
       $this->doc = $doc;
     else {
-      $this->doc = new DOMDocument("1.0", "UTF-8");
+      $this->doc = new \DOMDocument("1.0", "UTF-8");
       $this->doc->formatOutput = true;
     }
     
@@ -83,7 +85,7 @@ class ORDER {
       
       $name = $method . '[' . $args[0] . ']';
       
-      $xpath = new DOMXPath($this->doc);
+      $xpath = new \DOMXPath($this->doc);
       $qry = $xpath->query($name, $this->node);
       
       if($qry->length > 0)
@@ -117,7 +119,7 @@ class ORDER {
    * @return ORDER
    */
   public function __get($name) {
-    $xpath = new DOMXPath($this->doc);
+    $xpath = new \DOMXPath($this->doc);
     $qry = $xpath->query($name, $this->node);
     
     if($qry->length > 0)
@@ -138,7 +140,7 @@ class ORDER {
    *          The value of the Node you want to set
    */
   public function __set($name, $value) {
-    $xpath = new DOMXPath($this->doc);
+    $xpath = new \DOMXPath($this->doc);
     $qry = $xpath->query($name, $this->node);
     
     $value = str_replace('&', '&amp;', $value);
@@ -182,7 +184,7 @@ class ORDER {
       ini_set('display_errors', true);
       
       $fp = fopen(__DIR__ . '/MDXInew.xsd', 'w');
-      $ch = curl_init(MDXI_SCHEMA);
+      $ch = curl_init(self::MDXI_SCHEMA);
       curl_setopt($ch, CURLOPT_FILE, $fp);
       curl_setopt($ch, CURLOPT_HEADER, 0);
       curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');

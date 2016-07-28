@@ -57,6 +57,7 @@
       <xs:enumeration value="SAFETYPAY"/>
       <xs:enumeration value="KLARNA"/>
       <xs:enumeration value="SOFORT"/>
+      <xs:enumeration value="MASTERPASS"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="PaymentBrandType">
@@ -86,6 +87,7 @@
       <xs:enumeration value="INVOICE"/>
       <xs:enumeration value="HP"/>
       <xs:enumeration value="INTERNATIONAL"/>
+      <xs:enumeration value="MASTERPASS"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="PaymentSubBrandType">

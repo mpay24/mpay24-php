@@ -57,7 +57,7 @@ class Transaction {
    * @param string $tid
    *          The ID of a transaction
    */
-  public function Transaction($tid) {
+  public function __construct($tid) {
     $this->allowedProperties = explode(",", preg_replace('/\s*/m', '', self::TRANSACTION_PROPERTIES));
     $this->TID = $tid;
   }

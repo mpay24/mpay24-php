@@ -47,7 +47,7 @@ abstract class MPay24Shop extends Transaction {
    * @param bool $verfiyPeer
    *          Set as FALSE to stop cURL from verifying the peer's certificate
    */
-  public function MPay24Shop($merchantID, $soapPassword, $test, $debug = false, $proxyHost = null, $proxyPort = null, $proxyUser = null, $proxyPass = null, $verfiyPeer = true) {
+  public function __construct($merchantID, $soapPassword, $test, $debug = false, $proxyHost = null, $proxyPort = null, $proxyUser = null, $proxyPass = null, $verfiyPeer = true) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
     

@@ -416,7 +416,7 @@ class MPay24Api {
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:AcceptPayment');
     $operation = $body->appendChild($operation);
     
-    $requestXML = new DOMDocument("1.0", "UTF-8");
+    $requestXML = new \DOMDocument("1.0", "UTF-8");
     $requestXML->formatOutput = true;
     $requestXML->loadXML($requestString);
     
@@ -531,7 +531,7 @@ class MPay24Api {
     $operation = $xml->createElement('etp:AcceptPayment');
     $operation = $body->appendChild($operation);
     
-    $requestXML = new DOMDocument("1.0", "UTF-8");
+    $requestXML = new \DOMDocument("1.0", "UTF-8");
     $requestXML->formatOutput = true;
     $requestXML->loadXML($requestString);
     
@@ -570,7 +570,7 @@ class MPay24Api {
     $operation = $xml->createElement('etp:ManualCallback');
     $operation = $body->appendChild($operation);
     
-    $requestXML = new DOMDocument("1.0", "UTF-8");
+    $requestXML = new \DOMDocument("1.0", "UTF-8");
     $requestXML->formatOutput = true;
     $requestXML->loadXML($requestString);
     
@@ -875,7 +875,7 @@ class MPay24Api {
    * @return DOMDocument
    */
   private function buildEnvelope() {
-    $this->soap_xml = new DOMDocument("1.0", "UTF-8");
+    $this->soap_xml = new \DOMDocument("1.0", "UTF-8");
     $this->soap_xml->formatOutput = true;
     
     $envelope = $this->soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');

@@ -36,11 +36,11 @@ class PaymentResponse extends GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  public function PaymentResponse($response) {
+  public function __construct($response) {
     $this->generalResponse = new GeneralResponse($response);
     
     if($response != '') {
-      $responseAsDOM = new DOMDocument();
+      $responseAsDOM = new \DOMDocument();
       $responseAsDOM->loadXML($response);
       
       if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('location')->length != 0)

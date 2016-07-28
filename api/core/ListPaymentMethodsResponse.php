@@ -55,7 +55,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  public function ListPaymentMethodsResponse($response) {
+  public function __construct($response) {
     $this->generalResponse = new GeneralResponse($response);
     
     if($response != '') {

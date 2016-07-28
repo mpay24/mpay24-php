@@ -34,7 +34,7 @@ abstract class MPay24flexLINK {
    *          TRUE - when you want to write log files
    *          
    */
-  public function MPay24flexLINK($spid, $password, $test, $debug = false) {
+  public function __construct($spid, $password, $test, $debug = false) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
     

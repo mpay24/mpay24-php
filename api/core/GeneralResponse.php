@@ -30,9 +30,9 @@ class GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  public function GeneralResponse($response) {
+  public function __construct($response) {
     if($response != '') {
-      $responseAsDOM = new DOMDocument();
+      $responseAsDOM = new \DOMDocument();
       $responseAsDOM->loadXML($response);
       
       if(! empty($responseAsDOM) && is_object($responseAsDOM))

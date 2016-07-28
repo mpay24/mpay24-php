@@ -29,7 +29,7 @@ class PaymentTokenResponse extends PaymentResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  public function PaymentTokenResponse($response) {
+  public function __construct($response) {
     $this->paymentResponse = new PaymentResponse($response);
 
     if($response != '') {
