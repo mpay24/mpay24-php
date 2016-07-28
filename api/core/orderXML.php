@@ -1,4 +1,7 @@
 <?php
+
+namespace MPayAPI\core;
+
 /**
  * The URL specified from mPAY24, where MDXI schema will be download from
  * @const               MDXI_SCHEMA

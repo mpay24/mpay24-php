@@ -1,0 +1,25 @@
+{
+	"name": "PandaHugMonster/mpay24",
+	"description": "mPAY24 PHP API",
+	"keywords": ["mpay24", "api", "library"],
+	"homepage": "https://github.com/PandaHugMonster/mpay24",
+	"license": "https://github.com/PandaHugMonster/mpay24/blob/master/LICENSE.md",
+	"authors": [
+		{ "name": "Anna Sadriu", "email": "modules@mpay24.com", "homepage": "https://www.mpay24.com", "role": "developer" },
+		{ "name": "Tobias Lins", "email": "tobias@lins.in", "homepage": "https://lins.in/", "role": "developer" },
+		{ "name": "Ivan Ponomarev", "email": "ivan.ponomarev.pi@gmail.com", "role": "forkedby" }
+	],
+	"support": {
+		"issues": "https://github.com/PandaHugMonster/mpay24/issues",
+		"wiki": "https://github.com/PandaHugMonster/mpay24/wiki"
+	},
+	"minimum-stability": "stable",
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"MPayAPI\\": "api/"
+		}
+	}
+}

@@ -1,6 +1,9 @@
 <?php
-include_once ("core/MPay24Shop.php");
+//include_once ("core/MPay24Shop.php");
+namespace MPayAPI;
+
 include_once ("config/config.php");
+
 /**
  * The class MyFlexLINK extends the abstract class MPay24flexLINK and implements the log-fuction for this class
  *
@@ -9,7 +12,7 @@ include_once ("config/config.php");
  * @filesource test.php
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
-class MyFlexLINK extends MPay24flexLINK {
+class MyFlexLINK extends core\MPay24flexLINK {
   /**
    * Write a flexLINK log into flexLINK.log
    *
@@ -35,7 +38,7 @@ class MyFlexLINK extends MPay24flexLINK {
  * @filesource test.php
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
-class MyShop extends MPay24Shop {
+class MyShop extends core\MPay24Shop {
   /**
    * The transaction ID
    *

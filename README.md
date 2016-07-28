@@ -1,7 +1,15 @@
-# mPAY24 PHP API
+# mPAY24 PHP API (PandaHugMonster fork)
 ## Open the mPAY24 pay page in 5 steps!
 ### [See the steps](https://github.com/mPAY24/mpay24_php_api/wiki/STEP-1)
 ***
+
+### NOTE
+This version is a fork of an original repository.
+Added and Modified:
+* Added ability to use composer (+ added to packgist)
+* Modified to use namespaces
+* Composer autoloader
+
 ### ABSTRACT
 
 The target of this guide is to help you open the [mPAY24](https://www.mpay24.com) payment page in five simple steps, using the mPAY24 PHP API.
@@ -12,7 +20,7 @@ The target of this guide is to help you open the [mPAY24](https://www.mpay24.com
 
 In order for the mPAY24 PHP API to work, your installation will have to meet the following prerequisites:
 
-* [PHP >= 5](http://www.php.net/)
+* [PHP >= 5.4](http://www.php.net/)
 * [cURL](http://at2.php.net/manual/de/book.curl.php)
 * [DOM](http://at2.php.net/manual/de/book.dom.php)
 * [Mcrypt](http://at2.php.net/manual/en/mcrypt)
