@@ -16,7 +16,7 @@ abstract class MPay24flexLINK {
    *
    * @var $mPay24Api
    */
-  var $mPay24Api = null;
+  public $mPay24Api = null;
   
   /**
    * The constructor, which sets all the initial values to be able making flexLINK transactions.
@@ -34,7 +34,7 @@ abstract class MPay24flexLINK {
    *          TRUE - when you want to write log files
    *          
    */
-  function MPay24flexLINK($spid, $password, $test, $debug = false) {
+  public function MPay24flexLINK($spid, $password, $test, $debug = false) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
     
@@ -134,7 +134,7 @@ abstract class MPay24flexLINK {
    *          Default = CONFIRMATION_URL
    * @return string
    */
-  function getEncryptedParams( // parameter values
+  public function getEncryptedParams( // parameter values
 $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $mode = NULL, $salutation = NULL, $name = NULL, $street = NULL, $street2 = NULL, $zip = NULL, $city = NULL, $country = NULL, $email = NULL, $phone = NULL, $success = NULL, $error = NULL, $confirmation = NULL, 
       // parameters names
       $invoice_idVar = "TID", $amountVar = "AMOUNT", $currencyVar = "CURRENCY", $languageVar = "LANGUAGE", $user_fieldVar = "USER_FIELD", $modeVar = "MODE", $salutationVar = "SALUTATION", $nameVar = "NAME", $streetVar = "STREET", $street2Var = "STREET2", $zipVar = "ZIP", $cityVar = "CITY", $countryVar = "COUNTRY", $emailVar = "EMAIL", $phoneVar = "PHONE", $successVar = "SUCCESS_URL", $errorVar = "ERROR_URL", $confirmationVar = "CONFIRMATION_URL") {
@@ -213,6 +213,6 @@ $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $m
    * @param string $info_to_log
    *          The information, which is to log: request, response, etc.
    */
-  abstract function write_flexLINK_log($info_to_log);
+  abstract public function write_flexLINK_log($info_to_log);
 }
 ?>

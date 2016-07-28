@@ -18,7 +18,7 @@ abstract class MPay24Shop extends Transaction {
    *
    * @var $mPay24Api
    */
-  var $mPay24Api = null;
+  public $mPay24Api = null;
   
   /**
    * The constructor, which sets all the initial values, in order to be able making transactions
@@ -47,7 +47,7 @@ abstract class MPay24Shop extends Transaction {
    * @param bool $verfiyPeer
    *          Set as FALSE to stop cURL from verifying the peer's certificate
    */
-  function MPay24Shop($merchantID, $soapPassword, $test, $debug = false, $proxyHost = null, $proxyPort = null, $proxyUser = null, $proxyPass = null, $verfiyPeer = true) {
+  public function MPay24Shop($merchantID, $soapPassword, $test, $debug = false, $proxyHost = null, $proxyPort = null, $proxyUser = null, $proxyPass = null, $verfiyPeer = true) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
     
@@ -108,7 +108,7 @@ abstract class MPay24Shop extends Transaction {
    *
    * @return Transaction
    */
-  abstract function createTransaction();
+  abstract public function createTransaction();
   
   /**
    * Actualize the transaction, which has a transaction ID = $tid with the values from $args in your shop and return it
@@ -120,7 +120,7 @@ abstract class MPay24Shop extends Transaction {
    * @param bool $shippingConfirmed
    *          TRUE if the shipping address is confirmed, FALSE - otherwise (in case of PayPal or MasterPass Express Checkout)
    */
-  abstract function updateTransaction($tid, $args, $shippingConfirmed);
+  abstract public function updateTransaction($tid, $args, $shippingConfirmed);
   
   /**
    * Give the transaction object back, for a transaction which has a transaction ID = $tid
@@ -129,7 +129,7 @@ abstract class MPay24Shop extends Transaction {
    *          The transaction ID of the transaction you want get
    * @return Transaction
    */
-  abstract function getTransaction($tid);
+  abstract public function getTransaction($tid);
   
   /**
    * Using the ORDER object from order.php, create a MDXI-XML, which is needed for a transaction to be started
@@ -138,7 +138,7 @@ abstract class MPay24Shop extends Transaction {
    *          The transaction you want to make a MDXI XML file for
    * @return ORDER
    */
-  abstract function createMDXI($transaction);
+  abstract public function createMDXI($transaction);
   
   /**
    * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with profiles to be started
@@ -147,7 +147,7 @@ abstract class MPay24Shop extends Transaction {
    *          The transaction ID of the transaction you want to make an order transaction XML file for
    * @return XML
    */
-  abstract function createProfileOrder($tid);
+  abstract public function createProfileOrder($tid);
   
   /**
    * Using the ORDER object from order.php, create a order-xml, which is needed for a backend to backend transaction to be started
@@ -158,7 +158,7 @@ abstract class MPay24Shop extends Transaction {
    *          The payment type which will be used for the backend to backend payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return XML
    */
-  abstract function createBackend2BackendOrder($tid, $paymentType);
+  abstract public function createBackend2BackendOrder($tid, $paymentType);
   
   /**
    * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be finished
@@ -173,7 +173,7 @@ abstract class MPay24Shop extends Transaction {
    *          TRUE if the a cancelation is wanted after renewing the amounts and FALSE otherwise
    * @return XML
    */
-  abstract function createFinishExpressCheckoutOrder($tid, $shippingCosts, $amount, $cancel);
+  abstract public function createFinishExpressCheckoutOrder($tid, $shippingCosts, $amount, $cancel);
   
   /**
    * Write a log into a file, file system, data base
@@ -183,7 +183,7 @@ abstract class MPay24Shop extends Transaction {
    * @param string $info_to_log
    *          The information, which is to log: request, response, etc.
    */
-  abstract function write_log($operation, $info_to_log);
+  abstract public function write_log($operation, $info_to_log);
   
   /**
    * This is an optional function, but it's strongly recomended that you implement it - see details.
@@ -203,7 +203,7 @@ abstract class MPay24Shop extends Transaction {
    *          The timeStamp at the moment the transaction is created
    * @return string
    */
-  abstract function createSecret($tid, $amount, $currency, $timeStamp);
+  abstract public function createSecret($tid, $amount, $currency, $timeStamp);
   
   /**
    * Get the secret (hashed) token for a transaction
@@ -212,14 +212,14 @@ abstract class MPay24Shop extends Transaction {
    *          The transaction ID you want to get the secret key for
    * @return string
    */
-  abstract function getSecret($tid);
+  abstract public function getSecret($tid);
   
   /**
    * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
    *
    * @return ListPaymentMethodsResponse
    */
-  function getPaymentMethods() {
+  public function getPaymentMethods() {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -238,7 +238,7 @@ abstract class MPay24Shop extends Transaction {
    *
    * @return PaymentResponse
    */
-  function pay() {
+  public function pay() {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -282,7 +282,7 @@ abstract class MPay24Shop extends Transaction {
    *
    * @return PaymentResponse
    */
-  function payWithProfile() {
+  public function payWithProfile() {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -312,7 +312,7 @@ abstract class MPay24Shop extends Transaction {
    *          The payment type which will be used for the payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return PaymentResponse
    */
-  function payBackend2Backend($paymentType) {
+  public function payBackend2Backend($paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -354,7 +354,7 @@ abstract class MPay24Shop extends Transaction {
    *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  function finishExpressCheckoutPayment($tid, $shippingCosts, $amount, $cancel, $paymentType) {
+  public function finishExpressCheckoutPayment($tid, $shippingCosts, $amount, $cancel, $paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -402,7 +402,7 @@ abstract class MPay24Shop extends Transaction {
    *
    * @return PaymentTokenResponse
    */
-  function payWithToken($paymentType) {
+  public function payWithToken($paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
   
@@ -433,7 +433,7 @@ abstract class MPay24Shop extends Transaction {
    *          The token which was returned by the payWithToken function
    * @return PaymentResponse
    */
-  function finishTokenPayment($tid, $amount, $currency, $token) {
+  public function finishTokenPayment($tid, $amount, $currency, $token) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
   
@@ -462,7 +462,7 @@ abstract class MPay24Shop extends Transaction {
    * @param array $args
    *          A list with the arguments, provided with the confirmation
    */
-  function confirm($tid, $args) {
+  public function confirm($tid, $args) {
     $to_log = '';
     $shippingConfirmed = "";
     
@@ -527,7 +527,7 @@ abstract class MPay24Shop extends Transaction {
    *          The transaction ID (in your shop), for the transaction you are asking for
    * @return array
    */
-  function updateTransactionStatus($tid) {
+  public function updateTransactionStatus($tid) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -609,7 +609,7 @@ abstract class MPay24Shop extends Transaction {
    * @param int $amount
    *          The amount you want to clear multiply by 100
    */
-  function clearAmount($tid, $amount) {
+  public function clearAmount($tid, $amount) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -647,7 +647,7 @@ abstract class MPay24Shop extends Transaction {
    * @param int $amount
    *          The amount you want to credit multiply by 100
    */
-  function creditAmount($tid, $amount) {
+  public function creditAmount($tid, $amount) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     
@@ -684,7 +684,7 @@ abstract class MPay24Shop extends Transaction {
    * @param string $tid
    *          The transaction ID, for the transaction you want to cancel
    */
-  function cancelTransaction($tid) {
+  public function cancelTransaction($tid) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24Shop!");
     

@@ -46,13 +46,13 @@ class Transaction {
    *
    * @var $allowedProperties
    */
-  var $allowedProperties = array();
+  public $allowedProperties = array();
   /**
    * An array, which contains the set properties for this transaction object
    *
    * @var $allowedProperties
    */
-  var $properties = array();
+  public $properties = array();
   
   /**
    * Create a transaction object and set the allowed properties from the TRANSACTION_PROPERTIES
@@ -60,7 +60,7 @@ class Transaction {
    * @param string $tid
    *          The ID of a transaction
    */
-  function Transaction($tid) {
+  public function Transaction($tid) {
     $this->allowedProperties = explode(",", preg_replace('/\s*/m', '', TRANSACTION_PROPERTIES));
     $this->TID = $tid;
   }

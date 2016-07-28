@@ -16,19 +16,19 @@ class ManagePaymentResponse extends GeneralResponse {
    *
    * @var string
    */
-  var $generalResponse;
+  public $generalResponse;
   /**
    * The mPAY transaction ID
    *
    * @var string
    */
-  var $mpayTID;
+  public $mpayTID;
   /**
    * The transaction ID of the shop
    *
    * @var string
    */
-  var $tid;
+  public $tid;
   
   /**
    * Sets the values for a payment from the response from mPAY24: mPAY transaction IDand transaction ID from the shop
@@ -36,7 +36,7 @@ class ManagePaymentResponse extends GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function ManagePaymentResponse($response) {
+  public function ManagePaymentResponse($response) {
     $this->generalResponse = new GeneralResponse($response);
     
     if($response != '') {

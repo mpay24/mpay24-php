@@ -16,13 +16,13 @@ class GeneralResponse {
    *
    * @var string
    */
-  var $status;
+  public $status;
   /**
    * The return code from the request, which was sent to mPAY24
    *
    * @var string
    */
-  var $returnCode;
+  public $returnCode;
   
   /**
    * Sets the basic values from the response from mPAY24: status and return code
@@ -30,7 +30,7 @@ class GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function GeneralResponse($response) {
+  public function GeneralResponse($response) {
     if($response != '') {
       $responseAsDOM = new DOMDocument();
       $responseAsDOM->loadXML($response);

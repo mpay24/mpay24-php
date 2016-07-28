@@ -16,19 +16,19 @@ class PaymentResponse extends GeneralResponse {
    *
    * @var string
    */
-  var $generalResponse;
+  public $generalResponse;
   /**
    * An URL (of the mPAY24 payment fenster), where the customer would be redirected to, in case of successfull request
    *
    * @var string
    */
-  var $location;
+  public $location;
   /**
    * The unique ID returned by mPAY24 for every transaction
    *
    * @var string
    */
-  var $mpayTID;
+  public $mpayTID;
   
   /**
    * Sets the values for a payment from the response from mPAY24: mPAY transaction ID, error number and location (URL)
@@ -36,7 +36,7 @@ class PaymentResponse extends GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function PaymentResponse($response) {
+  public function PaymentResponse($response) {
     $this->generalResponse = new GeneralResponse($response);
     
     if($response != '') {

@@ -16,38 +16,38 @@ class ListPaymentMethodsResponse extends GeneralResponse {
    *
    * @var string
    */
-  var $generalResponse;
+  public $generalResponse;
   /**
    * The count of the payment methods, which are activated by mPAY24
    *
    * @var int
    */
-  var $all = 0;
+  public $all = 0;
   /**
    * A list with the payment types, activated by mPAY24
    *
    * @var array
    */
-  var $pTypes = array();
+  public $pTypes = array();
   /**
    * A list with the brands, activated by mPAY24
    *
    * @var array
    */
-  var $brands = array();
+  public $brands = array();
   /**
    * A list with the descriptions of the payment methods, activated by mPAY24
    *
    * @var array
    */
-  var $descriptions = array();
+  public $descriptions = array();
   
   /**
    * A list with the IDs of the payment methods, activated by mPAY24
    *
    * @var array
    */
-  var $pMethIds = array();
+  public $pMethIds = array();
   
   /**
    * Sets the values for a payment from the response from mPAY24: count, payment types, brands and descriptions
@@ -55,7 +55,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function ListPaymentMethodsResponse($response) {
+  public function ListPaymentMethodsResponse($response) {
     $this->generalResponse = new GeneralResponse($response);
     
     if($response != '') {

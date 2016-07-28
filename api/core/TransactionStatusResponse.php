@@ -16,19 +16,19 @@ class TransactionStatusResponse extends GeneralResponse {
    *
    * @var string
    */
-  var $generalResponse;
+  public $generalResponse;
   /**
    * A list with all the parameters for a transaction
    *
    * @var array
    */
-  var $params = array();
+  public $params = array();
   /**
    * The count of all the paramerters for a transaction
    *
    * @var int
    */
-  var $paramCount = 0;
+  public $paramCount = 0;
   
   /**
    * Sets the values for a transaction from the response from mPAY24: STATUS, PRICE, CURRENCY, LANGUAGE, etc
@@ -36,7 +36,7 @@ class TransactionStatusResponse extends GeneralResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function TransactionStatusResponse($response) {
+  public function TransactionStatusResponse($response) {
     $this->generalResponse = new GeneralResponse($response);
     
     if($response != '') {
