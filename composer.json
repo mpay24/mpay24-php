@@ -13,7 +13,6 @@
 		"issues": "https://github.com/PandaHugMonster/mpay24/issues",
 		"wiki": "https://github.com/PandaHugMonster/mpay24/wiki"
 	},
-	"minimum-stability": "stable",
 	"require": {
 		"php": ">=5.4.0"
 	},
