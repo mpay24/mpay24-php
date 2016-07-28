@@ -3,15 +3,6 @@
 namespace MPayAPI\core;
 
 /**
- * The properties, which are allowed for a transaction
- * @const TRANSACTION_PROPERTIES
- */
-define("TRANSACTION_PROPERTIES", "SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,
-                                  BRAND,PRICE,CURRENCY,OPERATION,LANGUAGE,
-                                  USER_FIELD,ORDERDESC,CUSTOMER,CUSTOMER_EMAIL,
-                                  CUSTOMER_ID,PROFILE_STATUS,FILTER_STATUS,TSTATUS");
-
-/**
  * The Transaction class allows you to set and get different trnasaction's properties - see details
  *
  * TYPE: PARAMETER - VALUE(s), description
@@ -42,6 +33,15 @@ define("TRANSACTION_PROPERTIES", "SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,
  */
 class Transaction {
   /**
+   * The properties, which are allowed for a transaction
+   * @const TRANSACTION_PROPERTIES
+   */
+  const TRANSACTION_PROPERTIES = 'SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,
+                                  BRAND,PRICE,CURRENCY,OPERATION,LANGUAGE,
+                                  USER_FIELD,ORDERDESC,CUSTOMER,CUSTOMER_EMAIL,
+                                  CUSTOMER_ID,PROFILE_STATUS,FILTER_STATUS,TSTATUS'
+
+  /**
    * An array, which contains the allowed properties for an transaction
    *
    * @var $allowedProperties
@@ -61,7 +61,7 @@ class Transaction {
    *          The ID of a transaction
    */
   public function Transaction($tid) {
-    $this->allowedProperties = explode(",", preg_replace('/\s*/m', '', TRANSACTION_PROPERTIES));
+    $this->allowedProperties = explode(",", preg_replace('/\s*/m', '', self::TRANSACTION_PROPERTIES));
     $this->TID = $tid;
   }
   
