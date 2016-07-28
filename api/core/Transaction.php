@@ -36,10 +36,7 @@ class Transaction {
    * The properties, which are allowed for a transaction
    * @const TRANSACTION_PROPERTIES
    */
-  const TRANSACTION_PROPERTIES = 'SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,
-                                  BRAND,PRICE,CURRENCY,OPERATION,LANGUAGE,
-                                  USER_FIELD,ORDERDESC,CUSTOMER,CUSTOMER_EMAIL,
-                                  CUSTOMER_ID,PROFILE_STATUS,FILTER_STATUS,TSTATUS'
+  const TRANSACTION_PROPERTIES = 'SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,BRAND,PRICE,CURRENCY,OPERATION,LANGUAGE,USER_FIELD,ORDERDESC,CUSTOMER,CUSTOMER_EMAIL,CUSTOMER_ID,PROFILE_STATUS,FILTER_STATUS,TSTATUS';
 
   /**
    * An array, which contains the allowed properties for an transaction
