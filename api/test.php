@@ -602,7 +602,7 @@ class MyShop extends core\MPay24Shop {
    * @param string $info_to_log
    *          The information, which is to log: request, response, etc.
    */
-  function write_log($operation, $info_to_log) {
+  function writeLog($operation, $info_to_log) {
     $fh = fopen(__DIR__ . "/logs/log.log", 'a+') or die("can't open file");
     $MessageDate = date("Y-m-d H:i:s");
     $Message = $MessageDate . " " . $_SERVER['SERVER_NAME'] . " mPAY24 : ";
