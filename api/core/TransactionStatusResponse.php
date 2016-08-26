@@ -40,7 +40,7 @@ class TransactionStatusResponse extends GeneralResponse {
     $this->generalResponse = new GeneralResponse($response);
     
     if($response != '') {
-      $responseAsDOM = new DOMDocument();
+      $responseAsDOM = new \DOMDocument();
       $responseAsDOM->loadXML($response);
       
       if($responseAsDOM && $responseAsDOM->getElementsByTagName('name')->length != 0) {

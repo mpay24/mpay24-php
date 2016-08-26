@@ -33,7 +33,7 @@ class PaymentTokenResponse extends PaymentResponse {
     $this->paymentResponse = new PaymentResponse($response);
 
     if($response != '') {
-      $responseAsDOM = new DOMDocument();
+      $responseAsDOM = new \DOMDocument();
       $responseAsDOM->loadXML($response);
 
       if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('token')->length != 0)

@@ -183,7 +183,7 @@ abstract class MPay24Shop extends Transaction {
    * @param string $info_to_log
    *          The information, which is to log: request, response, etc.
    */
-  abstract public function write_log($operation, $info_to_log);
+  abstract public function writeLog($operation, $info_to_log);
   
   /**
    * This is an optional function, but it's strongly recomended that you implement it - see details.
@@ -226,8 +226,8 @@ abstract class MPay24Shop extends Transaction {
     $paymentMethods = $this->mPay24Api->ListPaymentMethods();
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("GetPaymentMethods", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("GetPaymentMethods", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("GetPaymentMethods", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("GetPaymentMethods", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $paymentMethods;
@@ -270,8 +270,8 @@ abstract class MPay24Shop extends Transaction {
     $payResult = $this->mPay24Api->SelectPayment($mdxiXML);
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("Pay", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("Pay", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("Pay", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("Pay", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $payResult;
@@ -298,8 +298,8 @@ abstract class MPay24Shop extends Transaction {
     $payWithProfileResult = $this->mPay24Api->ProfilePayment($order->toXML());
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("PayWithProfile", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("PayWithProfile", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("PayWithProfile", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("PayWithProfile", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $payWithProfileResult;
@@ -331,8 +331,8 @@ abstract class MPay24Shop extends Transaction {
     $payBackend2BackendResult = $this->mPay24Api->AcceptPayment($order->toXML(), $paymentType);
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("PayBackend2Backend", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("PayBackend2Backend", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("PayBackend2Backend", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("PayBackend2Backend", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $payBackend2BackendResult;
@@ -387,8 +387,8 @@ abstract class MPay24Shop extends Transaction {
     $finishExpressCheckoutResult = $this->mPay24Api->Callback($order->toXML(), $paymentType);
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("FinishExpressCheckoutResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("FinishExpressCheckoutResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("FinishExpressCheckoutResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("FinishExpressCheckoutResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $finishExpressCheckoutResult;
@@ -412,8 +412,8 @@ abstract class MPay24Shop extends Transaction {
     $tokenResult = $this->mPay24Api->CreateToken($paymentType);
   
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("CreateToken", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("CreateToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("CreateToken", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("CreateToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
   
     return $tokenResult;
@@ -447,8 +447,8 @@ abstract class MPay24Shop extends Transaction {
     $finishTokenPaymentResult = $this->mPay24Api->PayWithToken($tid, $amount, $currency, $token);
   
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("FinishTokenPaymentResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("FinishTokenPaymentResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("FinishTokenPaymentResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("FinishTokenPaymentResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
   
     return $finishTokenPaymentResult;
@@ -470,7 +470,7 @@ abstract class MPay24Shop extends Transaction {
       $to_log .= $name . " = " . $value . "\n";
     
     if($this->mPay24Api->getDebug())
-      $this->write_log("Confirmation for transaction '" . $tid . "'\n", utf8_encode($to_log) . "\n");
+      $this->writeLog("Confirmation for transaction '" . $tid . "'\n", utf8_encode($to_log) . "\n");
     
     $transactionStatus = $this->updateTransactionStatus($tid);
     
@@ -480,10 +480,10 @@ abstract class MPay24Shop extends Transaction {
       $to_log .= $name . " = " . $value . "\n";
     
     if($this->mPay24Api->getDebug())
-      $this->write_log("Status for transaction " . $tid . ":", utf8_encode($to_log) . "\n");
+      $this->writeLog("Status for transaction " . $tid . ":", utf8_encode($to_log) . "\n");
     
     if($transactionStatus->getParam("SHIPPING_ADDR")) {
-      $order = new DOMDocument();
+      $order = new \DOMDocument();
       $order->loadXML($transactionStatus->getParam("SHIPPING_ADDR"));
     }
     
@@ -539,12 +539,12 @@ abstract class MPay24Shop extends Transaction {
       $tidTransactionStatusResult = $this->mPay24Api->TransactionStatus(null, $tid);
       
       if($this->mPay24Api->getDebug()) {
-        $this->write_log("TidTransactionStatus", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-        $this->write_log("TidTransactionStatus", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+        $this->writeLog("TidTransactionStatus", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+        $this->writeLog("TidTransactionStatus", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
       }
       
       if($tidTransactionStatusResult->getParam("SHIPPING_ADDR")) {
-        $order = new DOMDocument();
+        $order = new \DOMDocument();
         $order->loadXML($tidTransactionStatusResult->getParam("SHIPPING_ADDR"));
       }
       
@@ -571,12 +571,12 @@ abstract class MPay24Shop extends Transaction {
       $mPAYTidTransactionStatusResult = $this->mPay24Api->TransactionStatus($transaction->MPAYTID, null);
       
       if($this->mPay24Api->getDebug()) {
-        $this->write_log("mPAYTidTransactionStatus", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-        $this->write_log("mPAYTidTransactionStatus", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+        $this->writeLog("mPAYTidTransactionStatus", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+        $this->writeLog("mPAYTidTransactionStatus", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
       }
       
       if($mPAYTidTransactionStatusResult->getParam("SHIPPING_ADDR")) {
-        $order = new DOMDocument();
+        $order = new \DOMDocument();
         $order->loadXML($mPAYTidTransactionStatusResult->getParam("SHIPPING_ADDR"));
       }
       
@@ -632,8 +632,8 @@ abstract class MPay24Shop extends Transaction {
     $clearAmountResult = $this->mPay24Api->ManualClear($mPAYTid, $amount, $currency);
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("ClearAmount", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("ClearAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("ClearAmount", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("ClearAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $clearAmountResult;
@@ -671,8 +671,8 @@ abstract class MPay24Shop extends Transaction {
     $creditAmountResult = $this->mPay24Api->ManualCredit($mPAYTid, $amount, $currency, $customer);
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("CreditAmount", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("CreditAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("CreditAmount", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("CreditAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $creditAmountResult;
@@ -700,8 +700,8 @@ abstract class MPay24Shop extends Transaction {
     $cancelTransactionResult = $this->mPay24Api->ManualReverse($mPAYTid);
     
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("CancelTransaction", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("CancelTransaction", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->writeLog("CancelTransaction", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->writeLog("CancelTransaction", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
     
     return $cancelTransactionResult;
