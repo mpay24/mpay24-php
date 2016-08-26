@@ -178,28 +178,31 @@ class ORDER {
    */
   public function validate() {
     $mdxi = "/MDXI.xsd";
-    
-    if(! file_exists($mdxi) || $this->olderThanOneWeek(__DIR__ . $mdxi)) {
-      set_time_limit(0);
-      ini_set('display_errors', true);
-      
-      $fp = fopen(__DIR__ . '/MDXInew.xsd', 'w');
-      $ch = curl_init(self::MDXI_SCHEMA);
-      curl_setopt($ch, CURLOPT_FILE, $fp);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
-      
-      $result = curl_exec($ch);
-      
-      if(curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200 && file_exists(__DIR__ . '/MDXInew.xsd')) {
-        unlink(__DIR__ . $mdxi);
-        fclose($fp);
-        rename(__DIR__ . "/MDXInew.xsd", __DIR__ . $mdxi);
-      } else
-        fclose($fp);
-      
-      curl_close($ch);
-    }
+
+/**
+ * Dont download the schema for validataion, it breaks if it breaks.
+ */    
+//    if(! file_exists($mdxi) || $this->olderThanOneWeek(__DIR__ . $mdxi)) {
+//      set_time_limit(0);
+//      ini_set('display_errors', true);
+//      
+//      $fp = fopen(__DIR__ . '/MDXInew.xsd', 'w');
+//      $ch = curl_init(self::MDXI_SCHEMA);
+//      curl_setopt($ch, CURLOPT_FILE, $fp);
+//      curl_setopt($ch, CURLOPT_HEADER, 0);
+//      curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
+//      
+//      $result = curl_exec($ch);
+//      
+//      if(curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200 && file_exists(__DIR__ . '/MDXInew.xsd')) {
+//        unlink(__DIR__ . $mdxi);
+//        fclose($fp);
+//        rename(__DIR__ . "/MDXInew.xsd", __DIR__ . $mdxi);
+//      } else
+//        fclose($fp);
+//      
+//      curl_close($ch);
+//    }
     
     return $this->doc->schemaValidate(__DIR__ . $mdxi);
   }
