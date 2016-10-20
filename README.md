@@ -1,7 +1,14 @@
-# mPAY24 PHP SDK
-## Open the mPAY24 pay page in 5 steps!
-### [See the steps](https://github.com/mpay24/mpay24-php/wiki/STEP-1)
-***
+# mpay24-php
+
+[![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)]()
+
+Offical PHP SDK for SOAP Bindings
+
+## Documentation
+
+A short demo implementation guide is available at https://github.com/mpay24/mpay24-php/wiki/STEP-1
+Documentation is available at https://docs.mpay24.com/docs.
+
 ### ABSTRACT
 
 The target of this guide is to help you open the [mPAY24](https://www.mpay24.com/web) payment page in five simple steps, using the mPAY24 PHP API.
