@@ -1,10 +1,10 @@
-# mPAY24 PHP API
+# mPAY24 PHP SDK
 ## Open the mPAY24 pay page in 5 steps!
-### [See the steps](https://github.com/mPAY24/mpay24_php_api/wiki/STEP-1)
+### [See the steps](https://github.com/mpay24/mpay24-php/wiki/STEP-1)
 ***
 ### ABSTRACT
 
-The target of this guide is to help you open the [mPAY24](https://www.mpay24.com) payment page in five simple steps, using the mPAY24 PHP API.
+The target of this guide is to help you open the [mPAY24](https://www.mpay24.com/web) payment page in five simple steps, using the mPAY24 PHP API.
 
 *Please note, that you still need to implement the mPAY24 Confirmation-Interface as explained in the "Specification of the mPAY24 Interfaces" in order to have your system process the result of the payment transaction!* The mPAY24 PHP API will also help you with this, but in order to fully understand how payment transactions work and therefore avoid some common pitfalls with the implementation, you are strongly encouraged to refer to the specification! There is also a complete and ready to test "example shop" available at mPAY24.
 
