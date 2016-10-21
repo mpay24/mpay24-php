@@ -912,7 +912,7 @@ class MPAY24SDK {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
     if($this->debug) {
-      $fh = fopen(__DIR__ .'/'. CURL_LOG, 'a+') or $this->permissionError();
+      $fh = fopen(__DIR__.'/../'.CURL_LOG, 'a+') or $this->permissionError();
 
       curl_setopt($ch, CURLOPT_VERBOSE, 1);
       curl_setopt($ch, CURLOPT_STDERR, $fh);
