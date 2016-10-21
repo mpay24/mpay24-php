@@ -2,15 +2,15 @@
 /**
  * Main mPAY24 PHP APIs Class.
  *
- * The MPay24Api class provides the communication functioanallity. It hold's all the sensitive data (merchant ID, SOAP password, etc) and
+ * The MPAY24SDK class provides the communication functioanallity. It hold's all the sensitive data (merchant ID, SOAP password, etc) and
  * build the SOAP request, sent to mPAY24.
  *
  * @author              mPAY24 GmbH <support@mpay24.com>
- * @version             $Id: MPay24Api.php 6231 2015-03-13 16:29:56Z anna $
- * @filesource          MPay24Api.php
+ * @version             $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
+ * @filesource          MPAY24SDK.php
  * @license             http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
-class MPay24Api {
+class MPAY24SDK {
   /**
    * TRUE, when you want to use the test system, and FALSE otherwise
    *
@@ -129,21 +129,21 @@ class MPay24Api {
    * @var string
    */
   public $moduleVersion = '$Rev: 6231 $ ($Date:: 2015-03-13 #$)';
-  
+
   /**
    * Set the basic (mandatory) settings for the requests
    *
    * @param int $merchantID
    *          5-digit account number, supported by mPAY24
-   *          
+   *
    *          TEST accounts - starting with 9
-   *          
+   *
    *          LIVE account - starting with 7
    * @param string $soapPassword
    *          The webservice's password, supported by mPAY24
    * @param bool $test
    *          TRUE - when you want to use the TEST system
-   *          
+   *
    *          FALSE - when you want to use the LIVE system
    * @param string $proxyHost
    *          The host name in case you are behind a proxy server ("" when not)
@@ -162,28 +162,28 @@ class MPay24Api {
      * @const LIVE_ERROR_MSG
      */
     define('LIVE_ERROR_MSG', "We are sorry, an error occured - please contact the merchant!");
-    
+
     /**
      * The current directory, where the script is runnig from
      * @const __DIR__
      */
     if(! defined('__DIR__'))
       define('__DIR__', dirname(__FILE__));
-    
+
     $this->setMerchantID($merchantID);
     $this->setSoapPassword($soapPassword);
     $this->setSystem($test);
-    
+
     if($proxyHost != "" && $proxyPort != "") {
       if($proxyUser != "" && $proxyPass != "")
         $this->setProxySettings($proxyHost, $proxyPort, $proxyUser, $proxyPass);
       else
         $this->setProxySettings($proxyHost, $proxyPort);
     }
-    
+
     $this->setVerifyPeer($verifyPeer);
   }
-  
+
   /**
    * Set the basic (mandatory) settings for the requests
    *
@@ -193,7 +193,7 @@ class MPay24Api {
    *          The flexLINK password, supported by mPAY24
    * @param bool $test
    *          TRUE - when you want to use the TEST system
-   *          
+   *
    *          FALSE - when you want to use the LIVE system
    */
   public function configureFlexLINK($spid, $password, $test) {
@@ -202,19 +202,19 @@ class MPay24Api {
      * @const LIVE_ERROR_MSG
      */
     define('LIVE_ERROR_MSG', "We are sorry, an error occured - please contact the merchant!");
-    
+
     /**
      * The current directory, where the script is runnig from
      * @const __DIR__
      */
     if(! defined('__DIR__'))
       define('__DIR__', dirname(__FILE__));
-    
+
     $this->setSPID($spid);
     $this->setPassword($password);
     $this->setFlexLINKSystem($test);
   }
-  
+
   /**
    * Get the merchant ID, which was set by the function configure($merchantID, $soapPassword, $test, $proxyHost, $proxyPort)
    *
@@ -223,7 +223,7 @@ class MPay24Api {
   public function getMerchantID() {
     return substr($this->merchantid, 1);
   }
-  
+
   /**
    * Get the SPID, which was set by the function configureFlexLINK($spid, $password, $test)
    *
@@ -232,7 +232,7 @@ class MPay24Api {
   public function getSPID() {
     return $this->spid;
   }
-  
+
   /**
    * Get the system, which should be used for flexLINK (test -> 'test' or live -> 'www')
    *
@@ -241,7 +241,7 @@ class MPay24Api {
   public function getFlexLINKSystem() {
     return $this->flexLINKSystem;
   }
-  
+
   /**
    * Get the url, where requests are going to be posted
    *
@@ -250,7 +250,7 @@ class MPay24Api {
   public function getEtpURL() {
     return $this->etp_url;
   }
-  
+
   /**
    * Get the request, which was sent to mPAY24 (in XML form)
    *
@@ -259,7 +259,7 @@ class MPay24Api {
   public function getRequest() {
     return $this->request;
   }
-  
+
   /**
    * Get the response from mPAY24 (in XML form)
    *
@@ -268,7 +268,7 @@ class MPay24Api {
   public function getResponse() {
     return $this->response;
   }
-  
+
   /**
    * Check whether a proxy is used
    *
@@ -280,7 +280,7 @@ class MPay24Api {
     else
       return false;
   }
-  
+
   /**
    * Set debug modus (FALSE by default)
    *
@@ -290,7 +290,7 @@ class MPay24Api {
   public function setDebug($debug) {
     $this->debug = $debug;
   }
-  
+
   /**
    * Check whether the debug modus is turned on or off
    *
@@ -299,7 +299,7 @@ class MPay24Api {
   public function getDebug() {
     return $this->debug;
   }
-  
+
   /**
    * In case the test system is used, show die with the real error message, otherwise, show the difined constant error LIVE_ERROR_MSG
    *
@@ -308,11 +308,11 @@ class MPay24Api {
    */
   public function dieWithMsg($msg) {
     if($this->test)
-      die($msg);
+      throw new Exception($msg);
     else
-      die(LIVE_ERROR_MSG);
+      throw new Exception();
   }
-  
+
   /**
    * In case the test system is used, show print the real error message, otherwise, show the difined constant error LIVE_ERROR_MSG
    *
@@ -325,7 +325,7 @@ class MPay24Api {
     else
       print(LIVE_ERROR_MSG);
   }
-  
+
   /**
    * Die with an error message, which show the path in case of read/write permission errors
    */
@@ -335,7 +335,7 @@ class MPay24Api {
     $path = substr($message, strpos($message, 'fopen(') + 6, strpos($message, ')') - (strpos($message, 'fopen(') + 6));
     $this->dieWithMsg("Can't open file '$path'! Please set the needed read/write rights!");
   }
-  
+
   /**
    * Get all the payment methods, that are available for the merchant by mPAY24
    *
@@ -344,22 +344,22 @@ class MPay24Api {
   public function ListPaymentMethods() {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ListPaymentMethods');
     $operation = $body->appendChild($operation);
-    
+
     $xmlMerchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $xmlMerchantID = $operation->appendChild($xmlMerchantID);
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new ListPaymentMethodsResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Start a secure payment through the mPAY24 payment window -
    * the sensible data (credit card numbers, bank account numbers etc)
@@ -372,31 +372,31 @@ class MPay24Api {
   public function SelectPayment($mdxi) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:SelectPayment');
     $operation = $body->appendChild($operation);
-    
+
     $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $merchantID = $operation->appendChild($merchantID);
-    
+
     $xmlMDXI = $xml->createElement('mdxi', htmlspecialchars($mdxi));
     $xmlMDXI = $operation->appendChild($xmlMDXI);
-    
+
     $getDataURL = $xml->createElement('getDataURL', "dummy_getDataURL");
     $getDataURL = $operation->appendChild($getDataURL);
-    
+
     $tid = $xml->createElement('tid', 'tid');
     $tid = $operation->appendChild($tid);
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new PaymentResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Start a secure payment using a PROFILE (mPAY24 proSAFE), supported by mPAY24 -
    * a customer profile (you have already created) will be used for the payment.
@@ -410,33 +410,33 @@ class MPay24Api {
   public function ProfilePayment($requestString) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:AcceptPayment');
     $operation = $body->appendChild($operation);
-    
+
     $requestXML = new DOMDocument("1.0", "UTF-8");
     $requestXML->formatOutput = true;
     $requestXML->loadXML($requestString);
-    
+
     $requestNode = $requestXML->getElementsByTagName("AcceptPayment")->item(0);
-    
+
     foreach($requestNode->childNodes as $child) {
       $child = $xml->importNode($child, true);
       $operation->appendChild($child);
-      
+
       if($child->nodeName == 'payment')
         $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:PaymentPROFILE');
     }
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new PaymentResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Start a secure payment using the mPAY24 Tokenizer.
    *
@@ -447,25 +447,25 @@ class MPay24Api {
   public function CreateToken($pType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:CreatePaymentToken');
     $operation = $body->appendChild($operation);
-    
+
     $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $merchantID = $operation->appendChild($merchantID);
-    
+
     $pType = $xml->createElement('pType', $pType);
     $pType = $operation->appendChild($pType);
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new PaymentTokenResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
    *
@@ -478,41 +478,41 @@ class MPay24Api {
   public function PayWithToken($tid, $amount, $currency, $token) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-  
+
     $operation = $xml->createElement('etp:AcceptPayment');
     $operation = $body->appendChild($operation);
-    
+
     $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $merchantID = $operation->appendChild($merchantID);
 
     $xmlTID = $xml->createElement('tid', $tid);
     $xmlTID = $operation->appendChild($xmlTID);
-    
+
     $xmlPType = $xml->createElement('pType', "TOKEN");
     $xmlPType = $operation->appendChild($xmlPType);
-    
+
     $xmlPayment = $xml->createElement('payment');
     $xmlPayment = $operation->appendChild($xmlPayment);
     $xmlPayment->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:PaymentTOKEN');
-    
+
     $xmlAmount = $xml->createElement('amount', $amount);
     $xmlAmount = $xmlPayment->appendChild($xmlAmount);
-    
+
     $xmlCurrency = $xml->createElement('currency', $currency);
     $xmlCurrency = $xmlPayment->appendChild($xmlCurrency);
-    
+
     $xmlToken = $xml->createElement('token', $token);
     $xmlToken = $xmlPayment->appendChild($xmlToken);
 
     $this->request = $xml->saveXML();
-  
+
     $this->send();
-  
+
     $result = new PaymentResponse($this->response);
-  
+
     return $result;
   }
-  
+
   /**
    * Start an AcceptPayment transaction, supported by mPAY24.
    *
@@ -525,33 +525,33 @@ class MPay24Api {
   public function AcceptPayment($requestString, $paymentType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElement('etp:AcceptPayment');
     $operation = $body->appendChild($operation);
-    
+
     $requestXML = new DOMDocument("1.0", "UTF-8");
     $requestXML->formatOutput = true;
     $requestXML->loadXML($requestString);
-    
+
     $requestNode = $requestXML->getElementsByTagName("AcceptPayment")->item(0);
-    
+
     foreach($requestNode->childNodes as $child) {
       $child = $xml->importNode($child, true);
       $operation->appendChild($child);
-      
+
       if($child->nodeName == 'payment')
         $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', "etp:Payment$paymentType");
     }
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new PaymentResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
    *
@@ -564,33 +564,33 @@ class MPay24Api {
   public function Callback($requestString, $paymentType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElement('etp:ManualCallback');
     $operation = $body->appendChild($operation);
-    
+
     $requestXML = new DOMDocument("1.0", "UTF-8");
     $requestXML->formatOutput = true;
     $requestXML->loadXML($requestString);
-    
+
     $requestNode = $requestXML->getElementsByTagName("AcceptPayment")->item(0);
-    
+
     foreach($requestNode->childNodes as $child) {
       $child = $xml->importNode($child, true);
       $operation->appendChild($child);
-      
+
       if($child->nodeName == 'paymentCallback')
         $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', "etp:Callback$paymentType");
     }
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new PaymentResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Clear a transaction with an amount
    *
@@ -605,31 +605,31 @@ class MPay24Api {
   public function ManualClear($mPAYTid, $amount, $currency) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualClear');
     $operation = $body->appendChild($operation);
-    
+
     $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $merchantID = $operation->appendChild($merchantID);
-    
+
     $clearingDetails = $xml->createElement('clearingDetails');
     $clearingDetails = $operation->appendChild($clearingDetails);
-    
+
     $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
     $xmlMPayTid = $clearingDetails->appendChild($xmlMPayTid);
-    
+
     $price = $xml->createElement('amount', $amount);
     $price = $clearingDetails->appendChild($price);
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new ManagePaymentResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Credit a transaction with an amount
    *
@@ -646,28 +646,28 @@ class MPay24Api {
   public function ManualCredit($mPAYTid, $amount, $currency, $customer) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualCredit');
     $operation = $body->appendChild($operation);
-    
+
     $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $merchantID = $operation->appendChild($merchantID);
-    
+
     $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
     $xmlMPayTid = $operation->appendChild($xmlMPayTid);
-    
+
     $price = $xml->createElement('amount', $amount);
     $price = $operation->appendChild($price);
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new ManagePaymentResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Cancel a transaction
    *
@@ -678,25 +678,25 @@ class MPay24Api {
   public function ManualReverse($mPAYTid) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualReverse');
     $operation = $body->appendChild($operation);
-    
+
     $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $merchantID = $operation->appendChild($merchantID);
-    
+
     $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
     $xmlMPayTid = $operation->appendChild($xmlMPayTid);
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new ManagePaymentResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Get all the information for a transaction, supported by mPAY24
    *
@@ -709,13 +709,13 @@ class MPay24Api {
   public function TransactionStatus($mPAYTid = null, $tid = null) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-    
+
     $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:TransactionStatus');
     $operation = $body->appendChild($operation);
-    
+
     $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
     $merchantID = $operation->appendChild($merchantID);
-    
+
     if($mPAYTid) {
       $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
       $xmlMPayTid = $operation->appendChild($xmlMPayTid);
@@ -723,16 +723,16 @@ class MPay24Api {
       $xmlTid = $xml->createElement('tid', $tid);
       $xmlTid = $operation->appendChild($xmlTid);
     }
-    
+
     $this->request = $xml->saveXML();
-    
+
     $this->send();
-    
+
     $result = new TransactionStatusResponse($this->response);
-    
+
     return $result;
   }
-  
+
   /**
    * Encoded the parameters (AES256-CBC) for the pay link and retunr them
    *
@@ -742,15 +742,15 @@ class MPay24Api {
    */
   public function flexLINK($params) {
     $paramsString = "";
-    
+
     foreach($params as $key => $value)
       $paramsString .= "$key=$value&";
-    
+
     $encryptedParams = $this->ssl_encrypt($this->pass, $paramsString);
-    
+
     return $encryptedParams;
   }
-  
+
   /**
    * Set the merchant ID (without 'u')
    *
@@ -763,7 +763,7 @@ class MPay24Api {
     else
       $this->merchantid = 'u' . $merchantID;
   }
-  
+
   /**
    * Set the SPID, in order to make flexLINK transactions
    *
@@ -773,7 +773,7 @@ class MPay24Api {
   private function setSPID($spid) {
     $this->spid = $spid;
   }
-  
+
   /**
    * Set the Web-Services/SOAP password
    *
@@ -786,7 +786,7 @@ class MPay24Api {
     else
       $this->soappass = $pass;
   }
-  
+
   /**
    * Set the flexLINK password
    *
@@ -796,7 +796,7 @@ class MPay24Api {
   private function setPassword($pass) {
     $this->pass = $pass;
   }
-  
+
   /**
    * Set whether the tets system (true) or the live system (false) will be used for the SOAP requests
    * Set the POST url
@@ -807,7 +807,7 @@ class MPay24Api {
    *
    * @param bool $test
    *          TRUE for TEST system and FALSE for LIVE system.
-   *          
+   *
    */
   private function setSystem($test = null) {
     if($test) {
@@ -818,7 +818,7 @@ class MPay24Api {
       $this->etp_url = "https://www.mpay24.com/app/bin/etpproxy_v15";
     }
   }
-  
+
   /**
    * Set whether the tets system (true) or the live system (false) will be used for the flexLINK requests
    *
@@ -831,7 +831,7 @@ class MPay24Api {
     else
       $this->flexLINKSystem = "www";
   }
-  
+
   /**
    * Set the used proxy host and proxy port in case proxy is used
    *
@@ -849,13 +849,13 @@ class MPay24Api {
       $this->proxy_host = $proxy_host;
       $this->proxy_port = $proxy_port;
     }
-    
+
     if($proxy_user != "" && $proxy_pass != "") {
       $this->proxy_user = $proxy_user;
       $this->proxy_pass = $proxy_pass;
     }
   }
-  
+
   /**
    * Set whether to stop cURL from verifying the peer's certificate
    *
@@ -865,7 +865,7 @@ class MPay24Api {
   private function setVerifyPeer($verify_peer) {
     $this->verify_peer = $verify_peer;
   }
-  
+
   /**
    * Create a DOMDocument and prepare it for SOAP request:
    * set Envelope, NameSpaces, create empty Body
@@ -875,34 +875,34 @@ class MPay24Api {
   private function buildEnvelope() {
     $this->soap_xml = new DOMDocument("1.0", "UTF-8");
     $this->soap_xml->formatOutput = true;
-    
+
     $envelope = $this->soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
     $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
     $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp', 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
     $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
     $envelope = $this->soap_xml->appendChild($envelope);
-    
+
     $body = $this->soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
     $body = $envelope->appendChild($body);
-    
+
     return $this->soap_xml;
   }
-  
+
   /**
    * Create a curl request and send the cretaed SOAP XML
    */
   private function send() {
     $userAgent = 'mPAY24 PHP API $Rev: 6231 $ ($Date:: 2015-03-13 #$)';
-    
+
     if($this->shop != '') {
       $userAgent = $this->shop;
-      
+
       if($this->shopVersion != '')
         $userAgent .= " v. " . $this->shopVersion;
       if($this->shopVersion != '')
         $userAgent .= " - Module v. " . $this->moduleVersion;
     }
-    
+
     $ch = curl_init($this->etp_url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_POST, 1);
@@ -910,30 +910,30 @@ class MPay24Api {
     curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $this->request);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    
+
     if($this->debug) {
-      $fh = fopen(__DIR__ . "/../logs/curllog.log", 'a+') or $this->permissionError();
-      
+      $fh = fopen(__DIR__ .'/'. CURL_LOG, 'a+') or $this->permissionError();
+
       curl_setopt($ch, CURLOPT_VERBOSE, 1);
       curl_setopt($ch, CURLOPT_STDERR, $fh);
     }
-    
+
     try {
       curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
-      
+
       if($this->proxy_host !== '' && $this->proxy_port !== '') {
         curl_setopt($ch, CURLOPT_PROXY, $this->proxy_host . ':' . $this->proxy_port);
-        
+
         if($this->proxy_user !== '' && $this->proxy_pass !== '')
           curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxy_user . ':' . $this->proxy_pass);
-        
+
         if($this->verify_peer !== true)
           curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->verify_peer);
       }
-      
+
       $this->response = curl_exec($ch);
       curl_close($ch);
-      
+
       if($this->debug)
         fclose($fh);
     } catch(Exception $e) {
@@ -941,11 +941,11 @@ class MPay24Api {
         $dieMSG = "Your request couldn't be sent because of the following error:" . "\n" . curl_error($ch) . "\n" . $e->getMessage() . ' in ' . $e->getFile() . ', line: ' . $e->getLine() . '.';
       else
         $dieMSG = LIVE_ERROR_MSG;
-      
+
       echo $dieMSG;
     }
   }
-  
+
   /**
    * Encode data (AES256-CBC) using a password
    *
@@ -958,36 +958,36 @@ class MPay24Api {
   private function ssl_encrypt($pass, $data) {
     // Set a random salt
     $salt = substr(md5(mt_rand(), true), 8);
-    
+
     $block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
     $pad = $block - (strlen($data) % $block);
-    
+
     $data = $data . str_repeat(chr($pad), $pad);
-    
+
     // Setup encryption parameters
     $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, "", MCRYPT_MODE_CBC, "");
-    
+
     $key_len = mcrypt_enc_get_key_size($td);
     $iv_len = mcrypt_enc_get_iv_size($td);
-    
+
     $total_len = $key_len + $iv_len;
     $salted = '';
     $dx = '';
-    
+
     // Salt the key and iv
     while(strlen($salted) < $total_len) {
       $dx = md5($dx . $pass . $salt, true);
       $salted .= $dx;
     }
-    
+
     $key = substr($salted, 0, $key_len);
     $iv = substr($salted, $key_len, $iv_len);
-    
+
     mcrypt_generic_init($td, $key, $iv);
     $encrypted_data = mcrypt_generic($td, $data);
     mcrypt_generic_deinit($td);
     mcrypt_module_close($td);
-    
+
     return chunk_split(array_shift( unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
   }
 }
@@ -996,8 +996,8 @@ class MPay24Api {
  * The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPay24Api.php 6231 2015-03-13 16:29:56Z anna $
- * @filesource MPay24Api.php
+ * @version $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
+ * @filesource MPAY24SDK.php
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
 class GeneralResponse {
@@ -1013,18 +1013,18 @@ class GeneralResponse {
    * @var string
    */
   var $returnCode;
-  
+
   /**
    * Sets the basic values from the response from mPAY24: status and return code
    *
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function GeneralResponse($response) {
+  function __construct($response) {
     if($response != '') {
       $responseAsDOM = new DOMDocument();
       $responseAsDOM->loadXML($response);
-      
+
       if(! empty($responseAsDOM) && is_object($responseAsDOM))
         if(! $responseAsDOM || $responseAsDOM->getElementsByTagName('status')->length == 0 || $responseAsDOM->getElementsByTagName('returnCode')->length == 0) {
           $this->status = "ERROR";
@@ -1038,7 +1038,7 @@ class GeneralResponse {
       $this->returnCode = "The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!";
     }
   }
-  
+
   /**
    * Get the status of the request, which was sent to mPAY24
    *
@@ -1047,7 +1047,7 @@ class GeneralResponse {
   public function getStatus() {
     return $this->status;
   }
-  
+
   /**
    * Get the return code from the request, which was sent to mPAY24
    *
@@ -1056,7 +1056,7 @@ class GeneralResponse {
   public function getReturnCode() {
     return $this->returnCode;
   }
-  
+
   /**
    * Set the status in the response, which was delivered by mPAY24
    *
@@ -1066,7 +1066,7 @@ class GeneralResponse {
   public function setStatus($status) {
     $this->status = $status;
   }
-  
+
   /**
    * Set the return code in the response, which was delivered by mPAY24
    *
@@ -1082,8 +1082,8 @@ class GeneralResponse {
  * The PaymentResponse class contains a generalResponse object and the location(URL), which will be used for the payment session
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPay24Api.php 6231 2015-03-13 16:29:56Z anna $
- * @filesource MPay24Api.php
+ * @version $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
+ * @filesource MPAY24SDK.php
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
 class PaymentResponse extends GeneralResponse {
@@ -1105,20 +1105,20 @@ class PaymentResponse extends GeneralResponse {
    * @var string
    */
   var $mpayTID;
-  
+
   /**
    * Sets the values for a payment from the response from mPAY24: mPAY transaction ID, error number and location (URL)
    *
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function PaymentResponse($response) {
+  function __construct($response) {
     $this->generalResponse = new GeneralResponse($response);
-    
+
     if($response != '') {
       $responseAsDOM = new DOMDocument();
       $responseAsDOM->loadXML($response);
-      
+
       if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('location')->length != 0)
         $this->location = $responseAsDOM->getElementsByTagName('location')->item(0)->nodeValue;
       if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('mpayTID')->length != 0)
@@ -1128,7 +1128,7 @@ class PaymentResponse extends GeneralResponse {
       $this->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
     }
   }
-  
+
   /**
    * Get the location (URL), returned from mPAY24
    *
@@ -1137,7 +1137,7 @@ class PaymentResponse extends GeneralResponse {
   public function getLocation() {
     return $this->location;
   }
-  
+
   /**
    * Get the unique ID, returned from mPAY24
    *
@@ -1146,7 +1146,7 @@ class PaymentResponse extends GeneralResponse {
   public function getMpayTID() {
     return $this->mpayTID;
   }
-  
+
   /**
    * Get the object, that contains the basic values from the response from mPAY24: status and return code
    *
@@ -1170,7 +1170,7 @@ class PaymentTokenResponse extends PaymentResponse {
    * @var string
    */
   var $token;
-  
+
   /**
    * The api key, got back from mPAY24, which will be used for the actual payment
    *
@@ -1184,7 +1184,7 @@ class PaymentTokenResponse extends PaymentResponse {
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function PaymentTokenResponse($response) {
+  function __construct($response) {
     $this->paymentResponse = new PaymentResponse($response);
 
     if($response != '') {
@@ -1218,7 +1218,7 @@ class PaymentTokenResponse extends PaymentResponse {
   public function getApiKey() {
     return $this->apiKey;
   }
-  
+
   /**
    * Get the object, that contains the basic payment values from the response from mPAY24: status, return code and location
    *
@@ -1233,8 +1233,8 @@ class PaymentTokenResponse extends PaymentResponse {
  * The ManagePaymentResponse class contains a generalResponse object and the mPAYTID and/or tid of the transaction which was managed
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPay24Api.php 6231 2015-03-13 16:29:56Z anna $
- * @filesource MPay24Api.php
+ * @version $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
+ * @filesource MPAY24SDK.php
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
 class ManagePaymentResponse extends GeneralResponse {
@@ -1256,20 +1256,20 @@ class ManagePaymentResponse extends GeneralResponse {
    * @var string
    */
   var $tid;
-  
+
   /**
    * Sets the values for a payment from the response from mPAY24: mPAY transaction IDand transaction ID from the shop
    *
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function ManagePaymentResponse($response) {
+  function __construct($response) {
     $this->generalResponse = new GeneralResponse($response);
-    
+
     if($response != '') {
       $responseAsDOM = new DOMDocument();
       $responseAsDOM->loadXML($response);
-      
+
       if($responseAsDOM && $responseAsDOM->getElementsByTagName('mpayTID')->length != 0 && $responseAsDOM->getElementsByTagName('tid')->length != 0) {
         $this->mpayTID = $responseAsDOM->getElementsByTagName('mpayTID')->item(0)->nodeValue;
         $this->tid = $responseAsDOM->getElementsByTagName('tid')->item(0)->nodeValue;
@@ -1279,7 +1279,7 @@ class ManagePaymentResponse extends GeneralResponse {
       $this->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
     }
   }
-  
+
   /**
    * Get the mPAY transaction ID, returned from mPAY24
    *
@@ -1288,7 +1288,7 @@ class ManagePaymentResponse extends GeneralResponse {
   public function getMpayTID() {
     return $this->mpayTID;
   }
-  
+
   /**
    * Get the transaction ID of the shop, returned from mPAY24
    *
@@ -1297,7 +1297,7 @@ class ManagePaymentResponse extends GeneralResponse {
   public function getTid() {
     return $this->tid;
   }
-  
+
   /**
    * Get the object, that contains the basic values from the response from mPAY24: status and return code
    *
@@ -1312,8 +1312,8 @@ class ManagePaymentResponse extends GeneralResponse {
  * The ListPaymentMethodsResponse class contains a generalResponse object and all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPay24Api.php 6231 2015-03-13 16:29:56Z anna $
- * @filesource MPay24Api.php
+ * @version $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
+ * @filesource MPAY24SDK.php
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
 class ListPaymentMethodsResponse extends GeneralResponse {
@@ -1347,30 +1347,30 @@ class ListPaymentMethodsResponse extends GeneralResponse {
    * @var array
    */
   var $descriptions = array();
-  
+
   /**
    * A list with the IDs of the payment methods, activated by mPAY24
    *
    * @var array
    */
   var $pMethIds = array();
-  
+
   /**
    * Sets the values for a payment from the response from mPAY24: count, payment types, brands and descriptions
    *
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function ListPaymentMethodsResponse($response) {
+  function __construct($response) {
     $this->generalResponse = new GeneralResponse($response);
-    
+
     if($response != '') {
       $responseAsDOM = new DOMDocument();
       $responseAsDOM->loadXML($response);
-      
+
       if($responseAsDOM && $responseAsDOM->getElementsByTagName('all')->length != 0) {
         $this->all = $responseAsDOM->getElementsByTagName('all')->item(0)->nodeValue;
-        
+
         for($i = 0; $i < $this->all; $i ++) {
           $this->pTypes[$i] = $responseAsDOM->getElementsByTagName('pType')->item($i)->nodeValue;
           $this->brands[$i] = $responseAsDOM->getElementsByTagName('brand')->item($i)->nodeValue;
@@ -1383,7 +1383,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
       $this->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
     }
   }
-  
+
   /**
    * Get the count of the payment methods, returned from mPAY24
    *
@@ -1392,7 +1392,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getAll() {
     return $this->all;
   }
-  
+
   /**
    * Get the payment types, returned from mPAY24
    *
@@ -1401,7 +1401,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getPTypes() {
     return $this->pTypes;
   }
-  
+
   /**
    * Get the brands, returned from mPAY24
    *
@@ -1410,7 +1410,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getBrands() {
     return $this->brands;
   }
-  
+
   /**
    * Get the descriptions, returned from mPAY24
    *
@@ -1419,7 +1419,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getDescriptions() {
     return $this->descriptions;
   }
-  
+
   /**
    * Get the payment method IDs, returned from mPAY24
    *
@@ -1428,7 +1428,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getPMethIDs() {
     return $this->pMethIds;
   }
-  
+
   /**
    * Get payment type, returned from mPAY24
    *
@@ -1439,7 +1439,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getPType($i) {
     return $this->pTypes[$i];
   }
-  
+
   /**
    * Get brand, returned from mPAY24
    *
@@ -1450,7 +1450,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getBrand($i) {
     return $this->brands[$i];
   }
-  
+
   /**
    * Get description, returned from mPAY24
    *
@@ -1461,7 +1461,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getDescription($i) {
     return $this->descriptions[$i];
   }
-  
+
   /**
    * Get payment method ID, returned from mPAY24
    *
@@ -1472,7 +1472,7 @@ class ListPaymentMethodsResponse extends GeneralResponse {
   public function getPMethID($i) {
     return $this->pMethIds[$i];
   }
-  
+
   /**
    * Get the object, that contains the basic values from the response from mPAY24: status and return code
    *
@@ -1487,8 +1487,8 @@ class ListPaymentMethodsResponse extends GeneralResponse {
  * The TransactionStatusResponse class contains a generalResponse object and all the parameters, returned with the confirmation from mPAY24
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPay24Api.php 6231 2015-03-13 16:29:56Z anna $
- * @filesource MPay24Api.php
+ * @version $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
+ * @filesource MPAY24SDK.php
  * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
 class TransactionStatusResponse extends GeneralResponse {
@@ -1510,24 +1510,24 @@ class TransactionStatusResponse extends GeneralResponse {
    * @var int
    */
   var $paramCount = 0;
-  
+
   /**
    * Sets the values for a transaction from the response from mPAY24: STATUS, PRICE, CURRENCY, LANGUAGE, etc
    *
    * @param string $response
    *          The SOAP response from mPAY24 (in XML form)
    */
-  function TransactionStatusResponse($response) {
+  function __construct($response) {
     $this->generalResponse = new GeneralResponse($response);
-    
+
     if($response != '') {
       $responseAsDOM = new DOMDocument();
       $responseAsDOM->loadXML($response);
-      
+
       if($responseAsDOM && $responseAsDOM->getElementsByTagName('name')->length != 0) {
         $this->paramCount = $responseAsDOM->getElementsByTagName('name')->length;
         $this->params['STATUS'] = $this->generalResponse->getStatus();
-        
+
         for($i = 0; $i < $this->paramCount; $i ++) {
           if($responseAsDOM->getElementsByTagName("name")->item($i)->nodeValue == "STATUS")
             $this->params["TSTATUS"] = $responseAsDOM->getElementsByTagName("value")->item($i)->nodeValue;
@@ -1540,7 +1540,7 @@ class TransactionStatusResponse extends GeneralResponse {
       $this->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
     }
   }
-  
+
   /**
    * Get the count of all the paramerters for a transaction
    *
@@ -1549,7 +1549,7 @@ class TransactionStatusResponse extends GeneralResponse {
   public function getParamCount() {
     return $this->paramCount;
   }
-  
+
   /**
    * Get the parameters for a transaction, returned from mPAY24
    *
@@ -1558,7 +1558,7 @@ class TransactionStatusResponse extends GeneralResponse {
   public function getParams() {
     return $this->params;
   }
-  
+
   /**
    * Get the parameter's value, returned from mPAY24
    *
@@ -1572,7 +1572,7 @@ class TransactionStatusResponse extends GeneralResponse {
     else
       return false;
   }
-  
+
   /**
    * Set a value for a parameter
    *
@@ -1584,7 +1584,7 @@ class TransactionStatusResponse extends GeneralResponse {
   public function setParam($name, $value) {
     $this->params[$name] = $value;
   }
-  
+
   /**
    * Get the object, that contains the basic values from the response from mPAY24: status and return code
    *

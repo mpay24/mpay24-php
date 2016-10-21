@@ -11,3 +11,7 @@ define("VERIFY_PEER", TRUE);
 
 define("SPID", "abcdefghjklmnop");
 define("FLEX_LINK_PASS", "**********");
+
+define("CURL_LOG", "../logs/curllog.log");
+define("MPAY24_LOG", "../logs/mpay24.log");
+?>
