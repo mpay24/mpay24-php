@@ -1,5 +1,20 @@
 <?php
 include_once ("../lib/MPAY24.php");
-$myShop = new MPAY24();
+$shop = new MPAY24();
+$tokenizer = $shop->payWithToken("CC")->getPaymentResponse();
 ?>
-<iframe src="<?php echo $myShop->payWithToken("CC")->getPaymentResponse()->location; ?>"></iframe>
+<iframe src="<?php echo $tokenizer->location; ?>"></iframe>
+<form action="pay.php" method="POST">
+  <input name="token" type="hidden" value="<? echo $tokenizer->token; ?>" />
+  <button id="paybutton" name="type" value="TOKEN" type="submit" disabled="true">Pay with creditcard</button>
+  <button name="type" value="PAYPAL" type="submit">Pay with paypal</button>
+</form>
+<script>
+window.addEventListener("message", checkValid, false);
+function checkValid(form) {
+  var data = JSON.parse(form.data);
+  if (data.valid === "true") {
+    document.getElementById("paybutton").disabled=false;
+  }
+}
+</script>

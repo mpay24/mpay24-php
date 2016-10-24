@@ -1,6 +1,6 @@
 <?php
-include_once ("core/MPAY24SDK.php");
-include_once ("core/orderXML.php");
+include_once ("MPAY24SDK.php");
+include_once ("orderXML.php");
 include_once ("config/config.php");
 
 /**
@@ -318,23 +318,11 @@ class MPAY24 extends Transaction {
    *          The payment type which will be used for the payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return PaymentResponse
    */
-  function payBackend2Backend($paymentType) {
+  function payBackend2Backend($paymentType, $tid, $payment) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS' && $paymentType !== 'EPS'  && $paymentType !== 'SOFORT' && $paymentType !== 'TOKEN')
-      die("The payment type '$paymentType' is not allowed! Allowed are: 'EPS', 'SOFORT', 'PAYPAL', 'MASTERPASS', 'TOKEN'!");
-
-    $transaction = $this->createTransaction();
-
-    $this->checkTransaction($transaction);
-
-    $order = $this->createBackend2BackendOrder($transaction, $paymentType);
-
-    if(! $order || ! $order instanceof ORDER)
-      $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
-
-    $payBackend2BackendResult = $this->mPay24Api->AcceptPayment($order->toXML(), $paymentType);
+    $payBackend2BackendResult = $this->mPay24Api->Accept($paymentType, $tid, $payment);
 
     if($this->mPay24Api->getDebug()) {
       $this->write_log("PayBackend2Backend", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
@@ -369,10 +357,6 @@ class MPAY24 extends Transaction {
 
     if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS')
       die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
-
-    $transaction = $this->getTransaction($tid);
-
-    $this->checkTransaction($transaction);
 
     $mPAYTid = $transaction->MPAYTID;
 
@@ -442,10 +426,6 @@ class MPAY24 extends Transaction {
   function finishTokenPayment($tid, $amount, $currency, $token) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
-
-    $transaction = $this->getTransaction($tid);
-
-    $this->checkTransaction($transaction);
 
     if(! $amount || ! is_numeric($amount))
       $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to pay is not valid!");
@@ -537,10 +517,6 @@ class MPAY24 extends Transaction {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $transaction = $this->getTransaction($tid);
-
-    $this->checkTransaction($transaction);
-
     if(! $transaction->MPAYTID || ! is_numeric($transaction->MPAYTID)) {
       $tidTransactionStatusResult = $this->mPay24Api->TransactionStatus(null, $tid);
 
@@ -619,10 +595,6 @@ class MPAY24 extends Transaction {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $transaction = $this->getTransaction($tid);
-
-    $this->checkTransaction($transaction);
-
     $mPAYTid = $transaction->MPAYTID;
     $currency = $transaction->CURRENCY;
 
@@ -657,10 +629,6 @@ class MPAY24 extends Transaction {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $transaction = $this->getTransaction($tid);
-
-    $this->checkTransaction($transaction);
-
     $mPAYTid = $transaction->MPAYTID;
     $currency = $transaction->CURRENCY;
     $customer = $transaction->CUSTOMER;
@@ -693,10 +661,6 @@ class MPAY24 extends Transaction {
   function cancelTransaction($tid) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
-
-    $transaction = $this->getTransaction($tid);
-
-    $this->checkTransaction($transaction);
 
     $mPAYTid = $transaction->MPAYTID;
 

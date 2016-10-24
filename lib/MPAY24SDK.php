@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Main mPAY24 PHP APIs Class.
  *
@@ -475,7 +476,7 @@ class MPAY24SDK {
    * @param string $token             The TOKEN used for the transaction
    * @return PaymentResponse
    */
-  public function PayWithToken($tid, $amount, $currency, $token) {
+  public function Accept($type, $tid, $payment = array()) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
@@ -488,28 +489,22 @@ class MPAY24SDK {
     $xmlTID = $xml->createElement('tid', $tid);
     $xmlTID = $operation->appendChild($xmlTID);
 
-    $xmlPType = $xml->createElement('pType', "TOKEN");
+    $xmlPType = $xml->createElement('pType', $type);
     $xmlPType = $operation->appendChild($xmlPType);
 
     $xmlPayment = $xml->createElement('payment');
     $xmlPayment = $operation->appendChild($xmlPayment);
-    $xmlPayment->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:PaymentTOKEN');
+    $xmlPayment->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:Payment'.$type);
 
-    $xmlAmount = $xml->createElement('amount', $amount);
-    $xmlAmount = $xmlPayment->appendChild($xmlAmount);
-
-    $xmlCurrency = $xml->createElement('currency', $currency);
-    $xmlCurrency = $xmlPayment->appendChild($xmlCurrency);
-
-    $xmlToken = $xml->createElement('token', $token);
-    $xmlToken = $xmlPayment->appendChild($xmlToken);
+    foreach ($payment as $k => $v) {
+      $buf = $xml->createElement($k, $v);
+      $buf = $xmlPayment->appendChild($buf);
+    }
 
     $this->request = $xml->saveXML();
 
     $this->send();
-
     $result = new PaymentResponse($this->response);
-
     return $result;
   }
 
@@ -912,7 +907,7 @@ class MPAY24SDK {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
     if($this->debug) {
-      $fh = fopen(__DIR__.'/../'.CURL_LOG, 'a+') or $this->permissionError();
+      $fh = fopen(__DIR__.'/'.CURL_LOG, 'a+') or $this->permissionError();
 
       curl_setopt($ch, CURLOPT_VERBOSE, 1);
       curl_setopt($ch, CURLOPT_STDERR, $fh);
@@ -1186,15 +1181,19 @@ class PaymentTokenResponse extends PaymentResponse {
    */
   function __construct($response) {
     $this->paymentResponse = new PaymentResponse($response);
-
     if($response != '') {
       $responseAsDOM = new DOMDocument();
       $responseAsDOM->loadXML($response);
 
       if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('token')->length != 0)
-        $this->token = $responseAsDOM->getElementsByTagName('token')->item(0)->nodeValue;
+        $token = $responseAsDOM->getElementsByTagName('token')->item(0)->nodeValue;
+        $this->token = $token;
+        $this->paymentResponse->token= $token;
+
       if(! empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('apiKey')->length != 0)
-        $this->apiKey = $responseAsDOM->getElementsByTagName('apiKey')->item(0)->nodeValue;
+        $apiKey = $responseAsDOM->getElementsByTagName('apiKey')->item(0)->nodeValue;
+        $this->apiKey = $apiKey;
+        $this->paymentResponse->apiKey= $apiKey;
     } else {
       $this->paymentResponse->generalResponse->setStatus("ERROR");
       $this->paymentResponse->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
