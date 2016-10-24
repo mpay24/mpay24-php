@@ -244,7 +244,7 @@ class MPAY24 extends Transaction {
    *
    * @return PaymentResponse
    */
-  function pay($mdxi) {
+  function selectPayment($mdxi) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
@@ -312,7 +312,7 @@ class MPAY24 extends Transaction {
    *          The payment type which will be used for the payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return PaymentResponse
    */
-  function payBackend2Backend($paymentType, $tid, $payment) {
+  function acceptPayment($paymentType, $tid, $payment) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
@@ -386,7 +386,7 @@ class MPAY24 extends Transaction {
    *
    * @return PaymentTokenResponse
    */
-  function payWithToken($paymentType) {
+  function createPaymentToken($paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 

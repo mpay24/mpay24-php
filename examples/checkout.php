@@ -6,5 +6,5 @@ $mdxi = new ORDER();
 $mdxi->Order->Tid = "123";
 $mdxi->Order->Price = "1.00";
 
-header('Location: '.$shop->pay($mdxi)->location);
+header('Location: '.$shop->selectPayment($mdxi)->location);
 ?>

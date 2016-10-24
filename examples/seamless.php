@@ -1,7 +1,7 @@
 <?php
 include_once ("../lib/MPAY24.php");
 $shop = new MPAY24();
-$tokenizer = $shop->payWithToken("CC")->getPaymentResponse();
+$tokenizer = $shop->createPaymentToken("CC")->getPaymentResponse();
 ?>
 <iframe src="<?php echo $tokenizer->location; ?>" frameBorder="0"></iframe>
 <form action="pay.php" method="POST">
