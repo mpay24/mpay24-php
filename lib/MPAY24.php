@@ -244,17 +244,11 @@ class MPAY24 extends Transaction {
    *
    * @return PaymentResponse
    */
-  function pay() {
+  function pay($mdxi) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $transaction = $this->createTransaction();
-
-    $this->checkTransaction($transaction);
-
     libxml_use_internal_errors(true);
-
-    $mdxi = $this->createMDXI($transaction);
 
     if(! $mdxi || ! $mdxi instanceof ORDER)
       $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php) and fulfill it with a MDXI!");
