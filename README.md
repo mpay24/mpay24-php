@@ -9,15 +9,60 @@ Offical PHP SDK for SOAP Bindings
 A short demo implementation guide is available at https://github.com/mpay24/mpay24-php/wiki/STEP-1
 Documentation is available at https://docs.mpay24.com/docs.
 
-### ABSTRACT
+## Configuration
 
-The target of this guide is to help you open the [mPAY24](https://www.mpay24.com/web) payment page in five simple steps, using the mPAY24 PHP API.
+The configuration file is located in /lib/config/config.php<br />
+The soap username and password should be entered here.<br />
+The `CURL_LOG` and `MPAY24_LOG` path starts in /lib/
 
-*Please note, that you still need to implement the mPAY24 Confirmation-Interface as explained in the "Specification of the mPAY24 Interfaces" in order to have your system process the result of the payment transaction!* The mPAY24 PHP API will also help you with this, but in order to fully understand how payment transactions work and therefore avoid some common pitfalls with the implementation, you are strongly encouraged to refer to the specification! There is also a complete and ready to test "example shop" available at mPAY24.
+## SDK Overview
+
+First it is necessary to include and initialize the library:
+```php
+include_once ("./lib/MPAY24.php");
+$shop = new MPAY24(); // or with soap username, password if not provided in config
+```
+
+#### Create a token for seamless creditcard payments
+
+```php
+$tokenizer = $shop->createPaymentToken("CC")->getPaymentResponse();
+```
+
+#### Create a payment
+
+Creditcard payment with a token
+```php
+$payment = array(
+  "amount" => "100",
+  "currency" => "EUR",
+  "token" => ""
+);
+$result = $shop->acceptPayment("TOKEN", "123", $payment);
+```
+Paypal payment
+```php
+$payment = array(
+  "amount" => "100",
+  "currency" => "EUR"
+);
+$result = $shop->acceptPayment("PAYPAL", "123", $payment);
+```
+
+#### Create a checkout
+
+Initialize a minimum paypage
+```php
+$mdxi = new ORDER();
+$mdxi->Order->Tid = "123";
+$mdxi->Order->Price = "1.00";
+
+$shop->selectPayment($mdxi)->location // redirect location to the payment page
+```
 
 ### Prerequisites
 
-In order for the mPAY24 PHP API to work, your installation will have to meet the following prerequisites:
+In order for the mPAY24 PHP SDK to work, your installation will have to meet the following prerequisites:
 
 * [PHP >= 5](http://www.php.net/)
 * [cURL](http://at2.php.net/manual/de/book.curl.php)

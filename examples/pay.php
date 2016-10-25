@@ -14,7 +14,7 @@ if(isset($_POST["type"])) {
       $payment["token"] = $_POST["token"];
       break;
   }
-  $result = $shop->payBackend2Backend($type, "123", $payment);
+  $result = $shop->acceptPayment($type, "123", $payment);
   if($result->generalResponse->returnCode == "REDIRECT") {
     header('Location: '.$result->location);
   } else {

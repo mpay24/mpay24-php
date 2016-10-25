@@ -175,7 +175,6 @@ class ORDER {
     $mdxi = "/MDXI.xsd";
 
     if(! file_exists($mdxi) || $this->olderThanOneWeek(__DIR__ . $mdxi)) {
-      set_time_limit(0);
       ini_set('display_errors', true);
 
       $fp = fopen(__DIR__ . '/MDXInew.xsd', 'w');
