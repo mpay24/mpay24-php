@@ -6,7 +6,7 @@ Offical PHP SDK for SOAP Bindings
 
 ## Documentation
 
-A short demo implementation guide is available at https://github.com/mpay24/mpay24-php/wiki/STEP-1
+A short demo implementation guide is available at https://docs.mpay24.com/docs/get-started</br>
 Documentation is available at https://docs.mpay24.com/docs.
 
 ## Configuration
