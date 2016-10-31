@@ -46,7 +46,7 @@ class MPAY24 extends Transaction {
    * @param bool $verfiyPeer
    *          Set as FALSE to stop cURL from verifying the peer's certificate
    */
-  function __construct($merchantID = MERCHANT_ID, $soapPassword = SOAP_PASS, $test = TEST_SYSTEM, $debug = DEBUG, $proxyHost = PROXY_HOST, $proxyPort = PROXY_PORT, $proxyUser = PROXY_USER, $proxyPass = PROXY_PASS, $verfiyPeer = VERIFY_PEER) {
+  function __construct($merchantID = MERCHANT_ID, $soapPassword = SOAP_PASS, $test = TEST_SYSTEM, $debug = DEBUG, $proxyHost = PROXY_HOST, $proxyPort = PROXY_PORT, $proxyUser = PROXY_USER, $proxyPass = PROXY_PASS, $verfiyPeer = VERIFY_PEER, $enableCurlLog = ENABLE_CURL_LOG) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
 
@@ -78,6 +78,7 @@ class MPAY24 extends Transaction {
 
     $this->mPay24Api->configure($merchantID, $soapPassword, $test, $pHost, $pPort, $pUser, $pPass, $verfiyPeer);
     $this->mPay24Api->setDebug($debug);
+    $this->mPay24Api->enableCurlLog = $enableCurlLog;
 
     if(version_compare(phpversion(), '5.0.0', '<') === true || ! in_array('curl', get_loaded_extensions()) || ! in_array('dom', get_loaded_extensions())) {
       $this->mPay24Api->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
@@ -270,8 +271,8 @@ class MPAY24 extends Transaction {
     $payResult = $this->mPay24Api->SelectPayment($mdxiXML);
 
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("Pay", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("Pay", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->write_log("SelectPayment", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->write_log("SelectPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
 
     return $payResult;
@@ -319,8 +320,8 @@ class MPAY24 extends Transaction {
     $payBackend2BackendResult = $this->mPay24Api->Accept($paymentType, $tid, $payment);
 
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("PayBackend2Backend", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("PayBackend2Backend", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->write_log("AcceptPayment", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->write_log("AcceptPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
 
     return $payBackend2BackendResult;
@@ -396,8 +397,8 @@ class MPAY24 extends Transaction {
     $tokenResult = $this->mPay24Api->CreateToken($paymentType);
 
     if($this->mPay24Api->getDebug()) {
-      $this->write_log("CreateToken", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("CreateToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+      $this->write_log("CreatePaymentToken", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
+      $this->write_log("CreatePaymentToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
     }
 
     return $tokenResult;
