@@ -12,6 +12,9 @@
  * @license             http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
  */
 class MPAY24SDK {
+
+  private $version = "3.0.1";
+
   /**
    * TRUE, when you want to use the test system, and FALSE otherwise
    *
@@ -112,24 +115,7 @@ class MPAY24SDK {
    * @var bool
    */
   private $debug = true;
-  /**
-   * The name of the shopsoftware
-   *
-   * @var string
-   */
-  public $shop = "mPAY24 GmbH";
-  /**
-   * The veriosn of the shopsoftware
-   *
-   * @var string
-   */
-  public $shopVersion = "PHP APIs";
-  /**
-   * The version of the shop module
-   *
-   * @var string
-   */
-  public $moduleVersion = '$Rev: 6231 $ ($Date:: 2015-03-13 #$)';
+  public $enableCurlLog = false;
 
   /**
    * Set the basic (mandatory) settings for the requests
@@ -382,12 +368,6 @@ class MPAY24SDK {
 
     $xmlMDXI = $xml->createElement('mdxi', htmlspecialchars($mdxi));
     $xmlMDXI = $operation->appendChild($xmlMDXI);
-
-    $getDataURL = $xml->createElement('getDataURL', "dummy_getDataURL");
-    $getDataURL = $operation->appendChild($getDataURL);
-
-    $tid = $xml->createElement('tid', 'tid');
-    $tid = $operation->appendChild($tid);
 
     $this->request = $xml->saveXML();
 
@@ -887,16 +867,7 @@ class MPAY24SDK {
    * Create a curl request and send the cretaed SOAP XML
    */
   private function send() {
-    $userAgent = 'mPAY24 PHP API $Rev: 6231 $ ($Date:: 2015-03-13 #$)';
-
-    if($this->shop != '') {
-      $userAgent = $this->shop;
-
-      if($this->shopVersion != '')
-        $userAgent .= " v. " . $this->shopVersion;
-      if($this->shopVersion != '')
-        $userAgent .= " - Module v. " . $this->moduleVersion;
-    }
+    $userAgent = "mpay24-php ".$this->version;
 
     $ch = curl_init($this->etp_url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -906,7 +877,7 @@ class MPAY24SDK {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $this->request);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-    if($this->debug) {
+    if($this->enableCurlLog) {
       $fh = fopen(__DIR__.'/'.CURL_LOG, 'a+') or $this->permissionError();
 
       curl_setopt($ch, CURLOPT_VERBOSE, 1);
@@ -929,7 +900,7 @@ class MPAY24SDK {
       $this->response = curl_exec($ch);
       curl_close($ch);
 
-      if($this->debug)
+      if($this->enableCurlLog)
         fclose($fh);
     } catch(Exception $e) {
       if($this->test)

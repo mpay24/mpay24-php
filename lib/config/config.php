@@ -3,6 +3,7 @@ define("MERCHANT_ID", "9****");
 define("SOAP_PASS", "**********");
 define("TEST_SYSTEM", TRUE);
 define("DEBUG", TRUE);
+define("ENABLE_CURL_LOG", FALSE);
 define("PROXY_HOST", NULL);
 define("PROXY_PORT", NULL);
 define("PROXY_USER", NULL);

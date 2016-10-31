@@ -1,0 +1,5 @@
+<Files ~ "^.*\.(LOG|log)">
+  Order allow,deny
+  Deny from all
+  Satisfy All
+</Files>
