@@ -57,7 +57,7 @@ $mdxi = new ORDER();
 $mdxi->Order->Tid = "123";
 $mdxi->Order->Price = "1.00";
 
-$checkoutURL = $shop->selectPayment($mdxi)->location // redirect location to the payment page
+$checkoutURL = $shop->selectPayment($mdxi)->location; // redirect location to the payment page
 
 header('Location: '.$checkoutURL);
 ```
