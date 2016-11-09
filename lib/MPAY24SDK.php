@@ -867,7 +867,7 @@ class MPAY24SDK {
    * Create a curl request and send the cretaed SOAP XML
    */
   private function send() {
-    $userAgent = "mpay24-php ".$this->version;
+    $userAgent = "mpay24-php/".$this->version;
 
     $ch = curl_init($this->etp_url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
