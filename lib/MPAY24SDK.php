@@ -379,53 +379,13 @@ class MPAY24SDK {
   }
 
   /**
-   * Start a secure payment using a PROFILE (mPAY24 proSAFE), supported by mPAY24 -
-   * a customer profile (you have already created) will be used for the payment.
-   * The payment window will not be called, the payment source (for example credit card),
-   * which was used from the customer by the last payment will be used for the transaction.
-   *
-   * @param ORDER $requestString
-   *          The order xml, which contains the shopping cart
-   * @return PaymentResponse
-   */
-  public function ProfilePayment($requestString) {
-    $xml = $this->buildEnvelope();
-    $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-    $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:AcceptPayment');
-    $operation = $body->appendChild($operation);
-
-    $requestXML = new DOMDocument("1.0", "UTF-8");
-    $requestXML->formatOutput = true;
-    $requestXML->loadXML($requestString);
-
-    $requestNode = $requestXML->getElementsByTagName("AcceptPayment")->item(0);
-
-    foreach($requestNode->childNodes as $child) {
-      $child = $xml->importNode($child, true);
-      $operation->appendChild($child);
-
-      if($child->nodeName == 'payment')
-        $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:PaymentPROFILE');
-    }
-
-    $this->request = $xml->saveXML();
-
-    $this->send();
-
-    $result = new PaymentResponse($this->response);
-
-    return $result;
-  }
-
-  /**
    * Start a secure payment using the mPAY24 Tokenizer.
    *
    * @param string $pType
    *          The payment type used for the tokenization (currently supported 'CC')
    * @return PaymentTokenResponse
    */
-  public function CreateToken($pType) {
+  public function CreateTokenPayment($pType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
@@ -456,7 +416,7 @@ class MPAY24SDK {
    * @param string $token             The TOKEN used for the transaction
    * @return PaymentResponse
    */
-  public function Accept($type, $tid, $payment = array()) {
+  public function AcceptPayment($type, $tid, $payment = array()) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
@@ -489,45 +449,6 @@ class MPAY24SDK {
   }
 
   /**
-   * Start an AcceptPayment transaction, supported by mPAY24.
-   *
-   * @param ORDER $requestString
-   *          The order xml, which contains the shopping cart
-   * @param string $paymentType
-   *          The payment type which will be used for the acceptpayment request (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
-   * @return PaymentResponse
-   */
-  public function AcceptPayment($requestString, $paymentType) {
-    $xml = $this->buildEnvelope();
-    $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-    $operation = $xml->createElement('etp:AcceptPayment');
-    $operation = $body->appendChild($operation);
-
-    $requestXML = new DOMDocument("1.0", "UTF-8");
-    $requestXML->formatOutput = true;
-    $requestXML->loadXML($requestString);
-
-    $requestNode = $requestXML->getElementsByTagName("AcceptPayment")->item(0);
-
-    foreach($requestNode->childNodes as $child) {
-      $child = $xml->importNode($child, true);
-      $operation->appendChild($child);
-
-      if($child->nodeName == 'payment')
-        $child->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', "etp:Payment$paymentType");
-    }
-
-    $this->request = $xml->saveXML();
-
-    $this->send();
-
-    $result = new PaymentResponse($this->response);
-
-    return $result;
-  }
-
-  /**
    * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
    *
    * @param string $requestString
@@ -536,7 +457,7 @@ class MPAY24SDK {
    *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  public function Callback($requestString, $paymentType) {
+  public function ManualCallback($requestString, $paymentType) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 

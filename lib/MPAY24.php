@@ -226,7 +226,7 @@ class MPAY24 extends Transaction {
    *
    * @return ListPaymentMethodsResponse
    */
-  function getPaymentMethods() {
+  function listPaymentMethods() {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
@@ -279,34 +279,6 @@ class MPAY24 extends Transaction {
   }
 
   /**
-   * Start a payment with customer profile
-   *
-   * @return PaymentResponse
-   */
-  function payWithProfile() {
-    if(! $this->mPay24Api)
-      die("You are not allowed to define a constructor in the child class of MPAY24!");
-
-    $transaction = $this->createTransaction();
-
-    $this->checkTransaction($transaction);
-
-    $order = $this->createProfileOrder($transaction);
-
-    if(! $order || ! $order instanceof ORDER)
-      $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
-
-    $payWithProfileResult = $this->mPay24Api->ProfilePayment($order->toXML());
-
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("PayWithProfile", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("PayWithProfile", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
-    }
-
-    return $payWithProfileResult;
-  }
-
-  /**
    * Start a backend to backend payment
    *
    * @param string $paymentType
@@ -317,7 +289,7 @@ class MPAY24 extends Transaction {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $payBackend2BackendResult = $this->mPay24Api->Accept($paymentType, $tid, $payment);
+    $payBackend2BackendResult = $this->mPay24Api->AcceptPayment($paymentType, $tid, $payment);
 
     if($this->mPay24Api->getDebug()) {
       $this->write_log("AcceptPayment", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
@@ -343,7 +315,7 @@ class MPAY24 extends Transaction {
    *          The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
    * @return PaymentResponse
    */
-  function finishExpressCheckoutPayment($tid, $shippingCosts, $amount, $cancel, $paymentType) {
+  function manualCallback($tid, $shippingCosts, $amount, $cancel, $paymentType) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
@@ -369,7 +341,7 @@ class MPAY24 extends Transaction {
     if(! $order || ! $order instanceof ORDER)
       $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
 
-    $finishExpressCheckoutResult = $this->mPay24Api->Callback($order->toXML(), $paymentType);
+    $finishExpressCheckoutResult = $this->mPay24Api->ManualCallback($order->toXML(), $paymentType);
 
     if($this->mPay24Api->getDebug()) {
       $this->write_log("FinishExpressCheckoutResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
@@ -394,7 +366,7 @@ class MPAY24 extends Transaction {
     if($paymentType !== 'CC')
       die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
 
-    $tokenResult = $this->mPay24Api->CreateToken($paymentType);
+    $tokenResult = $this->mPay24Api->CreateTokenPayment($paymentType);
 
     if($this->mPay24Api->getDebug()) {
       $this->write_log("CreatePaymentToken", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
@@ -402,180 +374,6 @@ class MPAY24 extends Transaction {
     }
 
     return $tokenResult;
-  }
-
-  /**
-   * Finish the payment, started with PayPal Express Checkout - reserve, bill or cancel it: Whether are you going to reserve or bill a payment is setted at the beginning of the payment.
-   * With the 'cancel' parameter you are able also to cancel the transaction
-   *
-   * @param string $tid
-   *          The transaction ID in the shop
-   * @param int $amount
-   *          The amount you want to reserve/bill multiply by 100
-   * @param int $currency
-   *          The currency you want to use for the transaction in ISO (EUR, USD, etc)
-   * @param string $token
-   *          The token which was returned by the payWithToken function
-   * @return PaymentResponse
-   */
-  function finishTokenPayment($tid, $amount, $currency, $token) {
-    if(! $this->mPay24Api)
-      die("You are not allowed to define a constructor in the child class of MPAY24!");
-
-    if(! $amount || ! is_numeric($amount))
-      $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to pay is not valid!");
-
-    $finishTokenPaymentResult = $this->mPay24Api->PayWithToken($tid, $amount, $currency, $token);
-
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("FinishTokenPaymentResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("FinishTokenPaymentResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
-    }
-
-    return $finishTokenPaymentResult;
-  }
-
-  /**
-   * Proceed the confirmation call
-   *
-   * @param string $tid
-   *          The transaction ID in the shop
-   * @param array $args
-   *          A list with the arguments, provided with the confirmation
-   */
-  function confirm($tid, $args) {
-    $to_log = '';
-    $shippingConfirmed = "";
-
-    foreach($args as $name => $value)
-      $to_log .= $name . " = " . $value . "\n";
-
-    if($this->mPay24Api->getDebug())
-      $this->write_log("Confirmation for transaction '" . $tid . "'\n", utf8_encode($to_log) . "\n");
-
-    $transactionStatus = $this->updateTransactionStatus($tid);
-
-    $newArgs = $transactionStatus->getParams();
-
-    foreach($newArgs as $name => $value)
-      $to_log .= $name . " = " . $value . "\n";
-
-    if($this->mPay24Api->getDebug())
-      $this->write_log("Status for transaction " . $tid . ":", utf8_encode($to_log) . "\n");
-
-    if($transactionStatus->getParam("SHIPPING_ADDR")) {
-      $order = new DOMDocument();
-      $order->loadXML($transactionStatus->getParam("SHIPPING_ADDR"));
-    }
-
-    if(isset($order)) {
-      $shipping = $order->getElementsByTagName("Shipping")->item(0);
-      $shippingConfirmed = $shipping->getAttribute("confirmed");
-    }
-
-    if($this->getSecret($tid) == $args['token']) {
-      if($shippingConfirmed == "false") {
-        $newArgs["SHIPP_NAME"] = $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Name")->item(0)->nodeValue;
-        $newArgs["SHIPP_STREET"] = $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Street")->item(0)->nodeValue;
-
-        if($order->getElementsByTagName("Shipping")->item(0)->hasAttribute("Street2"))
-          $newArgs["SHIPP_STREET2"] = $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Street2")->item(0)->nodeValue;
-
-        $newArgs["SHIPP_ZIP"] = $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Zip")->item(0)->nodeValue;
-        $newArgs["SHIPP_CITY"] = $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("City")->item(0)->nodeValue;
-        $newArgs["SHIPP_COUNTRY"] = $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Country")->item(0)->getAttribute("code");
-        return $this->updateTransaction($tid, $newArgs, false);
-      } else
-        return $this->updateTransaction($tid, $newArgs, true);
-    }
-  }
-
-  /**
-   * Get the transaction's current information - see details
-   *
-   * An array with all the data (by mPAY24) for this transaction (STATUS, CURRENCY, PRICE, APPR_CODE, etc) will be returned.
-   * Possible values for the STATUS attribute:
-   *
-   * * RESERVED - in case the authorization was successful but not cleared yet
-   * * BILLED - in case the authorization was successful and amount was cleared
-   * * CREDITED - in case amount was credited
-   * * REVERSED - in case the transaction was canceled
-   * * SUSPENDED - in case the transaction is not fully compleated yet
-   * * NOT FOUND - in case there is not such a transaction in the mPAY24 database
-   * * ERROR - in case the transaction was not successful
-   *
-   * @param string $tid
-   *          The transaction ID (in your shop), for the transaction you are asking for
-   * @return array
-   */
-  function updateTransactionStatus($tid) {
-    if(! $this->mPay24Api)
-      die("You are not allowed to define a constructor in the child class of MPAY24!");
-
-    if(! $transaction->MPAYTID || ! is_numeric($transaction->MPAYTID)) {
-      $tidTransactionStatusResult = $this->mPay24Api->TransactionStatus(null, $tid);
-
-      if($this->mPay24Api->getDebug()) {
-        $this->write_log("TidTransactionStatus", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-        $this->write_log("TidTransactionStatus", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
-      }
-
-      if($tidTransactionStatusResult->getParam("SHIPPING_ADDR")) {
-        $order = new DOMDocument();
-        $order->loadXML($tidTransactionStatusResult->getParam("SHIPPING_ADDR"));
-      }
-
-      if(isset($order)) {
-        $shipping = $order->getElementsByTagName("Shipping")->item(0);
-        $shippingConfirmed = $shipping->getAttribute("confirmed");
-
-        if($shippingConfirmed == "false") {
-          $tidTransactionStatusResult->setParam("shippingConfirmed", false);
-          $tidTransactionStatusResult->setParam("SHIPP_NAME", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Name")->item(0)->nodeValue);
-          $tidTransactionStatusResult->setParam("SHIPP_STREET", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Street")->item(0)->nodeValue);
-          if($tidTransactionStatusResult->getParam("SHIPP_STREET2"))
-            $tidTransactionStatusResult->setParam("SHIPP_STREET2", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Street2")->item(0)->nodeValue);
-          $tidTransactionStatusResult->setParam("SHIPP_ZIP", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Zip")->item(0)->nodeValue);
-          $tidTransactionStatusResult->setParam("SHIPP_CITY", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("City")->item(0)->nodeValue);
-          $tidTransactionStatusResult->setParam("SHIPP_COUNTRY", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Country")->item(0)->getAttribute("code"));
-        } else
-          $tidTransactionStatusResult->setParam("shippingConfirmed", true);
-      } else
-        $tidTransactionStatusResult->setParam("shippingConfirmed", true);
-
-      return $tidTransactionStatusResult;
-    } else {
-      $mPAYTidTransactionStatusResult = $this->mPay24Api->TransactionStatus($transaction->MPAYTID, null);
-
-      if($this->mPay24Api->getDebug()) {
-        $this->write_log("mPAYTidTransactionStatus", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-        $this->write_log("mPAYTidTransactionStatus", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
-      }
-
-      if($mPAYTidTransactionStatusResult->getParam("SHIPPING_ADDR")) {
-        $order = new DOMDocument();
-        $order->loadXML($mPAYTidTransactionStatusResult->getParam("SHIPPING_ADDR"));
-      }
-
-      if(isset($order)) {
-        $shipping = $order->getElementsByTagName("Shipping")->item(0);
-        $shippingConfirmed = $shipping->getAttribute("confirmed");
-
-        if($shippingConfirmed == "false") {
-          $mPAYTidTransactionStatusResult->setParam("shippingConfirmed", false);
-          $mPAYTidTransactionStatusResult->setParam("SHIPP_NAME", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Name")->item(0)->nodeValue);
-          $mPAYTidTransactionStatusResult->setParam("SHIPP_STREET", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Street")->item(0)->nodeValue);
-          $mPAYTidTransactionStatusResult->setParam("SHIPP_STREET2", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Street2")->item(0)->nodeValue);
-          $mPAYTidTransactionStatusResult->setParam("SHIPP_ZIP", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Zip")->item(0)->nodeValue);
-          $mPAYTidTransactionStatusResult->setParam("SHIPP_CITY", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("City")->item(0)->nodeValue);
-          $mPAYTidTransactionStatusResult->setParam("SHIPP_COUNTRY", $order->getElementsByTagName("Shipping")->item(0)->getElementsByTagName("Country")->item(0)->getAttribute("code"));
-        } else
-          $mPAYTidTransactionStatusResult->setParam("shippingConfirmed", true);
-      } else
-        $mPAYTidTransactionStatusResult->setParam("shippingConfirmed", true);
-
-      return $mPAYTidTransactionStatusResult;
-    }
   }
 
   /**
@@ -841,7 +639,7 @@ abstract class MPay24flexLINK {
     if(! is_bool($debug))
       die("The debug parameter '$debug' you have given is wrong, it must be boolean value 'true' or 'false'!");
 
-    $this->mPay24Api = new MPay24Api();
+    $this->mPay24Api = new MPAY24SDK();
 
     $this->mPay24Api->configureFlexLINK($spid, $password, $test);
     $this->mPay24Api->setDebug($debug);
@@ -938,6 +736,7 @@ abstract class MPay24flexLINK {
 $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $mode = NULL, $salutation = NULL, $name = NULL, $street = NULL, $street2 = NULL, $zip = NULL, $city = NULL, $country = NULL, $email = NULL, $phone = NULL, $success = NULL, $error = NULL, $confirmation = NULL,
       // parameters names
       $invoice_idVar = "TID", $amountVar = "AMOUNT", $currencyVar = "CURRENCY", $languageVar = "LANGUAGE", $user_fieldVar = "USER_FIELD", $modeVar = "MODE", $salutationVar = "SALUTATION", $nameVar = "NAME", $streetVar = "STREET", $street2Var = "STREET2", $zipVar = "ZIP", $cityVar = "CITY", $countryVar = "COUNTRY", $emailVar = "EMAIL", $phoneVar = "PHONE", $successVar = "SUCCESS_URL", $errorVar = "ERROR_URL", $confirmationVar = "CONFIRMATION_URL") {
+
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPay24flexLINK!");
 
