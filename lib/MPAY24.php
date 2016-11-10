@@ -15,9 +15,9 @@ class MPAY24 extends Transaction {
   /**
    * The mPAY24API Object, with you are going to work
    *
-   * @var $mPay24Api
+   * @var $mPAY24SDK
    */
-  var $mPay24Api = null;
+  var $mPAY24SDK = null;
 
   /**
    * The constructor, which sets all the initial values, in order to be able making transactions
@@ -56,7 +56,7 @@ class MPAY24 extends Transaction {
     if(! is_bool($verfiyPeer))
       die("The verifyPeer parameter '$verfiyPeer' you have given is wrong, it must be boolean value 'true' or 'false'!");
 
-    $this->mPay24Api = new MPAY24SDK();
+    $this->mPAY24SDK = new MPAY24SDK();
 
     if($proxyHost == null) {
       $pHost = "";
@@ -76,31 +76,31 @@ class MPAY24 extends Transaction {
       }
     }
 
-    $this->mPay24Api->configure($merchantID, $soapPassword, $test, $pHost, $pPort, $pUser, $pPass, $verfiyPeer);
-    $this->mPay24Api->setDebug($debug);
-    $this->mPay24Api->enableCurlLog = $enableCurlLog;
+    $this->mPAY24SDK->configure($merchantID, $soapPassword, $test, $pHost, $pPort, $pUser, $pPass, $verfiyPeer);
+    $this->mPAY24SDK->setDebug($debug);
+    $this->mPAY24SDK->enableCurlLog = $enableCurlLog;
 
     if(version_compare(phpversion(), '5.0.0', '<') === true || ! in_array('curl', get_loaded_extensions()) || ! in_array('dom', get_loaded_extensions())) {
-      $this->mPay24Api->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
+      $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
       if(version_compare(phpversion(), '5.0.0', '<') === true)
-        $this->mPay24Api->printMsg("You need PHP version 5.0.0 or newer!<br>");
+        $this->mPAY24SDK->printMsg("You need PHP version 5.0.0 or newer!<br>");
       if(! in_array('curl', get_loaded_extensions()))
-        $this->mPay24Api->printMsg("You need cURL extension!<br>");
+        $this->mPAY24SDK->printMsg("You need cURL extension!<br>");
       if(! in_array('dom', get_loaded_extensions()))
-        $this->mPay24Api->printMsg("You need DOM extension!<br>");
+        $this->mPAY24SDK->printMsg("You need DOM extension!<br>");
 
-      $this->mPay24Api->dieWithMsg("Please load the required extensions!");
+      $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
     }
 
     if(strlen($merchantID) != 5 || (substr($merchantID, 0, 1) != "7" && substr($merchantID, 0, 1) != "9"))
-      $this->mPay24Api->dieWithMsg("The merchant ID '$merchantID' you have given is wrong, it must be 5-digit number and starts with 7 or 9!");
+      $this->mPAY24SDK->dieWithMsg("The merchant ID '$merchantID' you have given is wrong, it must be 5-digit number and starts with 7 or 9!");
 
     if($proxyPort != null && (! is_numeric($proxyPort) || strlen($proxyPort) != 4))
-      $this->mPay24Api->dieWithMsg("The proxy port '$proxyPort' you have given must be numeric!");
+      $this->mPAY24SDK->dieWithMsg("The proxy port '$proxyPort' you have given must be numeric!");
 
     if(($proxyHost == null && $proxyHost != $proxyPort) || ($proxyPort == null && $proxyHost != $proxyPort))
-      $this->mPay24Api->dieWithMsg("You must setup both variables 'proxyHost' and 'proxyPort'!");
+      $this->mPAY24SDK->dieWithMsg("You must setup both variables 'proxyHost' and 'proxyPort'!");
   }
 
   /**
@@ -227,14 +227,14 @@ class MPAY24 extends Transaction {
    * @return ListPaymentMethodsResponse
    */
   function listPaymentMethods() {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $paymentMethods = $this->mPay24Api->ListPaymentMethods();
+    $paymentMethods = $this->mPAY24SDK->ListPaymentMethods();
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("GetPaymentMethods", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("GetPaymentMethods", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("GetPaymentMethods", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("GetPaymentMethods", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $paymentMethods;
@@ -246,33 +246,33 @@ class MPAY24 extends Transaction {
    * @return PaymentResponse
    */
   function selectPayment($mdxi) {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
     libxml_use_internal_errors(true);
 
     if(! $mdxi || ! $mdxi instanceof ORDER)
-      $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php) and fulfill it with a MDXI!");
+      $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php) and fulfill it with a MDXI!");
 
     $mdxiXML = $mdxi->toXML();
 
-    if(! $this->mPay24Api->proxyUsed())
+    if(! $this->mPAY24SDK->proxyUsed())
       if(! $mdxi->validate()) {
         $errors = "";
 
         foreach(libxml_get_errors() as $error)
           $errors .= trim($error->message) . "<br>";
 
-        $this->mPay24Api->dieWithMsg("The schema you have created is not valid!" . "<br><br>" . $errors . "<textarea cols='100' rows='30'>$mdxiXML</textarea>");
+        $this->mPAY24SDK->dieWithMsg("The schema you have created is not valid!" . "<br><br>" . $errors . "<textarea cols='100' rows='30'>$mdxiXML</textarea>");
       }
 
     $mdxiXML = $mdxi->toXML();
 
-    $payResult = $this->mPay24Api->SelectPayment($mdxiXML);
+    $payResult = $this->mPAY24SDK->SelectPayment($mdxiXML);
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("SelectPayment", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("SelectPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("SelectPayment", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("SelectPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $payResult;
@@ -286,14 +286,14 @@ class MPAY24 extends Transaction {
    * @return PaymentResponse
    */
   function acceptPayment($paymentType, $tid, $payment) {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $payBackend2BackendResult = $this->mPay24Api->AcceptPayment($paymentType, $tid, $payment);
+    $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment);
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("AcceptPayment", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("AcceptPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("AcceptPayment", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("AcceptPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $payBackend2BackendResult;
@@ -316,11 +316,11 @@ class MPAY24 extends Transaction {
    * @return PaymentResponse
    */
   function manualCallback($tid, $shippingCosts, $amount, $cancel, $paymentType) {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
     if($cancel !== "true" && $cancel !== "false")
-      $this->mPay24Api->dieWithMsg("The allowed values for the parameter 'cancel' by finishing a PayPal (Express Checkout) payment are 'true' or 'false'!");
+      $this->mPAY24SDK->dieWithMsg("The allowed values for the parameter 'cancel' by finishing a PayPal (Express Checkout) payment are 'true' or 'false'!");
 
     if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS')
       die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
@@ -328,24 +328,24 @@ class MPAY24 extends Transaction {
     $mPAYTid = $transaction->MPAYTID;
 
     if(! $mPAYTid)
-      $this->mPay24Api->dieWithMsg("The transaction '$tid' you want to finish with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+      $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to finish with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
 
     if(! $amount || ! is_numeric($amount))
-      $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to pay by '$paymentType' is not valid!");
+      $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to pay by '$paymentType' is not valid!");
 
     if(! $shippingCosts || ! is_numeric($shippingCosts))
-      $this->mPay24Api->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
+      $this->mPAY24SDK->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
 
     $order = $this->createFinishExpressCheckoutOrder($transaction, $shippingCosts, $amount, $cancel);
 
     if(! $order || ! $order instanceof ORDER)
-      $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
+      $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
 
-    $finishExpressCheckoutResult = $this->mPay24Api->ManualCallback($order->toXML(), $paymentType);
+    $finishExpressCheckoutResult = $this->mPAY24SDK->ManualCallback($order->toXML(), $paymentType);
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("FinishExpressCheckoutResult", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("FinishExpressCheckoutResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("FinishExpressCheckoutResult", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("FinishExpressCheckoutResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $finishExpressCheckoutResult;
@@ -360,17 +360,17 @@ class MPAY24 extends Transaction {
    * @return PaymentTokenResponse
    */
   function createPaymentToken($paymentType) {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
     if($paymentType !== 'CC')
       die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
 
-    $tokenResult = $this->mPay24Api->CreateTokenPayment($paymentType);
+    $tokenResult = $this->mPAY24SDK->CreateTokenPayment($paymentType);
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("CreatePaymentToken", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("CreatePaymentToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("CreatePaymentToken", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("CreatePaymentToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $tokenResult;
@@ -385,26 +385,26 @@ class MPAY24 extends Transaction {
    *          The amount you want to clear multiply by 100
    */
   function manualClear($tid, $amount) {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
     $mPAYTid = $transaction->MPAYTID;
     $currency = $transaction->CURRENCY;
 
     if(! $mPAYTid)
-      $this->mPay24Api->dieWithMsg("The transaction '$tid' you want to clear with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+      $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to clear with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
 
     if(! $amount || ! is_numeric($amount))
-      $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to clear is not valid!");
+      $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to clear is not valid!");
 
     if(! $currency || strlen($currency) != 3)
-      $this->mPay24Api->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
+      $this->mPAY24SDK->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
 
-    $clearAmountResult = $this->mPay24Api->ManualClear($mPAYTid, $amount, $currency);
+    $clearAmountResult = $this->mPAY24SDK->ManualClear($mPAYTid, $amount, $currency);
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("ClearAmount", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("ClearAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("ClearAmount", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("ClearAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $clearAmountResult;
@@ -419,7 +419,7 @@ class MPAY24 extends Transaction {
    *          The amount you want to credit multiply by 100
    */
   function manualCredit($tid, $amount) {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
     $mPAYTid = $transaction->MPAYTID;
@@ -427,19 +427,19 @@ class MPAY24 extends Transaction {
     $customer = $transaction->CUSTOMER;
 
     if(! $mPAYTid)
-      $this->mPay24Api->dieWithMsg("The transaction '$tid' you want to credit with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+      $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to credit with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
 
     if(! $amount || ! is_numeric($amount))
-      $this->mPay24Api->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
+      $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
 
     if(! $currency || strlen($currency) != 3)
-      $this->mPay24Api->dieWithMsg("The currency code '$currency' for the amount you are trying to credit is not valid (3-digit ISO-Currency-Code)!");
+      $this->mPAY24SDK->dieWithMsg("The currency code '$currency' for the amount you are trying to credit is not valid (3-digit ISO-Currency-Code)!");
 
-    $creditAmountResult = $this->mPay24Api->ManualCredit($mPAYTid, $amount, $currency, $customer);
+    $creditAmountResult = $this->mPAY24SDK->ManualCredit($mPAYTid, $amount, $currency, $customer);
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("CreditAmount", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("CreditAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("CreditAmount", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("CreditAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $creditAmountResult;
@@ -452,19 +452,19 @@ class MPAY24 extends Transaction {
    *          The transaction ID, for the transaction you want to cancel
    */
   function cancelTransaction($tid) {
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
     $mPAYTid = $transaction->MPAYTID;
 
     if(! $mPAYTid)
-      $this->mPay24Api->dieWithMsgie("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+      $this->mPAY24SDK->dieWithMsgie("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
 
-    $cancelTransactionResult = $this->mPay24Api->ManualReverse($mPAYTid);
+    $cancelTransactionResult = $this->mPAY24SDK->ManualReverse($mPAYTid);
 
-    if($this->mPay24Api->getDebug()) {
-      $this->write_log("CancelTransaction", "REQUEST to " . $this->mPay24Api->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPay24Api->getRequest()) . "\n");
-      $this->write_log("CancelTransaction", "RESPONSE - " . str_replace("><", ">\n<", $this->mPay24Api->getResponse()) . "\n");
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("CancelTransaction", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("CancelTransaction", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
 
     return $cancelTransactionResult;
@@ -478,11 +478,11 @@ class MPAY24 extends Transaction {
    */
   private function checkTransaction($transaction) {
     if(! $transaction || ! $transaction instanceof Transaction)
-      $this->mPay24Api->dieWithMsg("To be able to use the MPay24Api you must create a Transaction object, which contains at least TID and PRICE!");
+      $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create a Transaction object, which contains at least TID and PRICE!");
     else if(! $transaction->TID)
-      $this->mPay24Api->dieWithMsg("The Transaction must contain TID!");
+      $this->mPAY24SDK->dieWithMsg("The Transaction must contain TID!");
     else if(! $transaction->PRICE)
-      $this->mPay24Api->dieWithMsg("The Transaction must contain PRICE!");
+      $this->mPAY24SDK->dieWithMsg("The Transaction must contain PRICE!");
   }
 }
 
@@ -612,9 +612,9 @@ abstract class MPay24flexLINK {
   /**
    * The mPAY24API Object, you are going to work with
    *
-   * @var $mPay24Api
+   * @var $mPAY24SDK
    */
-  var $mPay24Api = null;
+  var $mPAY24SDK = null;
 
   /**
    * The constructor, which sets all the initial values to be able making flexLINK transactions.
@@ -639,19 +639,19 @@ abstract class MPay24flexLINK {
     if(! is_bool($debug))
       die("The debug parameter '$debug' you have given is wrong, it must be boolean value 'true' or 'false'!");
 
-    $this->mPay24Api = new MPAY24SDK();
+    $this->mPAY24SDK = new MPAY24SDK();
 
-    $this->mPay24Api->configureFlexLINK($spid, $password, $test);
-    $this->mPay24Api->setDebug($debug);
+    $this->mPAY24SDK->configureFlexLINK($spid, $password, $test);
+    $this->mPAY24SDK->setDebug($debug);
 
     if(version_compare(phpversion(), '5.0.0', '<') === true || ! in_array('mcrypt', get_loaded_extensions())) {
-      $this->mPay24Api->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
+      $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
       if(version_compare(phpversion(), '5.0.0', '<') === true)
-        $this->mPay24Api->printMsg("You need PHP version 5.0.0 or newer!<br>");
+        $this->mPAY24SDK->printMsg("You need PHP version 5.0.0 or newer!<br>");
       if(! in_array('mcrypt', get_loaded_extensions()))
-        $this->mPay24Api->printMsg("You need mcrypt extension!<br>");
-      $this->mPay24Api->dieWithMsg("Please load the required extensions!");
+        $this->mPAY24SDK->printMsg("You need mcrypt extension!<br>");
+      $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
     }
   }
 
@@ -737,7 +737,7 @@ $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $m
       // parameters names
       $invoice_idVar = "TID", $amountVar = "AMOUNT", $currencyVar = "CURRENCY", $languageVar = "LANGUAGE", $user_fieldVar = "USER_FIELD", $modeVar = "MODE", $salutationVar = "SALUTATION", $nameVar = "NAME", $streetVar = "STREET", $street2Var = "STREET2", $zipVar = "ZIP", $cityVar = "CITY", $countryVar = "COUNTRY", $emailVar = "EMAIL", $phoneVar = "PHONE", $successVar = "SUCCESS_URL", $errorVar = "ERROR_URL", $confirmationVar = "CONFIRMATION_URL") {
 
-    if(! $this->mPay24Api)
+    if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPay24flexLINK!");
 
     $params[$invoice_idVar] = $invoice_id;
@@ -781,12 +781,12 @@ $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $m
     $params[$confirmationVar] = $confirmation;
 
     foreach($params as $key => $value)
-      if($this->mPay24Api->getDebug())
+      if($this->mPAY24SDK->getDebug())
         $this->write_flexLINK_log("flexLINK:\t\t\tParameters: $key = $value\n");
 
-    $parameters = $this->mPay24Api->flexLINK($params);
+    $parameters = $this->mPAY24SDK->flexLINK($params);
 
-    if($this->mPay24Api->getDebug())
+    if($this->mPAY24SDK->getDebug())
       $this->write_flexLINK_log("flexLINK:\t\t\tEncrypted parameters: $parameters\n");
 
     return $parameters;
@@ -800,10 +800,10 @@ $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $m
    * @return stringAn URL to pay
    */
   public function getPayLink($encryptedParams) {
-    if($this->mPay24Api->getDebug())
-      $this->write_flexLINK_log("flexLINK:\t\t\tURL: https://" . $this->mPay24Api->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPay24Api->getSPID() . "/$encryptedParams\n");
+    if($this->mPAY24SDK->getDebug())
+      $this->write_flexLINK_log("flexLINK:\t\t\tURL: https://" . $this->mPAY24SDK->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPAY24SDK->getSPID() . "/$encryptedParams\n");
 
-    return "https://" . $this->mPay24Api->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPay24Api->getSPID() . "/$encryptedParams";
+    return "https://" . $this->mPAY24SDK->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPAY24SDK->getSPID() . "/$encryptedParams";
   }
 
   /**
