@@ -384,7 +384,7 @@ class MPAY24 extends Transaction {
    * @param int $amount
    *          The amount you want to clear multiply by 100
    */
-  function clearAmount($tid, $amount) {
+  function manualClear($tid, $amount) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
@@ -418,7 +418,7 @@ class MPAY24 extends Transaction {
    * @param int $amount
    *          The amount you want to credit multiply by 100
    */
-  function creditAmount($tid, $amount) {
+  function manualCredit($tid, $amount) {
     if(! $this->mPay24Api)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
