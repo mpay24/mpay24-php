@@ -7,7 +7,7 @@
 <iframe src="<?php echo $tokenizer->location; ?>" frameBorder="0"></iframe>
 
 <form action="pay.php" method="POST">
-  <input name="token" type="hidden" value="<? echo $tokenizer->token; ?>" />
+  <input name="token" type="hidden" value="<?php echo $tokenizer->token; ?>" />
   <button id="paybutton" name="type" value="TOKEN" type="submit" disabled="true">Pay with creditcard</button>
   <button name="type" value="PAYPAL" type="submit">Pay with paypal</button>
 </form>
