@@ -8,6 +8,14 @@
     "currency" => "EUR"
   );
 
+  $additional = array(
+    "customerID" => "customer123",
+    "successURL" => "http://yourdomain.com/success",
+    "errorURL" => "http://yourdomain.com/error",
+    "confirmationURL" => "http://yourdomain.com/confirmation",
+    "cancelURL" => "http://yourdomain.com/cancel"
+  );
+
   if(isset($_POST["type"])) {
     $type = $_POST["type"];
     switch($type) {
@@ -15,7 +23,9 @@
         $payment["token"] = $_POST["token"];
         break;
     }
-    $result = $shop->acceptPayment($type, "123", $payment);
+
+    $result = $shop->acceptPayment($type, "123", $payment, $additional);
+
     if($result->generalResponse->returnCode == "REDIRECT") {
       header('Location: '.$result->location);
     } else {

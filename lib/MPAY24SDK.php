@@ -416,7 +416,7 @@ class MPAY24SDK {
    * @param string $token             The TOKEN used for the transaction
    * @return PaymentResponse
    */
-  public function AcceptPayment($type, $tid, $payment = array()) {
+  public function AcceptPayment($type, $tid, $payment = array(), $additional = array()) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
@@ -439,6 +439,11 @@ class MPAY24SDK {
     foreach ($payment as $k => $v) {
       $buf = $xml->createElement($k, $v);
       $buf = $xmlPayment->appendChild($buf);
+    }
+
+    foreach ($additional as $k => $v) {
+      $buf = $xml->createElement($k, $v);
+      $buf = $operation->appendChild($buf);
     }
 
     $this->request = $xml->saveXML();

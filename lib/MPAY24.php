@@ -285,11 +285,11 @@ class MPAY24 extends Transaction {
    *          The payment type which will be used for the payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
    * @return PaymentResponse
    */
-  function acceptPayment($paymentType, $tid, $payment) {
+  function acceptPayment($paymentType, $tid, $payment, $additional) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
-    $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment);
+    $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
 
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("AcceptPayment", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
