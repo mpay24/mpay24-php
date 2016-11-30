@@ -11,9 +11,9 @@ Documentation is available at https://docs.mpay24.com/docs.
 
 ## Configuration
 
-The configuration file is located in /lib/config/config.php<br />
+The configuration file is located in `/lib/config/config.php`<br />
 The soap username and password should be entered here.<br />
-The `CURL_LOG` and `MPAY24_LOG` path starts in /lib/
+The `CURL_LOG` and `MPAY24_LOG` path starts in `/lib/`
 
 ## SDK Overview
 
