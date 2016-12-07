@@ -9,43 +9,12 @@ include_once ("config/config.php");
  * @author mPAY24 GmbH <support@mpay24.com>
  * @version $Id: MPAY24.php 6271 2015-04-09 08:38:50Z anna $
  * @filesource MPAY24.php
- * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
+ * @license MIT
  */
 class MPAY24 extends Transaction {
-  /**
-   * The mPAY24API Object, with you are going to work
-   *
-   * @var $mPAY24SDK
-   */
+ 
   var $mPAY24SDK = null;
-
-  /**
-   * The constructor, which sets all the initial values, in order to be able making transactions
-   *
-   * @param int $merchantID
-   *          5-digit account number, supported by mPAY24:
-   *          TEST accounts - starting with 9
-   *          LIVE account - starting with 7
-   * @param string $soapPassword
-   *          The webservice's password, supported by mPAY24
-   * @param bool $test
-   *          TRUE - when you want to use the TEST system,
-   *          FALSE - when you want to use the LIVE system
-   * @param bool $debug
-   *          TRUE - when you want to write log files,
-   *          FALSE - when you don't want write log files
-   * @param string $proxyHost
-   *          The host name in case you are behind a proxy server ("" when not)
-   * @param int $proxyPort
-   *          4-digit port number in case you are behind a proxy server ("" when not)
-   *
-   * @param string $proxyUser
-   *          The proxy user in case you are behind a proxy server ("" when not)
-   * @param string $proxyPass
-   *          The proxy password in case you are behind a proxy server ("" when not)
-   * @param bool $verfiyPeer
-   *          Set as FALSE to stop cURL from verifying the peer's certificate
-   */
+  
   function __construct($merchantID = MERCHANT_ID, $soapPassword = SOAP_PASS, $test = TEST_SYSTEM, $debug = DEBUG, $proxyHost = PROXY_HOST, $proxyPort = PROXY_PORT, $proxyUser = PROXY_USER, $proxyPass = PROXY_PASS, $verfiyPeer = VERIFY_PEER, $enableCurlLog = ENABLE_CURL_LOG) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
