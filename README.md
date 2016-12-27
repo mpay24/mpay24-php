@@ -20,13 +20,13 @@ The `CURL_LOG` and `MPAY24_LOG` path starts in `/lib/`
 First it is necessary to include and initialize the library:
 ```php
 include_once ("./lib/MPAY24.php");
-$shop = new MPAY24(); // or with soap username, password if not provided in config
+$mpay24 = new MPAY24(); // or with soap username, password if not provided in config
 ```
 
 #### Create a token for seamless creditcard payments
 
 ```php
-$tokenizer = $shop->createPaymentToken("CC")->getPaymentResponse();
+$tokenizer = $mpay24->createPaymentToken("CC")->getPaymentResponse();
 ```
 
 #### Create a payment
@@ -38,7 +38,7 @@ $payment = array(
   "currency" => "EUR",
   "token" => ""
 );
-$result = $shop->acceptPayment("TOKEN", "123", $payment);
+$result = $mpay24->acceptPayment("TOKEN", "123", $payment);
 ```
 Paypal payment
 ```php
@@ -46,7 +46,7 @@ $payment = array(
   "amount" => "100",
   "currency" => "EUR"
 );
-$result = $shop->acceptPayment("PAYPAL", "123", $payment);
+$result = $mpay24->acceptPayment("PAYPAL", "123", $payment);
 ```
 
 #### Create a checkout
@@ -57,11 +57,17 @@ $mdxi = new ORDER();
 $mdxi->Order->Tid = "123";
 $mdxi->Order->Price = "1.00";
 
-$checkoutURL = $shop->selectPayment($mdxi)->location; // redirect location to the payment page
+$checkoutURL = $mpay24->selectPayment($mdxi)->location; // redirect location to the payment page
 
 header('Location: '.$checkoutURL);
 ```
 
+#### Get current transaction status
+
+```php
+$mpay24->transactionStatus(12345) // with mpaytid
+$mpay24->transactionStatus(null, "123 TID") // with tid
+```
 ### Prerequisites
 
 In order for the mPAY24 PHP SDK to work, your installation will have to meet the following prerequisites:
