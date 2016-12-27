@@ -640,139 +640,117 @@ abstract class MPay24flexLINK {
 
   /**
    * Encrypt the parameters you want to post to mPAY24 - see details
-   *
-   * @param string $invoice_id
-   *          The invoice ID of the transaction
-   * @param string $amount
-   *          The amount which should be invoiced in 12.34
-   * @param string $currency
-   *          length = 3 (ISO currency code, e. g. "EUR")
-   * @param string $language
-   *          length = 2 (ISO currency code, e. g. "DE")
-   * @param string $user_field
-   *          A place hollder for free chosen user information
-   * @param string $mode
-   *          BillingAddress Mode (ReadWrite or ReadOnly)
-   * @param string $salutation
-   *          Salutation of the customer
-   * @param string $name
-   *          Name of the customer
-   * @param string $street
-   *          Billing address street
-   * @param string $street2
-   *          Billing address street2
-   * @param string $zip
-   *          Billing address zip
-   * @param string $city
-   *          Billing address city
-   * @param string $country
-   *          Billing address country, length = 2 (ISO country code, e. g. "AT")
-   * @param string $email
-   *          Billing address e-mail
-   * @param string $phone
-   *          Billing address phone
-   * @param string $success
-   *          Success-URL
-   * @param string $error
-   *          Error-URL
-   * @param string $confirmation
-   *          Confirmation-URL
-   * @param string $invoice_idVar
-   *          Default = TID
-   * @param string $amountVar
-   *          Default = AMOUNT
-   * @param string $currencyVar
-   *          Default = CURRENCY
-   * @param string $languageVar
-   *          Default = LANGUAGE
-   * @param string $user_fieldVar
-   *          Default = USER_FIELD
-   * @param string $modeVar
-   *          Default = MODE
-   * @param string $salutationVar
-   *          Default = SALUTATION
-   * @param string $nameVar
-   *          Default = NAME
-   * @param string $streetVar
-   *          Default = STREET
-   * @param string $street2Var
-   *          Default = STREET2
-   * @param string $zipVar
-   *          Default = ZIP
-   * @param string $cityVar
-   *          Default = CITY
-   * @param string $countryVar
-   *          Default = COUNTRY
-   * @param string $emailVar
-   *          Default = EMAIL
-   * @param string $phoneVar
-   *          Default = PHONE
-   * @param string $successVar
-   *          Default = SUCCCESS_URL
-   * @param string $errorVar
-   *          Default = ERROR_URL
-   * @param string $confirmationVar
-   *          Default = CONFIRMATION_URL
-   * @return string
    */
-  function getEncryptedParams( // parameter values
-$invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $mode = NULL, $salutation = NULL, $name = NULL, $street = NULL, $street2 = NULL, $zip = NULL, $city = NULL, $country = NULL, $email = NULL, $phone = NULL, $success = NULL, $error = NULL, $confirmation = NULL,
-      // parameters names
-      $invoice_idVar = "TID", $amountVar = "AMOUNT", $currencyVar = "CURRENCY", $languageVar = "LANGUAGE", $user_fieldVar = "USER_FIELD", $modeVar = "MODE", $salutationVar = "SALUTATION", $nameVar = "NAME", $streetVar = "STREET", $street2Var = "STREET2", $zipVar = "ZIP", $cityVar = "CITY", $countryVar = "COUNTRY", $emailVar = "EMAIL", $phoneVar = "PHONE", $successVar = "SUCCESS_URL", $errorVar = "ERROR_URL", $confirmationVar = "CONFIRMATION_URL") {
+  function getEncryptedParams(
+    // parameter values
+    $invoice_id,
+    $amount,
+    $currency = NULL,
+    $customerid = NULL,
+    $useprofile = NULL,
+    $language = NULL,
+    $user_field = NULL,
+    $mode = NULL, 
+    $salutation = NULL,
+    $name = NULL,
+    $isvalidtill = NULL,
+    $gatherbilladdress = NULL,
+    $street = NULL,
+    $street2 = NULL,
+    $zip = NULL,
+    $city = NULL,
+    $country = NULL,
+    $email = NULL,
+    $phone = NULL,
+    $success = NULL,
+    $error = NULL,
+    $confirmation = NULL,
+    // parameters names
+    $invoice_idVar = "TID",
+    $amountVar = "AMOUNT",
+    $currencyVar = "CURRENCY",
+    $customeridVar = "CUSTOMER_ID",
+    $useprofileVar = "USEPROFILE",
+    $languageVar = "LANGUAGE",
+    $user_fieldVar = "USER_FIELD",
+    $modeVar = "MODE",
+    $salutationVar = "SALUTATION",
+    $nameVar = "NAME",
+    $isvalidtillVar = "ISVALIDTILL",
+    $gatherbilladdressVar = "GATHERBILLADDRESS",
+    $streetVar = "STREET",
+    $street2Var = "STREET2",
+    $zipVar = "ZIP",
+    $cityVar = "CITY",
+    $countryVar = "COUNTRY",
+    $emailVar = "EMAIL",
+    $phoneVar = "PHONE",
+    $successVar = "SUCCESS_URL",
+    $errorVar = "ERROR_URL",
+    $confirmationVar = "CONFIRMATION_URL")
+    {
+      if(! $this->mPay24Api)
+        die("You are not allowed to define a constructor in the child class of MPay24flexLINK!");
 
-    if(! $this->mPAY24SDK)
-      die("You are not allowed to define a constructor in the child class of MPay24flexLINK!");
+      $params[$invoice_idVar] = $invoice_id;
+      $params[$amountVar] = $amount;
 
-    $params[$invoice_idVar] = $invoice_id;
-    $params[$amountVar] = $amount;
+      if($currency == NULL)
+         $currency = "EUR";
 
-    if($currency == NULL)
-      $currency = "EUR";
+      $params[$currencyVar] = $currency;
 
-    $params[$currencyVar] = $currency;
+      if($customerid == NULL)
+         $customerid = "";
 
-    if($language == NULL)
-      $language = "DE";
+  	$params[$customeridVar] = $customerid;
 
-    $params[$languageVar] = $language;
-    $params[$user_fieldVar] = $user_field;
+  	if($useprofile == NULL || $useprofile == "false")
+         $useprofile = "false";
 
-    if($description == NULL)
-      $description = "Rechnungsnummer:";
+  	$params[$useprofileVar] = $useprofile;
 
-    $params[$descriptionVar] = $description;
+      if($language == NULL)
+        $language = "DE";
 
-    if($mode == NULL)
-      $mode = "ReadWrite";
+      $params[$languageVar] = $language;
+      $params[$user_fieldVar] = $user_field;
 
-    $params[$modeVar] = $mode;
 
-    $params[$nameVar] = $name;
-    $params[$streetVar] = $street;
-    $params[$street2Var] = $street2;
-    $params[$zipVar] = $zip;
-    $params[$cityVar] = $city;
+      if($mode == NULL)
+         $mode = "ReadWrite";
 
-    if($country == NULL)
-      $country = "AT";
+      $params[$modeVar] = $mode;
 
-    $params[$countryVar] = $country;
+      $params[$nameVar] = $name;
+      $params[$isvalidtillVar] = $isvalidtill;
+      $params[$gatherbilladdressVar] = $gatherbilladdress;
 
-    $params[$emailVar] = $email;
-    $params[$successVar] = $success;
-    $params[$errorVar] = $error;
-    $params[$confirmationVar] = $confirmation;
+      $params[$streetVar] = $street;
+      $params[$street2Var] = $street2;
+      $params[$zipVar] = $zip;
+      $params[$cityVar] = $city;
 
-    foreach($params as $key => $value)
-      if($this->mPAY24SDK->getDebug())
-        $this->write_flexLINK_log("flexLINK:\t\t\tParameters: $key = $value\n");
+      if($country == NULL)
+         $country = "AT";
 
-    $parameters = $this->mPAY24SDK->flexLINK($params);
+      $params[$countryVar] = $country;
 
-    if($this->mPAY24SDK->getDebug())
-      $this->write_flexLINK_log("flexLINK:\t\t\tEncrypted parameters: $parameters\n");
+      $params[$emailVar] = $email;
+      $params[$successVar] = $success;
+      $params[$errorVar] = $error;
+      $params[$confirmationVar] = $confirmation;
 
-    return $parameters;
+      foreach($params as $key => $value)
+        if($this->mPay24Api->getDebug())
+          $this->write_flexLINK_log("flexLINK:\t\t\tParameters: $key = $value\n");
+
+      $parameters = $this->mPay24Api->flexLINK($params);
+
+      if($this->mPay24Api->getDebug())
+        $this->write_flexLINK_log("flexLINK:\t\t\tEncrypted parameters: $parameters\n");
+
+      return $parameters;
   }
 
   /**
