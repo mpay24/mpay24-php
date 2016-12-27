@@ -1394,18 +1394,6 @@ class TransactionStatusResponse extends GeneralResponse {
    * @var string
    */
   var $generalResponse;
-  /**
-   * A list with all the parameters for a transaction
-   *
-   * @var array
-   */
-  var $params = array();
-  /**
-   * The count of all the paramerters for a transaction
-   *
-   * @var int
-   */
-  var $paramCount = 0;
 
   /**
    * Sets the values for a transaction from the response from mPAY24: STATUS, PRICE, CURRENCY, LANGUAGE, etc
@@ -1421,15 +1409,15 @@ class TransactionStatusResponse extends GeneralResponse {
       $responseAsDOM->loadXML($response);
 
       if($responseAsDOM && $responseAsDOM->getElementsByTagName('name')->length != 0) {
-        $this->paramCount = $responseAsDOM->getElementsByTagName('name')->length;
-        $this->params['STATUS'] = $this->generalResponse->getStatus();
+        $paramCount = $responseAsDOM->getElementsByTagName('name')->length;
+        $this->transaction['status'] = $this->generalResponse->getStatus();
 
-        for($i = 0; $i < $this->paramCount; $i ++) {
-          if($responseAsDOM->getElementsByTagName("name")->item($i)->nodeValue == "STATUS")
-            $this->params["TSTATUS"] = $responseAsDOM->getElementsByTagName("value")->item($i)->nodeValue;
-          else
-            $this->params[$responseAsDOM->getElementsByTagName('name')->item($i)->nodeValue] = $responseAsDOM->getElementsByTagName('value')->item($i)->nodeValue;
+        for($i = 0; $i < $paramCount; $i ++) {
+          $this->transaction[strtolower($responseAsDOM->getElementsByTagName('name')->item($i)->nodeValue)] = $responseAsDOM->getElementsByTagName('value')->item($i)->nodeValue;
         }
+        unset($this->params);
+        unset($this->status);
+        unset($this->returnCode);
       }
     } else {
       $this->generalResponse->setStatus("ERROR");
@@ -1452,7 +1440,7 @@ class TransactionStatusResponse extends GeneralResponse {
    * @return array
    */
   public function getParams() {
-    return $this->params;
+    return $this->transaction;
   }
 
   /**
@@ -1463,8 +1451,8 @@ class TransactionStatusResponse extends GeneralResponse {
    * @return array
    */
   public function getParam($i) {
-    if(isset($this->params[$i]))
-      return $this->params[$i];
+    if(isset($this->transaction[$i]))
+      return $this->transaction[$i];
     else
       return false;
   }
@@ -1478,7 +1466,7 @@ class TransactionStatusResponse extends GeneralResponse {
    *          The value of the parameter
    */
   public function setParam($name, $value) {
-    $this->params[$name] = $value;
+    $this->transaction[$name] = $value;
   }
 
   /**

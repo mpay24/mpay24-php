@@ -12,9 +12,9 @@ include_once ("config/config.php");
  * @license MIT
  */
 class MPAY24 extends Transaction {
- 
+
   var $mPAY24SDK = null;
-  
+
   function __construct($merchantID = MERCHANT_ID, $soapPassword = SOAP_PASS, $test = TEST_SYSTEM, $debug = DEBUG, $proxyHost = PROXY_HOST, $proxyPort = PROXY_PORT, $proxyUser = PROXY_USER, $proxyPass = PROXY_PASS, $verfiyPeer = VERIFY_PEER, $enableCurlLog = ENABLE_CURL_LOG) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
@@ -266,6 +266,20 @@ class MPAY24 extends Transaction {
     }
 
     return $payBackend2BackendResult;
+  }
+
+  function transactionStatus($mpaytid = null, $tid = null) {
+    if(! $this->mPAY24SDK)
+      die("You are not allowed to define a constructor in the child class of MPAY24!");
+
+    $result = $this->mPAY24SDK->TransactionStatus($mpaytid, $tid);
+
+    if($this->mPAY24SDK->getDebug()) {
+      $this->write_log("AcceptPayment", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
+      $this->write_log("AcceptPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
+    }
+
+    return $result;
   }
 
   /**
