@@ -65,8 +65,8 @@ header('Location: '.$checkoutURL);
 #### Get current transaction status
 
 ```php
-$mpay24->transactionStatus(12345) // with mpaytid
-$mpay24->transactionStatus(null, "123 TID") // with tid
+$mpay24->transactionStatus(12345); // with mpaytid
+$mpay24->transactionStatus(null, "123 TID"); // with tid
 ```
 ### Prerequisites
 
