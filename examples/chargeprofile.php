@@ -1,7 +1,7 @@
 <?php
   include_once ("../lib/MPAY24.php");
 
-  $shop = new MPAY24();
+  $mpay24 = new MPAY24();
 
   $payment = array(
     "amount" => "100",
@@ -13,10 +13,9 @@
     "confirmationURL" => "http://yourdomain.com/confirmation"
   );
 
-
   $type="PROFILE";
 
-  $result = $shop->acceptPayment($type, "123", $payment, $additional);
+  $result = $mpay24->acceptPayment($type, "123", $payment, $additional);
   echo "Status: ".$result->generalResponse->status;
   echo "<br>";
   echo "ReturnCode: ".$result->generalResponse->returnCode;
