@@ -2,6 +2,7 @@
 include_once ("MPAY24SDK.php");
 include_once ("orderXML.php");
 include_once ("config/config.php");
+
 /**
  * The abstract MPAY24 class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24
  *
@@ -11,15 +12,21 @@ include_once ("config/config.php");
  * @license MIT
  */
 class MPAY24 extends Transaction {
+
   var $mPAY24SDK = null;
+
   function __construct($merchantID = MERCHANT_ID, $soapPassword = SOAP_PASS, $test = TEST_SYSTEM, $debug = DEBUG, $proxyHost = PROXY_HOST, $proxyPort = PROXY_PORT, $proxyUser = PROXY_USER, $proxyPass = PROXY_PASS, $verfiyPeer = VERIFY_PEER, $enableCurlLog = ENABLE_CURL_LOG) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
+
     if(! is_bool($debug))
       die("The debug parameter '$debug' you have given is wrong, it must be boolean value 'true' or 'false'!");
+
     if(! is_bool($verfiyPeer))
       die("The verifyPeer parameter '$verfiyPeer' you have given is wrong, it must be boolean value 'true' or 'false'!");
+
     $this->mPAY24SDK = new MPAY24SDK();
+
     if($proxyHost == null) {
       $pHost = "";
       $pPort = "";
@@ -28,6 +35,7 @@ class MPAY24 extends Transaction {
     } else {
       $pHost = $proxyHost;
       $pPort = $proxyPort;
+
       if($proxyUser == null) {
         $pUser = "";
         $pPass = "";
@@ -36,32 +44,41 @@ class MPAY24 extends Transaction {
         $pPass = $proxyPass;
       }
     }
+
     $this->mPAY24SDK->configure($merchantID, $soapPassword, $test, $pHost, $pPort, $pUser, $pPass, $verfiyPeer);
     $this->mPAY24SDK->setDebug($debug);
     $this->mPAY24SDK->enableCurlLog = $enableCurlLog;
+
     if(version_compare(phpversion(), '5.0.0', '<') === true || ! in_array('curl', get_loaded_extensions()) || ! in_array('dom', get_loaded_extensions())) {
       $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
+
       if(version_compare(phpversion(), '5.0.0', '<') === true)
         $this->mPAY24SDK->printMsg("You need PHP version 5.0.0 or newer!<br>");
       if(! in_array('curl', get_loaded_extensions()))
         $this->mPAY24SDK->printMsg("You need cURL extension!<br>");
       if(! in_array('dom', get_loaded_extensions()))
         $this->mPAY24SDK->printMsg("You need DOM extension!<br>");
+
       $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
     }
+
     if(strlen($merchantID) != 5 || (substr($merchantID, 0, 1) != "7" && substr($merchantID, 0, 1) != "9"))
       $this->mPAY24SDK->dieWithMsg("The merchant ID '$merchantID' you have given is wrong, it must be 5-digit number and starts with 7 or 9!");
+
     if($proxyPort != null && (! is_numeric($proxyPort) || strlen($proxyPort) != 4))
       $this->mPAY24SDK->dieWithMsg("The proxy port '$proxyPort' you have given must be numeric!");
+
     if(($proxyHost == null && $proxyHost != $proxyPort) || ($proxyPort == null && $proxyHost != $proxyPort))
       $this->mPAY24SDK->dieWithMsg("You must setup both variables 'proxyHost' and 'proxyPort'!");
   }
+
   /**
    * Create a transaction and save/return this (in a data base or file system (for example XML))
    *
    * @return Transaction
    */
   function createTransaction() {}
+
   /**
    * Actualize the transaction, which has a transaction ID = $tid with the values from $args in your shop and return it
    *
@@ -73,6 +90,7 @@ class MPAY24 extends Transaction {
    *          TRUE if the shipping address is confirmed, FALSE - otherwise (in case of PayPal or MasterPass Express Checkout)
    */
   function updateTransaction($tid, $args, $shippingConfirmed) {}
+
   /**
    * Give the transaction object back, for a transaction which has a transaction ID = $tid
    *
@@ -81,6 +99,7 @@ class MPAY24 extends Transaction {
    * @return Transaction
    */
   function getTransaction($tid) {}
+
   /**
    * Using the ORDER object from order.php, create a MDXI-XML, which is needed for a transaction to be started
    *
@@ -89,6 +108,7 @@ class MPAY24 extends Transaction {
    * @return ORDER
    */
   function createMDXI($transaction) {}
+
   /**
    * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with profiles to be started
    *
@@ -97,6 +117,7 @@ class MPAY24 extends Transaction {
    * @return XML
    */
   function createProfileOrder($tid) {}
+
   /**
    * Using the ORDER object from order.php, create a order-xml, which is needed for a backend to backend transaction to be started
    *
@@ -107,6 +128,7 @@ class MPAY24 extends Transaction {
    * @return XML
    */
   function createBackend2BackendOrder($tid, $paymentType) {}
+
   /**
    * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be finished
    *
@@ -121,6 +143,7 @@ class MPAY24 extends Transaction {
    * @return XML
    */
   function createFinishExpressCheckoutOrder($tid, $shippingCosts, $amount, $cancel) {}
+
   /**
    * Write a log into a file, file system, data base
    *
@@ -137,6 +160,7 @@ class MPAY24 extends Transaction {
     fwrite($fh, $result);
     fclose($fh);
   }
+
   /**
    * This is an optional function, but it's strongly recomended that you implement it - see details.
    * It should build a hash from the transaction ID of your shop, the amount of the transaction,
@@ -156,6 +180,7 @@ class MPAY24 extends Transaction {
    * @return string
    */
   function createSecret($tid, $amount, $currency, $timeStamp) {}
+
   /**
    * Get the secret (hashed) token for a transaction
    *
@@ -164,6 +189,7 @@ class MPAY24 extends Transaction {
    * @return string
    */
   function getSecret($tid) {}
+
   /**
    * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
    *
@@ -172,13 +198,17 @@ class MPAY24 extends Transaction {
   function listPaymentMethods() {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     $paymentMethods = $this->mPAY24SDK->ListPaymentMethods();
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("GetPaymentMethods", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("GetPaymentMethods", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $paymentMethods;
   }
+
   /**
    * Return a redirect URL to start a payment
    *
@@ -187,25 +217,36 @@ class MPAY24 extends Transaction {
   function selectPayment($mdxi) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     libxml_use_internal_errors(true);
+
     if(! $mdxi || ! $mdxi instanceof ORDER)
       $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php) and fulfill it with a MDXI!");
+
     $mdxiXML = $mdxi->toXML();
+
     if(! $this->mPAY24SDK->proxyUsed())
       if(! $mdxi->validate()) {
         $errors = "";
+
         foreach(libxml_get_errors() as $error)
           $errors .= trim($error->message) . "<br>";
+
         $this->mPAY24SDK->dieWithMsg("The schema you have created is not valid!" . "<br><br>" . $errors . "<textarea cols='100' rows='30'>$mdxiXML</textarea>");
       }
+
     $mdxiXML = $mdxi->toXML();
+
     $payResult = $this->mPAY24SDK->SelectPayment($mdxiXML);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("SelectPayment", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("SelectPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $payResult;
   }
+
   /**
    * Start a backend to backend payment
    *
@@ -216,23 +257,31 @@ class MPAY24 extends Transaction {
   function acceptPayment($paymentType, $tid, $payment, $additional) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("AcceptPayment", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("AcceptPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $payBackend2BackendResult;
   }
+
   function transactionStatus($mpaytid = null, $tid = null) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     $result = $this->mPAY24SDK->TransactionStatus($mpaytid, $tid);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("AcceptPayment", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("AcceptPayment", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $result;
   }
+
   /**
    * Finish the payment, started with PayPal Express Checkout - reserve, bill or cancel it: Whether are you going to reserve or bill a payment is setted at the beginning of the payment.
    * With the 'cancel' parameter you are able also to cancel the transaction
@@ -252,27 +301,39 @@ class MPAY24 extends Transaction {
   function manualCallback($tid, $shippingCosts, $amount, $cancel, $paymentType) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     if($cancel !== "true" && $cancel !== "false")
       $this->mPAY24SDK->dieWithMsg("The allowed values for the parameter 'cancel' by finishing a PayPal (Express Checkout) payment are 'true' or 'false'!");
+
     if($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS')
       die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
+
     $mPAYTid = $transaction->MPAYTID;
+
     if(! $mPAYTid)
       $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to finish with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+
     if(! $amount || ! is_numeric($amount))
       $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to pay by '$paymentType' is not valid!");
+
     if(! $shippingCosts || ! is_numeric($shippingCosts))
       $this->mPAY24SDK->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
+
     $order = $this->createFinishExpressCheckoutOrder($transaction, $shippingCosts, $amount, $cancel);
+
     if(! $order || ! $order instanceof ORDER)
       $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
+
     $finishExpressCheckoutResult = $this->mPAY24SDK->ManualCallback($order->toXML(), $paymentType);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("FinishExpressCheckoutResult", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("FinishExpressCheckoutResult", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $finishExpressCheckoutResult;
   }
+
   /**
    * Return a redirect URL to include in your web page
    *
@@ -284,15 +345,20 @@ class MPAY24 extends Transaction {
   function createPaymentToken($paymentType) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     if($paymentType !== 'CC')
       die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
+
     $tokenResult = $this->mPAY24SDK->CreateTokenPayment($paymentType);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("CreatePaymentToken", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("CreatePaymentToken", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $tokenResult;
   }
+
   /**
    * Clear an amount of an authorized transaction
    *
@@ -304,21 +370,29 @@ class MPAY24 extends Transaction {
   function manualClear($tid, $amount) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     $mPAYTid = $transaction->MPAYTID;
     $currency = $transaction->CURRENCY;
+
     if(! $mPAYTid)
       $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to clear with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+
     if(! $amount || ! is_numeric($amount))
       $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to clear is not valid!");
+
     if(! $currency || strlen($currency) != 3)
       $this->mPAY24SDK->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
+
     $clearAmountResult = $this->mPAY24SDK->ManualClear($mPAYTid, $amount, $currency);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("ClearAmount", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("ClearAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $clearAmountResult;
   }
+
   /**
    * Credit an amount of a billed transaction
    *
@@ -330,22 +404,30 @@ class MPAY24 extends Transaction {
   function manualCredit($tid, $amount) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     $mPAYTid = $transaction->MPAYTID;
     $currency = $transaction->CURRENCY;
     $customer = $transaction->CUSTOMER;
+
     if(! $mPAYTid)
       $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to credit with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+
     if(! $amount || ! is_numeric($amount))
       $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
+
     if(! $currency || strlen($currency) != 3)
       $this->mPAY24SDK->dieWithMsg("The currency code '$currency' for the amount you are trying to credit is not valid (3-digit ISO-Currency-Code)!");
+
     $creditAmountResult = $this->mPAY24SDK->ManualCredit($mPAYTid, $amount, $currency, $customer);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("CreditAmount", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("CreditAmount", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $creditAmountResult;
   }
+
   /**
    * Cancel a authorized transaction
    *
@@ -355,16 +437,22 @@ class MPAY24 extends Transaction {
   function cancelTransaction($tid) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
+
     $mPAYTid = $transaction->MPAYTID;
+
     if(! $mPAYTid)
       $this->mPAY24SDK->dieWithMsgie("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+
     $cancelTransactionResult = $this->mPAY24SDK->ManualReverse($mPAYTid);
+
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("CancelTransaction", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");
       $this->write_log("CancelTransaction", "RESPONSE - " . str_replace("><", ">\n<", $this->mPAY24SDK->getResponse()) . "\n");
     }
+
     return $cancelTransactionResult;
   }
+
   /**
    * Check if the a transaction is created, whether the object is from type Transaction and whether the mandatory settings (TID and PRICE) of a transaction are setted
    *
@@ -380,6 +468,7 @@ class MPAY24 extends Transaction {
       $this->mPAY24SDK->dieWithMsg("The Transaction must contain PRICE!");
   }
 }
+
 /**
  * The properties, which are allowed for a transaction
  * @const TRANSACTION_PROPERTIES
@@ -388,6 +477,7 @@ define("TRANSACTION_PROPERTIES", "SECRET,TID,STATUS,MPAYTID,APPR_CODE,P_TYPE,
                                   BRAND,PRICE,CURRENCY,OPERATION,LANGUAGE,
                                   USER_FIELD,ORDERDESC,CUSTOMER,CUSTOMER_EMAIL,
                                   CUSTOMER_ID,PROFILE_STATUS,FILTER_STATUS,TSTATUS");
+
 /**
  * The Transaction class allows you to set and get different trnasaction's properties - see details
  *
@@ -430,6 +520,7 @@ class Transaction {
    * @var $allowedProperties
    */
   var $properties = array();
+
   /**
    * Create a transaction object and set the allowed properties from the TRANSACTION_PROPERTIES
    *
@@ -440,6 +531,7 @@ class Transaction {
     $this->allowedProperties = explode(",", preg_replace('/\s*/m', '', TRANSACTION_PROPERTIES));
     $this->TID = $tid;
   }
+
   /**
    * Get the property of the Transaction object
    *
@@ -450,11 +542,13 @@ class Transaction {
   public function __get($property) {
     if(! in_array($property, $this->allowedProperties))
       die("The transaction's property " . $property . ", you want to get is not defined!");
+
     if(isset($this->properties[$property]))
       return $this->properties[$property];
     else
       return false;
   }
+
   /**
    * Set the property of the Transaction object
    *
@@ -468,6 +562,7 @@ class Transaction {
       die("The transaction's property " . $property . ", you want to set is not defined!");
     $this->properties[$property] = $value;
   }
+
   /**
    * Set all the allowed properties for this transaction
    *
@@ -477,6 +572,7 @@ class Transaction {
   protected function setProperties($args) {
     $this->properties = $args;
   }
+
   /**
    * Get all the allowed properties for this transaction
    *
@@ -486,6 +582,7 @@ class Transaction {
     return $this->properties;
   }
 }
+
 /**
  * The abstract MPay24flexLINK class provides abstract functions, which are used from the other functions in order to create a flexLINK
  *
@@ -501,6 +598,7 @@ abstract class MPay24flexLINK {
    * @var $mPAY24SDK
    */
   var $mPAY24SDK = null;
+
   /**
    * The constructor, which sets all the initial values to be able making flexLINK transactions.
    * In order to be able use this functionality, you should contact mPAY24 first.
@@ -520,13 +618,18 @@ abstract class MPay24flexLINK {
   function __construct($spid, $password, $test, $debug = false) {
     if(! is_bool($test))
       die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
+
     if(! is_bool($debug))
       die("The debug parameter '$debug' you have given is wrong, it must be boolean value 'true' or 'false'!");
+
     $this->mPAY24SDK = new MPAY24SDK();
+
     $this->mPAY24SDK->configureFlexLINK($spid, $password, $test);
     $this->mPAY24SDK->setDebug($debug);
+
     if(version_compare(phpversion(), '5.0.0', '<') === true || ! in_array('mcrypt', get_loaded_extensions())) {
       $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
+
       if(version_compare(phpversion(), '5.0.0', '<') === true)
         $this->mPAY24SDK->printMsg("You need PHP version 5.0.0 or newer!<br>");
       if(! in_array('mcrypt', get_loaded_extensions()))
@@ -534,6 +637,7 @@ abstract class MPay24flexLINK {
       $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
     }
   }
+
   /**
    * Encrypt the parameters you want to post to mPAY24 - see details
    *
@@ -615,43 +719,62 @@ abstract class MPay24flexLINK {
 $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $mode = NULL, $salutation = NULL, $name = NULL, $street = NULL, $street2 = NULL, $zip = NULL, $city = NULL, $country = NULL, $email = NULL, $phone = NULL, $success = NULL, $error = NULL, $confirmation = NULL,
       // parameters names
       $invoice_idVar = "TID", $amountVar = "AMOUNT", $currencyVar = "CURRENCY", $languageVar = "LANGUAGE", $user_fieldVar = "USER_FIELD", $modeVar = "MODE", $salutationVar = "SALUTATION", $nameVar = "NAME", $streetVar = "STREET", $street2Var = "STREET2", $zipVar = "ZIP", $cityVar = "CITY", $countryVar = "COUNTRY", $emailVar = "EMAIL", $phoneVar = "PHONE", $successVar = "SUCCESS_URL", $errorVar = "ERROR_URL", $confirmationVar = "CONFIRMATION_URL") {
+
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPay24flexLINK!");
+
     $params[$invoice_idVar] = $invoice_id;
     $params[$amountVar] = $amount;
+
     if($currency == NULL)
       $currency = "EUR";
+
     $params[$currencyVar] = $currency;
+
     if($language == NULL)
       $language = "DE";
+
     $params[$languageVar] = $language;
     $params[$user_fieldVar] = $user_field;
+
     if($description == NULL)
       $description = "Rechnungsnummer:";
+
     $params[$descriptionVar] = $description;
+
     if($mode == NULL)
       $mode = "ReadWrite";
+
     $params[$modeVar] = $mode;
+
     $params[$nameVar] = $name;
     $params[$streetVar] = $street;
     $params[$street2Var] = $street2;
     $params[$zipVar] = $zip;
     $params[$cityVar] = $city;
+
     if($country == NULL)
       $country = "AT";
+
     $params[$countryVar] = $country;
+
     $params[$emailVar] = $email;
     $params[$successVar] = $success;
     $params[$errorVar] = $error;
     $params[$confirmationVar] = $confirmation;
+
     foreach($params as $key => $value)
       if($this->mPAY24SDK->getDebug())
         $this->write_flexLINK_log("flexLINK:\t\t\tParameters: $key = $value\n");
+
     $parameters = $this->mPAY24SDK->flexLINK($params);
+
     if($this->mPAY24SDK->getDebug())
       $this->write_flexLINK_log("flexLINK:\t\t\tEncrypted parameters: $parameters\n");
+
     return $parameters;
   }
+
   /**
    * Get the whole URL (flexLINK) to the mPAY24 pay page, used to pay an invoice
    *
@@ -662,8 +785,10 @@ $invoice_id, $amount, $currency = NULL, $language = NULL, $user_field = NULL, $m
   public function getPayLink($encryptedParams) {
     if($this->mPAY24SDK->getDebug())
       $this->write_flexLINK_log("flexLINK:\t\t\tURL: https://" . $this->mPAY24SDK->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPAY24SDK->getSPID() . "/$encryptedParams\n");
+
     return "https://" . $this->mPAY24SDK->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPAY24SDK->getSPID() . "/$encryptedParams";
   }
+
   /**
    * Write a flexLINK log into a file, file system, data base
    *
