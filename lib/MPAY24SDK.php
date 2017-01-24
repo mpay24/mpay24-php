@@ -385,7 +385,7 @@ class MPAY24SDK {
    *          The payment type used for the tokenization (currently supported 'CC')
    * @return PaymentTokenResponse
    */
-  public function CreateTokenPayment($pType) {
+  public function CreateTokenPayment($pType, $additional) {
     $xml = $this->buildEnvelope();
     $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
@@ -397,6 +397,11 @@ class MPAY24SDK {
 
     $pType = $xml->createElement('pType', $pType);
     $pType = $operation->appendChild($pType);
+
+    foreach ($additional as $k => $v) {
+      $buf = $xml->createElement($k, $v);
+      $buf = $operation->appendChild($buf);
+    }
 
     $this->request = $xml->saveXML();
 
