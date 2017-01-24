@@ -1,4 +1,7 @@
 <?php
+
+namespace MPAY24;
+
 include_once ("MPAY24SDK.php");
 include_once ("orderXML.php");
 include_once ("config/config.php");

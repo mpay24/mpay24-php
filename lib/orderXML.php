@@ -1,4 +1,7 @@
 <?php
+
+namespace MPAY24;
+
 /**
  * The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd
  *

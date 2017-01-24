@@ -1,5 +1,7 @@
 <?php
 
+namespace MPAY24;
+
 /**
  * Main mPAY24 PHP APIs Class.
  *
@@ -13,7 +15,7 @@
  */
 class MPAY24SDK {
 
-  private $version = "3.0.1";
+  private $version = "3.1.0";
 
   /**
    * TRUE, when you want to use the test system, and FALSE otherwise
