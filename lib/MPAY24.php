@@ -342,7 +342,7 @@ class MPAY24 extends Transaction {
    *
    * @return PaymentTokenResponse
    */
-  function createPaymentToken($paymentType, $additional) {
+  function createPaymentToken($paymentType, $additional = null) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
