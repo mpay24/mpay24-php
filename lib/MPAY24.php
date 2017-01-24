@@ -342,14 +342,14 @@ class MPAY24 extends Transaction {
    *
    * @return PaymentTokenResponse
    */
-  function createPaymentToken($paymentType) {
+  function createPaymentToken($paymentType, $additional) {
     if(! $this->mPAY24SDK)
       die("You are not allowed to define a constructor in the child class of MPAY24!");
 
     if($paymentType !== 'CC')
       die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
 
-    $tokenResult = $this->mPAY24SDK->CreateTokenPayment($paymentType);
+    $tokenResult = $this->mPAY24SDK->CreateTokenPayment($paymentType, $additional);
 
     if($this->mPAY24SDK->getDebug()) {
       $this->write_log("CreatePaymentToken", "REQUEST to " . $this->mPAY24SDK->getEtpURL() . " - " . str_replace("><", ">\n<", $this->mPAY24SDK->getRequest()) . "\n");

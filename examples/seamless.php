@@ -1,7 +1,10 @@
 <?php
   include_once ("../lib/MPAY24.php");
   $shop = new MPAY24();
-  $tokenizer = $shop->createPaymentToken("CC")->getPaymentResponse();
+  $tokenizerConfig = array(
+    "language" => "EN"
+  );
+  $tokenizer = $shop->createPaymentToken("CC", $tokenizerConfig)->getPaymentResponse();
 ?>
 
 <iframe src="<?php echo $tokenizer->location; ?>" frameBorder="0"></iframe>
