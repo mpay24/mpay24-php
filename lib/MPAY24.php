@@ -367,10 +367,10 @@ class MPAY24 extends Transaction
      * Return a redirect URL to include in your web page
      *
      * @param string $paymentType The payment type which will be used for the express checkout (CC)
-     * @param array|null Additional parameters
+     * @param array $additional Additional parameters
      * @return PaymentTokenResponse
      */
-    function createPaymentToken($paymentType, $additional = null)
+    function createPaymentToken( $paymentType, array $additional = [] )
     {
         if ( !$this->mPAY24SDK ) {
             die("You are not allowed to define a constructor in the child class of MPAY24!");

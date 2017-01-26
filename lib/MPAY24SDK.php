@@ -431,10 +431,11 @@ class MPAY24SDK
     /**
      * Start a secure payment using the mPAY24 Tokenizer.
      *
-     * @param string $pType The payment type used for the tokenization (currently supported 'CC')
+     * @param string    $pType The payment type used for the tokenization (currently supported 'CC')
+     * @param array     $additional
      * @return PaymentTokenResponse
      */
-    public function CreateTokenPayment( $pType, $additional )
+    public function CreateTokenPayment( $pType, array $additional = [] )
     {
         $xml = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
