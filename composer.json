@@ -1,6 +1,9 @@
 {
   "name": "mpay24/mpay24-php",
   "description": "Offical PHP SDK for SOAP Bindings",
+  "autoload": {
+    "psr-4": { "mPay24\\" : "lib/" }
+  },
   "require": {
     "php": ">=5.3.3"
   }
