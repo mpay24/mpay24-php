@@ -712,13 +712,13 @@ class MPAY24SDK
     /**
      * Set the merchant ID (without 'u')
      *
-     * @param string $merchantID
-     *          The merchant ID
+     * @param string $merchantID The merchant ID
+     * @throws \Exception
      */
-    private function setMerchantID( $merchantID = null )
+    private function setMerchantID( $merchantID )
     {
         if ( $merchantID == null ) {
-            $this->merchantid = 'u' . MERCHANT_ID;
+            throw new \Exception('You have to provide a merchant ID');
         } else {
             $this->merchantid = 'u' . $merchantID;
         }
