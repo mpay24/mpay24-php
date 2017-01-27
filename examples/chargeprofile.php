@@ -22,4 +22,3 @@
   echo "ReturnCode: ".$result->generalResponse->returnCode;
   echo "<br>";
   echo "mPAYTID: ".$result->mpayTID;
-?>

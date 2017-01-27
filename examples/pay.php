@@ -33,4 +33,3 @@
       echo $result->generalResponse->returnCode;
     }
   }
-?>
