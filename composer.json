@@ -5,6 +5,9 @@
     "psr-4": { "mPay24\\" : "lib/" }
   },
   "require": {
-    "php": ">=5.3.3"
+    "php": ">=5.3.3",
+    "ext-curl": "*",
+    "ext-dom": "*",
+    "ext-mcrypt": "*"
   }
 }
