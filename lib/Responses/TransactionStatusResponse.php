@@ -1,4 +1,5 @@
 <?php
+
 namespace mPay24\Responses;
 
 use DOMDocument;

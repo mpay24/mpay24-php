@@ -1,4 +1,5 @@
 <?php
+
 namespace mPay24;
 
 /**
@@ -21,29 +22,10 @@ abstract class MPay24flexLINK
      * The constructor, which sets all the initial values to be able making flexLINK transactions.
      * In order to be able use this functionality, you should contact mPAY24 first.
      *
-     * @param string $spid SPID, supported by mPAY24
-     * @param string $password The flexLINK password, supported by mPAY24
-     * @param bool $test
-     *          TRUE - when you want to use the TEST system
-     *
-     *          FALSE - when you want to use the LIVE system
-     * @param bool $debug TRUE - when you want to write log files
+     * @param MPay24Config $config
      */
-    function __construct( $spid, $password, $test, $debug = false )
+    function __construct( MPay24Config &$config = null )
     {
-        if ( !is_bool($test) ) {
-            die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
-        }
-
-        if ( !is_bool($debug) ) {
-            die("The debug parameter '$debug' you have given is wrong, it must be boolean value 'true' or 'false'!");
-        }
-
-        $this->mPAY24SDK = new MPAY24SDK();
-
-        $this->mPAY24SDK->configureFlexLINK($spid, $password, $test);
-        $this->mPAY24SDK->setDebug($debug);
-
         if ( version_compare(phpversion(), '5.0.0', '<') === true || !in_array('mcrypt', get_loaded_extensions()) ) {
             $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
@@ -57,6 +39,8 @@ abstract class MPay24flexLINK
 
             $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
         }
+
+        $this->mPAY24SDK = new MPAY24SDK($config);
     }
 
     /**
@@ -160,11 +144,11 @@ abstract class MPay24flexLINK
         $params[$languageVar] = $language;
         $params[$user_fieldVar] = $user_field;
 
-        if ( $description == null ) {
+        if ( $description == null ) {               //TODO: undefined variable $description => check where this is coming from
             $description = "Rechnungsnummer:";
         }
 
-        $params[$descriptionVar] = $description;
+        $params[$descriptionVar] = $description;    //TODO: undefined variable $descriptionVar => check where this is coming from
 
         if ($mode == null) {
             $mode = "ReadWrite";
@@ -190,14 +174,14 @@ abstract class MPay24flexLINK
         $params[$confirmationVar] = $confirmation;
 
         foreach ( $params as $key => $value ) {
-            if ($this->mPAY24SDK->getDebug()) {
+            if ($this->mPAY24SDK->isDebug()) {
                 $this->write_flexLINK_log("flexLINK:\t\t\tParameters: $key = $value\n");
             }
         }
 
         $parameters = $this->mPAY24SDK->flexLINK($params);
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_flexLINK_log("flexLINK:\t\t\tEncrypted parameters: $parameters\n");
         }
 
@@ -212,7 +196,7 @@ abstract class MPay24flexLINK
      */
     public function getPayLink( $encryptedParams )
     {
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_flexLINK_log(
                 "flexLINK:\t\t\tURL: https://" . $this->mPAY24SDK->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPAY24SDK->getSPID() . "/$encryptedParams\n"
             );

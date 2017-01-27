@@ -1,4 +1,5 @@
 <?php
+
 namespace mPay24;
 
 use mPay24\Responses\PaymentResponse;
@@ -14,9 +15,6 @@ use mPay24\Responses\ListPaymentMethodsResponse;
  */
 class MPAY24 extends Transaction
 {
-    const CURL_LOG = './logs/curllog.log';
-    const MPAY24_LOG = './logs/mpay24.log';
-
     /**
      * @var MPAY24SDK|null
      */
@@ -24,55 +22,10 @@ class MPAY24 extends Transaction
 
     /**
      * MPAY24 constructor.
-     * @param string $merchantID
-     * @param string $soapPassword
-     * @param bool $test
-     * @param bool $debug
-     * @param null $proxyHost
-     * @param null $proxyPort
-     * @param null $proxyUser
-     * @param null $proxyPass
-     * @param bool $verfiyPeer
-     * @param bool $enableCurlLog
+     * @param \mPay24\MPay24Config $config
      */
-    function __construct( $merchantID = '9****', $soapPassword = '**********', $test = true, $debug = true, $proxyHost = null, $proxyPort = null, $proxyUser = null, $proxyPass = null, $verfiyPeer = true, $enableCurlLog = false )
+    function __construct( MPay24Config &$config = null )
     {
-        if ( !is_bool($test) ) {
-            die("The test parameter '$test' you have given is wrong, it must be boolean value 'true' or 'false'!");
-        }
-
-        if ( !is_bool($debug) ) {
-            die("The debug parameter '$debug' you have given is wrong, it must be boolean value 'true' or 'false'!");
-        }
-
-        if ( !is_bool($verfiyPeer) ) {
-            die("The verifyPeer parameter '$verfiyPeer' you have given is wrong, it must be boolean value 'true' or 'false'!");
-        }
-
-        $this->mPAY24SDK = new MPAY24SDK();
-
-        if ( $proxyHost == null ) {
-            $pHost = "";
-            $pPort = "";
-            $pUser = "";
-            $pPass = "";
-        } else {
-            $pHost = $proxyHost;
-            $pPort = $proxyPort;
-
-            if ( $proxyUser == null ) {
-                $pUser = "";
-                $pPass = "";
-            } else {
-                $pUser = $proxyUser;
-                $pPass = $proxyPass;
-            }
-        }
-
-        $this->mPAY24SDK->configure($merchantID, $soapPassword, $test, $pHost, $pPort, $pUser, $pPass, $verfiyPeer);
-        $this->mPAY24SDK->setDebug($debug);
-        $this->mPAY24SDK->enableCurlLog = $enableCurlLog;
-
         if ( version_compare(phpversion(), '5.0.0', '<') === true || !in_array('curl', get_loaded_extensions()) || !in_array('dom', get_loaded_extensions()) ) {
             $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
@@ -91,17 +44,7 @@ class MPAY24 extends Transaction
             $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
         }
 
-        if ( strlen($merchantID) != 5 || (substr($merchantID, 0, 1) != "7" && substr($merchantID, 0, 1) != "9") ) {
-            $this->mPAY24SDK->dieWithMsg("The merchant ID '$merchantID' you have given is wrong, it must be 5-digit number and starts with 7 or 9!");
-        }
-
-        if ( $proxyPort != null && (!is_numeric($proxyPort) || strlen($proxyPort) != 4) ) {
-            $this->mPAY24SDK->dieWithMsg("The proxy port '$proxyPort' you have given must be numeric!");
-        }
-
-        if ( ($proxyHost == null && $proxyHost != $proxyPort) || ($proxyPort == null && $proxyHost != $proxyPort) ) {
-            $this->mPAY24SDK->dieWithMsg("You must setup both variables 'proxyHost' and 'proxyPort'!");
-        }
+        $this->mPAY24SDK = new MPAY24SDK($config);
     }
 
     /**
@@ -165,9 +108,16 @@ class MPAY24 extends Transaction
      */
     function write_log( $operation, $info_to_log )
     {
-        $fh = fopen(__DIR__ . '/' . self::MPAY24_LOG, 'a+') or die("can't open file");
+        $serverName = php_uname('n');
+
+        if (isset($_SERVER['SERVER_NAME']))
+        {
+            $serverName = $_SERVER['SERVER_NAME'];
+        }
+
+        $fh = fopen($this->mPAY24SDK->getMPya24LogPath(), 'a+') or die("can't open file");
         $MessageDate = date("Y-m-d H:i:s");
-        $Message = $MessageDate." ".php_uname('n')." mPAY24 : ";
+        $Message = $MessageDate." ".$serverName." mPAY24 : ";
         $result = $Message."$operation : $info_to_log\n";
         fwrite($fh, $result);
         fclose($fh);
@@ -208,7 +158,7 @@ class MPAY24 extends Transaction
 
         $paymentMethods = $this->mPAY24SDK->ListPaymentMethods();
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_log( "GetPaymentMethods", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "GetPaymentMethods", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -252,7 +202,7 @@ class MPAY24 extends Transaction
 
         $payResult = $this->mPAY24SDK->SelectPayment($mdxiXML);
 
-        if ($this->mPAY24SDK->getDebug()) {
+        if ($this->mPAY24SDK->isDebug()) {
             $this->write_log( "SelectPayment", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "SelectPayment", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -278,7 +228,7 @@ class MPAY24 extends Transaction
 
         $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
 
-        if ($this->mPAY24SDK->getDebug()) {
+        if ($this->mPAY24SDK->isDebug()) {
             $this->write_log( "AcceptPayment", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "AcceptPayment", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -299,7 +249,7 @@ class MPAY24 extends Transaction
 
         $result = $this->mPAY24SDK->TransactionStatus($mpaytid, $tid);
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_log( "AcceptPayment", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "AcceptPayment", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -354,7 +304,7 @@ class MPAY24 extends Transaction
 
         $finishExpressCheckoutResult = $this->mPAY24SDK->ManualCallback($order->toXML(), $paymentType);
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_log( "FinishExpressCheckoutResult", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "FinishExpressCheckoutResult", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -381,7 +331,7 @@ class MPAY24 extends Transaction
 
         $tokenResult = $this->mPAY24SDK->CreateTokenPayment($paymentType, $additional);
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_log( "CreatePaymentToken", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "CreatePaymentToken", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -421,7 +371,7 @@ class MPAY24 extends Transaction
 
         $clearAmountResult = $this->mPAY24SDK->ManualClear($mPAYTid, $amount, $currency);
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_log( "ClearAmount", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "ClearAmount", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -462,7 +412,7 @@ class MPAY24 extends Transaction
 
         $creditAmountResult = $this->mPAY24SDK->ManualCredit($mPAYTid, $amount, $currency, $customer);
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_log( "CreditAmount", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "CreditAmount", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
@@ -485,12 +435,12 @@ class MPAY24 extends Transaction
         $mPAYTid = $transaction->MPAYTID; // ToDo: again...find from where this came from..
 
         if (!$mPAYTid) {
-            $this->mPAY24SDK->dieWithMsgie("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+            $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
         }
 
         $cancelTransactionResult = $this->mPAY24SDK->ManualReverse($mPAYTid);
 
-        if ( $this->mPAY24SDK->getDebug() ) {
+        if ( $this->mPAY24SDK->isDebug() ) {
             $this->write_log( "CancelTransaction", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
             $this->write_log( "CancelTransaction", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
         }
