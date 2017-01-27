@@ -23,6 +23,12 @@ use mPay24\Responses\ListPaymentMethodsResponse;
 class MPAY24SDK
 {
     /**
+     * An error message, that will be displayed to the user in case you are using the LIVE system
+     * @const LIVE_ERROR_MSG
+     */
+    const LIVE_ERROR_MSG = "We are sorry, an error occured - please contact the merchant!";
+
+    /**
      * @var string
      */
     private $version = "3.0.1";
@@ -172,12 +178,6 @@ class MPAY24SDK
     public function configure( $merchantID, $soapPassword, $test, $proxyHost, $proxyPort, $proxyUser, $proxyPass, $verifyPeer )
     {
         /**
-         * An error message, that will be displayed to the user in case you are using the LIVE system
-         * @const LIVE_ERROR_MSG
-         */
-        define('LIVE_ERROR_MSG', "We are sorry, an error occured - please contact the merchant!");
-
-        /**
          * The current directory, where the script is runnig from
          * @const __DIR__
          */
@@ -214,12 +214,6 @@ class MPAY24SDK
      */
     public function configureFlexLINK( $spid, $password, $test )
     {
-        /**
-         * An error message, that will be displayed to the user in case you are using the LIVE system
-         * @const LIVE_ERROR_MSG
-         */
-        define('LIVE_ERROR_MSG', "We are sorry, an error occured - please contact the merchant!");
-
         /**
          * The current directory, where the script is runnig from
          * @const __DIR__
@@ -352,7 +346,7 @@ class MPAY24SDK
         if ( $this->test ) {
             print($msg);
         } else {
-            print(LIVE_ERROR_MSG);
+            print(self::LIVE_ERROR_MSG);
         }
     }
 
@@ -740,7 +734,7 @@ class MPAY24SDK
      */
     private function setSoapPassword( $pass = null )
     {
-        if ( defined("SOAP_PASSWORD") ) {
+        if ( defined("SOAP_PASSWORD") ) {  // TODO: check if this will be used in the future, at the moment SOAP_PASSWORD is nowhere defined
             $this->soappass = SOAP_PASSWORD;
         } else {
             $this->soappass = $pass;
@@ -904,7 +898,7 @@ class MPAY24SDK
                         $ch
                     )."\n".$e->getMessage().' in '.$e->getFile().', line: '.$e->getLine().'.';
             } else {
-                $dieMSG = LIVE_ERROR_MSG;
+                $dieMSG = self::LIVE_ERROR_MSG;
             }
 
             echo $dieMSG;
