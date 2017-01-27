@@ -1,6 +1,7 @@
 <?php
   require("../bootstrap.php");
   use mPay24\MPAY24;
+  use mPay24\ORDER;
 
   $shop = new MPAY24();
 
@@ -9,4 +10,3 @@
   $mdxi->Order->Price = "1.00";
 
   header('Location: '.$shop->selectPayment($mdxi)->location);
-?>
