@@ -26,9 +26,8 @@ namespace mPay24;
  * * STRING: APPR_CODE
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPAY24.php 6271 2015-04-09 08:38:50Z anna $
  * @filesource MPAY24.php
- * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
+ * @license MIT
  */
 class Transaction
 {

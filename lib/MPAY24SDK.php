@@ -17,9 +17,8 @@ use mPay24\Responses\ListPaymentMethodsResponse;
  * build the SOAP request, sent to mPAY24.
  *
  * @author              mPAY24 GmbH <support@mpay24.com>
- * @version             $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
  * @filesource          MPAY24SDK.php
- * @license             http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
+ * @license MIT
  */
 class MPAY24SDK
 {

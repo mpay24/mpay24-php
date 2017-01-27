@@ -9,9 +9,8 @@ use DOMDocument;
  * The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: orderXML.php 6231 2015-03-13 16:29:56Z anna $
  * @filesource orderXML.php
- * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
+ * @license MIT
  */
 class ORDER
 {

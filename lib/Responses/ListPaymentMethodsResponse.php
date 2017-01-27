@@ -7,9 +7,8 @@ use DOMDocument;
  * The ListPaymentMethodsResponse class contains a generalResponse object and all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
  * @filesource MPAY24SDK.php
- * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
+ * @license MIT
  */
 class ListPaymentMethodsResponse extends GeneralResponse
 {

@@ -5,9 +5,8 @@ namespace mPay24;
  * The abstract MPay24flexLINK class provides abstract functions, which are used from the other functions in order to create a flexLINK
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPAY24.php 6271 2015-04-09 08:38:50Z anna $
  * @filesource MPAY24.php
- * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
+ * @license MIT
  */
 abstract class MPay24flexLINK
 {

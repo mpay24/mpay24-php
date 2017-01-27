@@ -1,6 +1,7 @@
 <?php
-  include_once ("../lib/MPAY24.php");
-  
+  require("../bootstrap.php");
+  use mPay24\MPAY24;
+
   $shop = new MPAY24();
 
   $mdxi = new ORDER();

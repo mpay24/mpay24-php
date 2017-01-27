@@ -1,5 +1,6 @@
 <?php
-  include_once ("../lib/MPAY24.php");
+  require("../bootstrap.php");
+  use mPay24\MPAY24;
 
   $mpay24 = new MPAY24();
 

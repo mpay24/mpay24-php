@@ -7,9 +7,8 @@ use DOMDocument;
  * The PaymentResponse class contains a generalResponse object and the location(URL), which will be used for the payment session
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPAY24SDK.php 6231 2015-03-13 16:29:56Z anna $
  * @filesource MPAY24SDK.php
- * @license http://ec.europa.eu/idabc/eupl.html EUPL, Version 1.1
+ * @license MIT
  */
 class PaymentResponse extends GeneralResponse
 {

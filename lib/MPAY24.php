@@ -9,7 +9,6 @@ use mPay24\Responses\ListPaymentMethodsResponse;
  * The abstract MPAY24 class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24
  *
  * @author mPAY24 GmbH <support@mpay24.com>
- * @version $Id: MPAY24.php 6271 2015-04-09 08:38:50Z anna $
  * @filesource MPAY24.php
  * @license MIT
  */
@@ -168,7 +167,7 @@ class MPAY24 extends Transaction
     {
         $fh = fopen(__DIR__ . '/' . self::MPAY24_LOG, 'a+') or die("can't open file");
         $MessageDate = date("Y-m-d H:i:s");
-        $Message = $MessageDate." ".$_SERVER['SERVER_NAME']." mPAY24 : ";
+        $Message = $MessageDate." ".php_uname('n')." mPAY24 : ";
         $result = $Message."$operation : $info_to_log\n";
         fwrite($fh, $result);
         fclose($fh);
