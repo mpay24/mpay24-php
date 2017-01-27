@@ -11,16 +11,17 @@ Documentation is available at https://docs.mpay24.com/docs.
 
 ## Configuration
 
-The configuration file is located in `/lib/config/config.php`<br />
-The soap username and password should be entered here.<br />
-The `CURL_LOG` and `MPAY24_LOG` path starts in `/lib/`
+The `CURL_LOG` and `MPAY24_LOG` can be set within 'MPAY24.php'
+Logs are written into `/logs`
 
 ## SDK Overview
 
-First it is necessary to include and initialize the library:
+First it is necessary to include and initialize the library with username and password:
 ```php
-include_once ("./lib/MPAY24.php");
-$mpay24 = new MPAY24(); // or with soap username, password if not provided in config
+require("../bootstrap.php");
+use mPay24\MPAY24;
+
+$mpay24 = new MPAY24('9****', '*********');
 ```
 
 #### Create a token for seamless creditcard payments
