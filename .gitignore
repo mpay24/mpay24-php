@@ -2,3 +2,5 @@
 /.buildpath
 /.settings
 .DS_STORE
+*.log
+/lib/logs
