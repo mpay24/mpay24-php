@@ -21,16 +21,14 @@ abstract class MPay24flexLINK
     /**
      * The constructor, which sets all the initial values to be able making flexLINK transactions.
      * In order to be able use this functionality, you should contact mPAY24 first.
-     *
-     * @param MPay24Config $config
      */
-    function __construct( MPay24Config &$config = null )
+    function __construct()
     {
-        if ( version_compare(phpversion(), '5.0.0', '<') === true || !in_array('mcrypt', get_loaded_extensions()) ) {
+        if ( version_compare(phpversion(), '5.3.3', '<') === true || !in_array('mcrypt', get_loaded_extensions()) ) {
             $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
-            if ( version_compare(phpversion(), '5.0.0', '<') === true ) {
-                $this->mPAY24SDK->printMsg("You need PHP version 5.0.0 or newer!<br>");
+            if ( version_compare(phpversion(), '5.3.3', '<') === true ) {
+                $this->mPAY24SDK->printMsg("You need PHP version 5.3.3 or newer!<br>");
             }
 
             if ( !in_array('mcrypt', get_loaded_extensions()) ) {
@@ -40,7 +38,34 @@ abstract class MPay24flexLINK
             $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
         }
 
-        $this->mPAY24SDK = new MPAY24SDK($config);
+        $args = func_get_args();
+
+        if (isset($args[0]) && is_a($args[0], MPay24Config::class ))
+        {
+            $this->mPAY24SDK = new MPAY24SDK($args[0]);
+        }
+        else
+        {
+            $config = new MPay24Config();
+
+            if (isset($args[0])){
+                $config->setSPID($args[0]);
+            }
+
+            if (isset($args[1])){
+                $config->setFlexLinkPassword($args[1]);
+            }
+
+            if (isset($args[2])){
+                $config->useFlexLinkTestSystem($args[2]);
+            }
+
+            if (isset($args[3])){
+                $config->setDebug($args[3]);
+            }
+
+            $this->mPAY24SDK = new MPAY24SDK($config);
+        }
     }
 
     /**

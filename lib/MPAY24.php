@@ -22,15 +22,25 @@ class MPAY24 extends Transaction
 
     /**
      * MPAY24 constructor.
-     * @param \mPay24\MPay24Config $config
      */
-    function __construct( MPay24Config &$config = null )
+    function __construct()
     {
-        if ( version_compare(phpversion(), '5.0.0', '<') === true || !in_array('curl', get_loaded_extensions()) || !in_array('dom', get_loaded_extensions()) ) {
+        $args = func_get_args();
+
+        if (isset($args[0]) && is_a($args[0], MPay24Config::class ))
+        {
+            $config = $args[0];
+        }
+        else
+        {
+            $config = new MPay24Config($args);
+        }
+
+        if ( version_compare(phpversion(), '5.3.3', '<') === true || !in_array('curl', get_loaded_extensions()) || !in_array('dom', get_loaded_extensions()) ) {
             $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
-            if ( version_compare(phpversion(), '5.0.0', '<') === true ) {
-                $this->mPAY24SDK->printMsg("You need PHP version 5.0.0 or newer!<br>");
+            if ( version_compare(phpversion(), '5.3.3', '<') === true ) {
+                $this->mPAY24SDK->printMsg("You need PHP version 5.3.3 or newer!<br>");
             }
 
             if ( !in_array('curl', get_loaded_extensions()) ) {

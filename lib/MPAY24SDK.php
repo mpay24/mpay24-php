@@ -29,18 +29,31 @@ class MPAY24SDK
     const LIVE_ERROR_MSG = "We are sorry, an error occured - please contact the merchant!";
 
     /**
-     * @var string
+     * The link where the requests should be sent to if you use the
+     *
+     * TEST SYSTEM : https://test.mpay24.com/app/bin/etpproxy_v15
+     *
+     * @const string
+     *
      */
-    private $version = "3.0.1";
+    const ETP_TEST_URL = "https://test.mpay24.com/app/bin/etpproxy_v15";
 
     /**
-     * The link where the requests should be sent to
+     * The link where the requests should be sent to if you use the
      *
-     * DEFAULT : https://test.mpay24.com/app/bin/etpproxy_v15 (TEST SYSTEM)
+     * LIVE SYSTEM : https://www.mpay24.com/app/bin/etpproxy_v15
      *
-     * @var string
+     * @const string
+     *
      */
-    private $etp_url = "https://test.mpay24.com/app/bin/etpproxy_v15";
+    const ETP_LIVE_URL = "https://www.mpay24.com/app/bin/etpproxy_v15";
+
+    /**
+     * User Agent Version Number
+     *
+     * @const string
+     */
+    const VERSION = "3.0.1"; // TODO: check if you want to change it, because of the reason updates
 
     /**
      * The fix (envelope) part of the soap xml, which is to be sent to mPAY24
@@ -66,8 +79,7 @@ class MPAY24SDK
     /**
      * @var MPay24Config
      */
-    private $config;
-
+    protected $config;
 
     public function __construct( MPay24Config &$config = null )
     {
@@ -89,12 +101,13 @@ class MPAY24SDK
      *          TRUE - when you want to use the TEST system
      *
      *          FALSE - when you want to use the LIVE system
+     * @deprecated Use Configuration Object instated
      */
-    public function configureFlexLINK( $spid, $password, $test )
+    public function configureFlexLINK( $spid, $password, $test)
     {
-        $this->config->setSPid($spid);
+        $this->config->setSPID($spid);
         $this->config->setFlexLinkPassword($password);
-        $this->config->useFlexLinkTestSystem((bool) $test);
+        $this->config->useFlexLinkTestSystem($test);
     }
 
     /**
@@ -104,7 +117,7 @@ class MPAY24SDK
      */
     public function getMerchantID()
     {
-        return substr($this->config->getMerchantID(), 1);
+        return $this->config->getMerchantID();
     }
 
     /**
@@ -114,7 +127,7 @@ class MPAY24SDK
      */
     public function getSPID()
     {
-        return $this->config->getSpid();
+        return $this->config->getSPID();
     }
 
     /**
@@ -134,7 +147,7 @@ class MPAY24SDK
      */
     public function getEtpURL()
     {
-        return $this->etp_url;
+        return $this->config->isTestSystem() ? self::ETP_TEST_URL : self::ETP_LIVE_URL;
     }
 
     /**
@@ -194,7 +207,7 @@ class MPAY24SDK
      */
     public function getMPya24LogPath()
     {
-        return $this->config->getLogPath() .'/'. $this->config->getLogFile();
+        return $this->config->getLogPath() . '/' . $this->config->getLogFile();
     }
 
     /**
@@ -204,7 +217,7 @@ class MPAY24SDK
      */
     public function getMPya24CurlLogPath()
     {
-        return $this->config->getLogPath() .'/'. $this->config->getCurlLogFile();
+        return $this->config->getLogPath() . '/' . $this->config->getCurlLogFile();
     }
 
     /**
@@ -570,7 +583,7 @@ class MPAY24SDK
     }
 
     /**
-     * Encoded the parameters (AES256-CBC) for the pay link and retunr them
+     * Encoded the parameters (AES256-CBC) for the pay link and return them
      *
      * @param array $params The parameters, which are going to be posted to mPAY24
      * @return string
@@ -583,30 +596,9 @@ class MPAY24SDK
             $paramsString .= "$key=$value&";
         }
 
-        $encryptedParams = $this->ssl_encrypt($this->pass, $paramsString);
+        $encryptedParams = $this->ssl_encrypt($this->config->getFlexLinkPassword(), $paramsString);
 
         return $encryptedParams;
-    }
-
-    /**
-     * Set whether the tets system (true) or the live system (false) will be used for the SOAP requests
-     * Set the POST url
-     *
-     * ("https://test.mpay24.com/app/bin/etpproxy_v14" or
-     *
-     * "https://www.mpay24.com/app/bin/etpproxy_v14")
-     *
-     * @param bool $test TRUE for TEST system and FALSE for LIVE system.
-     */
-    private function setSystem( $test = null )
-    {
-        if ( $test ) {
-            $this->test = true;
-            $this->etp_url = "https://test.mpay24.com/app/bin/etpproxy_v15";
-        } else {
-            $this->test = false;
-            $this->etp_url = "https://www.mpay24.com/app/bin/etpproxy_v15";
-        }
     }
 
     /**
@@ -644,9 +636,9 @@ class MPAY24SDK
      */
     private function send()
     {
-        $userAgent = "mpay24-php/".$this->version;
+        $userAgent = 'mpay24-php/' . self::VERSION;
 
-        $ch = curl_init($this->etp_url);
+        $ch = curl_init($this->getEtpURL());
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_USERPWD, 'u' . $this->config->getMerchantID() . ':' . $this->config->getSoapPassword());
@@ -655,7 +647,7 @@ class MPAY24SDK
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         if ( $this->config->isEnableCurlLog() ) {
-            $fh = fopen(__DIR__ . '/' . MPAY24::CURL_LOG, 'a+') or $this->permissionError();
+            $fh = fopen($this->getMPya24CurlLogPath(), 'a+') or $this->permissionError();
 
             curl_setopt($ch, CURLOPT_VERBOSE, 1);
             curl_setopt($ch, CURLOPT_STDERR, $fh);
@@ -664,14 +656,17 @@ class MPAY24SDK
         try {
             curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/bin/cacert.pem');
 
-            if ($this->config->getProxyHost()) {
-                curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost().':'.$this->config->getProxyPort());
+            if ($this->config->getProxyHost())
+            {
+                curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());
 
-                if ($this->config->getProxyUser()) {
-                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config->getProxyUser().':'.$this->config->getProxyPass());
+                if ($this->config->getProxyUser())
+                {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
                 }
 
-                if ($this->config->isVerifyPeer() !== true) {
+                if ($this->config->isVerifyPeer() !== true)
+                {
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->config->isVerifyPeer());
                 }
             }
@@ -683,11 +678,14 @@ class MPAY24SDK
                 fclose($fh);
             }
         } catch ( \Exception $e ) {
-            if ( $this->config->isTestSystem() ) {
+            if ( $this->config->isTestSystem() )
+            {
                 $dieMSG = "Your request couldn't be sent because of the following error:"."\n".curl_error(
                         $ch
                     )."\n".$e->getMessage().' in '.$e->getFile().', line: '.$e->getLine().'.';
-            } else {
+            }
+            else
+            {
                 $dieMSG = self::LIVE_ERROR_MSG;
             }
 

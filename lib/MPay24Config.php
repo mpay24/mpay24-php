@@ -7,6 +7,13 @@ use InvalidArgumentException;
 
 include_once(dirname(__FILE__) . '/../config.php');
 
+/**
+ * Class MPay24Config
+ *
+ * @author Stefan Polzer <develop@posit.at>
+ * @filesource MPay24Config.php
+ * @license MIT
+ */
 class MPay24Config
 {
     /**
@@ -105,25 +112,32 @@ class MPay24Config
      */
     protected $log_path;
 
-    public function __construct(
-        $merchantID         = MPAY24_MERCHANT_ID,
-        $soapPassword       = MPAY24_SOAP_PASS,
-        $testSystem         = MPAY24_TEST_SYSTEM,
-        $debug              = MPAY24_DEBUG,
-        $proxyHost          = MPAY24_PROXY_HOST,
-        $proxyPort          = MPAY24_PROXY_PORT,
-        $proxyUser          = MPAY24_PROXY_USER,
-        $proxyPass          = MPAY24_PROXY_PASS,
-        $verifyPeer         = MPAY24_VERIFY_PEER,
-        $enableCurlLog      = MPAY24_ENABLE_CURL_LOG,
-        $sPid               = MPAY24_SPID,
-        $flexLinkPassword   = MPAY24_FLEX_LINK_PASS,
-        $flexLinkTestSystem = MPAY24_FLEX_LINK_TEST_SYSTEM,
-        $log_file           = MPAY24_LOG_FILE,
-        $log_path           = MPAY24_LOG_PATH,
-        $curl_log_file      = MPAY24_CURL_LOG_FILE
-    )
+    public function __construct()
     {
+        $args = func_get_args();
+
+        if (is_array($args[0]))
+        {
+            $args = $args[0];
+        }
+
+        $merchantID =         (isset($args[0]) ? $args[0] : MPAY24_MERCHANT_ID);
+        $soapPassword =       (isset($args[1]) ? $args[1] : MPAY24_SOAP_PASS);
+        $testSystem =         (isset($args[2]) ? $args[2] : MPAY24_TEST_SYSTEM);
+        $debug =              (isset($args[3]) ? $args[3] : MPAY24_DEBUG);
+        $proxyHost =          (isset($args[4]) ? $args[4] : MPAY24_PROXY_HOST);
+        $proxyPort =          (isset($args[5]) ? $args[5] : MPAY24_PROXY_PORT);
+        $proxyUser =          (isset($args[6]) ? $args[6] : MPAY24_PROXY_USER);
+        $proxyPass =          (isset($args[7]) ? $args[7] : MPAY24_PROXY_PASS);
+        $verifyPeer =         (isset($args[8]) ? $args[8] : MPAY24_VERIFY_PEER);
+        $enableCurlLog =      (isset($args[9]) ? $args[9] : MPAY24_ENABLE_CURL_LOG);
+        $sPid =               (isset($args[10]) ? $args[10] : MPAY24_SPID);
+        $flexLinkPassword =   (isset($args[11]) ? $args[11] : MPAY24_FLEX_LINK_PASS);
+        $flexLinkTestSystem = (isset($args[12]) ? $args[12] : MPAY24_FLEX_LINK_TEST_SYSTEM);
+        $log_file =           (isset($args[13]) ? $args[13] : MPAY24_LOG_FILE);
+        $log_path =           (isset($args[14]) ? $args[14] : MPAY24_LOG_PATH);
+        $curl_log_file =      (isset($args[15]) ? $args[15] : MPAY24_CURL_LOG_FILE);
+
         $this->setMerchantID($merchantID);
         $this->setSoapPassword($soapPassword);
         $this->useTestSystem($testSystem);
@@ -134,7 +148,7 @@ class MPay24Config
         $this->setProxyPass($proxyPass);
         $this->setVerifyPeer($verifyPeer);
         $this->setEnableCurlLog($enableCurlLog);
-        $this->setSPid($sPid);
+        $this->setSPID($sPid);
         $this->setFlexLinkPassword($flexLinkPassword);
         $this->useFlexLinkTestSystem($flexLinkTestSystem);
         $this->setLogFile($log_file);
@@ -188,7 +202,7 @@ class MPay24Config
      */
     public function isTestSystem()
     {
-        return (bool)$this->testSystem;
+        return $this->testSystem;
     }
 
     /**
@@ -196,7 +210,7 @@ class MPay24Config
      */
     public function useTestSystem($testSystem)
     {
-        $this->testSystem = (bool)$testSystem;
+        $this->testSystem = (bool) $testSystem;
     }
 
     /**
@@ -204,7 +218,7 @@ class MPay24Config
      */
     public function isDebug()
     {
-        return (bool)$this->debug;
+        return $this->debug;
     }
 
     /**
@@ -212,7 +226,7 @@ class MPay24Config
      */
     public function setDebug($debug)
     {
-        $this->debug = (bool)$debug;
+        $this->debug = (bool) $debug;
     }
 
     /**
@@ -245,7 +259,7 @@ class MPay24Config
      */
     public function setProxyPort($proxyPort)
     {
-        if ($proxyPort != null && (!is_numeric($proxyPort) || strlen($proxyPort) != 4)) {
+        if ($proxyPort != null && preg_match('/^d{4}$/', $proxyPort) !== 1) {
             if ($this->isTestSystem()) {
                 throw new InvalidArgumentException("The proxy port '$proxyPort' you have given must be numeric!");
             } else {
@@ -301,7 +315,7 @@ class MPay24Config
      */
     public function setVerifyPeer($verifyPeer)
     {
-        $this->verifyPeer = (bool)$verifyPeer;
+        $this->verifyPeer = (bool) $verifyPeer;
     }
 
     /**
@@ -317,13 +331,13 @@ class MPay24Config
      */
     public function setEnableCurlLog($enableCurlLog)
     {
-        $this->enableCurlLog = (bool)$enableCurlLog;
+        $this->enableCurlLog = (bool) $enableCurlLog;
     }
 
     /**
      * @return string
      */
-    public function getSpid()
+    public function getSPID()
     {
         return $this->spid;
     }
@@ -331,7 +345,7 @@ class MPay24Config
     /**
      * @param string $spid
      */
-    public function setSPid($spid)
+    public function setSPID($spid)
     {
         $this->spid = $spid;
     }
@@ -357,7 +371,7 @@ class MPay24Config
      */
     public function isFlexLinkTestSystem()
     {
-        return (bool)$this->flexLinkTestSystem;
+        return $this->flexLinkTestSystem;
     }
 
     /**
@@ -365,7 +379,7 @@ class MPay24Config
      */
     public function useFlexLinkTestSystem($flexLinkTestSystem)
     {
-        $this->flexLinkTestSystem = (bool)$flexLinkTestSystem;
+        $this->flexLinkTestSystem = (bool) $flexLinkTestSystem;
     }
 
     /**
@@ -381,7 +395,7 @@ class MPay24Config
      */
     public function setLogFile($log_file)
     {
-        $this->log_file = $log_file;
+        $this->log_file = ltrim($log_file, "\\");
     }
 
     /**
@@ -397,7 +411,7 @@ class MPay24Config
      */
     public function setLogPath($log_path)
     {
-        $this->log_path = $log_path;
+        $this->log_path = rtrim($log_path, "\\");
     }
 
     /**
@@ -413,6 +427,6 @@ class MPay24Config
      */
     public function setCurlLogFile($curl_log_file)
     {
-        $this->curl_log_file = $curl_log_file;
+        $this->curl_log_file = ltrim($curl_log_file, "\\");
     }
 }
