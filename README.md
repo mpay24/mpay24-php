@@ -52,7 +52,6 @@ $config->setProxyHost('example.com');
 $config->setProxyPort(0815);            // Must be 4 digits
 $config->setProxyUser('proxyuser');
 $config->setProxyPass('*******');
-$config->setVerifyPeer();               // true => we Verify the Peer first [DEFAULT], false => we do not Verify the Peer
 ```
 
 Configure the for Flex Link usage:
@@ -72,6 +71,7 @@ $config->setLogPath('/absolute/path/to/log/dir');
 
 Other configuration Options:
 ```php
+$config->setVerifyPeer();               // true => Verify the Peer  [DEFAULT], false => stop cURL from verifying the peer's certificate
 $config->setEnableCurlLog(false);       // false => we do not log Curl comunicatio [DEFAULT], true => we log it to a seperat Log file
 $config->setLogFile('file_name.log');   // default is mpay24.log
 $config->setCurlLogFile('curl.log');    // default is curllog.log
