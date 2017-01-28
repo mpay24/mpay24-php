@@ -104,7 +104,7 @@ class MPAY24SDK
      */
     public function getMerchantID()
     {
-        return substr($this->config->getMerchantID(), 1);
+        return $this->config->getMerchantID();
     }
 
     /**
