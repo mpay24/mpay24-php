@@ -55,6 +55,13 @@ class MPAY24SDK
      */
     const VERSION = "3.0.1"; // TODO: check if you want to change it, because of the reason updates
 
+	/**
+	 * Minimum PHP version Required
+	 *
+	 * @const string
+	 */
+	const MIN_PHP_VERSION = "5.3.3";
+
     /**
      * The fix (envelope) part of the soap xml, which is to be sent to mPAY24
      *
@@ -89,6 +96,44 @@ class MPAY24SDK
 
         $this->config = $config;
     }
+
+	/**
+	 * @param bool $checkDomExtension
+	 * @param bool $checkCurlExtension
+	 * @param bool $checkMCryptExtension
+	 */
+	public function checkRequirements( $checkDomExtension = true, $checkCurlExtension = true, $checkMCryptExtension = true )
+	{
+		if ( version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true
+		|| ( $checkCurlExtension   && !in_array('curl',   get_loaded_extensions()) )
+		|| ( $checkDomExtension    && !in_array('dom',    get_loaded_extensions()) )
+		|| ( $checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()) )
+		){
+			$this->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
+
+			if ( version_compare(phpversion(),  self::MIN_PHP_VERSION, '<') === true )
+			{
+				$this->printMsg('You need PHP version ' . self::MIN_PHP_VERSION . ' or newer!<br>');
+			}
+
+			if ( $checkCurlExtension && !in_array('curl', get_loaded_extensions()) )
+			{
+				$this->printMsg("You need cURL extension!<br>");
+			}
+
+			if ( $checkDomExtension && !in_array('dom', get_loaded_extensions()) )
+			{
+				$this->printMsg("You need DOM extension!<br>");
+			}
+
+			if ( $checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()) )
+			{
+				$this->printMsg("You need mcrypt extension!<br>");
+			}
+
+			$this->dieWithMsg("Please load the required extensions!");
+		}
+	}
 
     /**
      * Set the basic (mandatory) settings for the requests

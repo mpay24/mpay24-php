@@ -24,20 +24,6 @@ abstract class MPay24flexLINK
      */
     function __construct()
     {
-        if ( version_compare(phpversion(), '5.3.3', '<') === true || !in_array('mcrypt', get_loaded_extensions()) ) {
-            $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
-
-            if ( version_compare(phpversion(), '5.3.3', '<') === true ) {
-                $this->mPAY24SDK->printMsg("You need PHP version 5.3.3 or newer!<br>");
-            }
-
-            if ( !in_array('mcrypt', get_loaded_extensions()) ) {
-                $this->mPAY24SDK->printMsg("You need mcrypt extension!<br>");
-            }
-
-            $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
-        }
-
         $args = func_get_args();
 
         if (isset($args[0]) && is_a($args[0], MPay24Config::class ))
@@ -66,6 +52,8 @@ abstract class MPay24flexLINK
 
             $this->mPAY24SDK = new MPAY24SDK($config);
         }
+
+        $this->mPAY24SDK->checkRequirements(false, false, true);
     }
 
     /**

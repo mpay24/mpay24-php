@@ -36,25 +36,9 @@ class MPAY24 extends Transaction
             $config = new MPay24Config($args);
         }
 
-        if ( version_compare(phpversion(), '5.3.3', '<') === true || !in_array('curl', get_loaded_extensions()) || !in_array('dom', get_loaded_extensions()) ) {
-            $this->mPAY24SDK->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
-
-            if ( version_compare(phpversion(), '5.3.3', '<') === true ) {
-                $this->mPAY24SDK->printMsg("You need PHP version 5.3.3 or newer!<br>");
-            }
-
-            if ( !in_array('curl', get_loaded_extensions()) ) {
-                $this->mPAY24SDK->printMsg("You need cURL extension!<br>");
-            }
-
-            if ( !in_array('dom', get_loaded_extensions()) ) {
-                $this->mPAY24SDK->printMsg("You need DOM extension!<br>");
-            }
-
-            $this->mPAY24SDK->dieWithMsg("Please load the required extensions!");
-        }
-
         $this->mPAY24SDK = new MPAY24SDK($config);
+
+        $this->mPAY24SDK->checkRequirements(true, true, false);
     }
 
     /**
