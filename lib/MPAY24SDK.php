@@ -53,14 +53,14 @@ class MPAY24SDK
      *
      * @const string
      */
-    const VERSION = "3.0.1"; // TODO: check if you want to change it, because of the reason updates
+    const VERSION = "4.0.0";
 
-	/**
-	 * Minimum PHP version Required
-	 *
-	 * @const string
-	 */
-	const MIN_PHP_VERSION = "5.3.3";
+    /**
+    * Minimum PHP version Required
+    *
+    * @const string
+    */
+    const MIN_PHP_VERSION = "5.3.3";
 
     /**
      * The fix (envelope) part of the soap xml, which is to be sent to mPAY24
