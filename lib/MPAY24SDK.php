@@ -64,13 +64,6 @@ class MPAY24SDK
     const MIN_PHP_VERSION = "5.3.3";
 
     /**
-     * The fix (envelope) part of the soap xml, which is to be sent to mPAY24
-     *
-     * @var string
-     */
-    private $soap_xml = "";
-
-    /**
      * The whole soap-xml (envelope and body), which is to be sent to mPAY24 as request
      *
      * @var string
@@ -651,10 +644,10 @@ class MPAY24SDK
      */
     private function buildEnvelope()
     {
-        $this->soap_xml = new DOMDocument("1.0", "UTF-8");
-        $this->soap_xml->formatOutput = true;
+        $soap_xml = new DOMDocument("1.0", "UTF-8");
+        $soap_xml->formatOutput = true;
 
-        $envelope = $this->soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
+        $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
         $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
         $envelope->setAttributeNS(
             'http://www.w3.org/2000/xmlns/',
@@ -666,12 +659,12 @@ class MPAY24SDK
             'xmlns:xsi',
             'http://www.w3.org/2001/XMLSchema-instance'
         );
-        $envelope = $this->soap_xml->appendChild($envelope);
+        $envelope = $soap_xml->appendChild($envelope);
 
-        $body = $this->soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
+        $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
         $body = $envelope->appendChild($body);
 
-        return $this->soap_xml;
+        return $soap_xml;
     }
 
     /**
