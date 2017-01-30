@@ -2,7 +2,7 @@
   require("../bootstrap.php");
   use mPay24\MPAY24;
   
-  $shop = new MPAY24();
+  $mpay24 = new MPAY24();
 
   $payment = array(
     "amount" => "100",
@@ -25,7 +25,7 @@
         break;
     }
 
-    $result = $shop->acceptPayment($type, "123", $payment, $additional);
+    $result = $mpay24->acceptPayment($type, "123", $payment, $additional);
 
     if($result->generalResponse->returnCode == "REDIRECT") {
       header('Location: '.$result->location);
