@@ -13,7 +13,7 @@ Documentation is available at https://docs.mpay24.com/docs.
 
 You can use the config.php file in the root directory
 
-You also can handover the Parameters while crating the MPAY24 Object
+You also can handover the parameters while crating the MPAY24 Object
 
 ```php
 require_once("../bootstrap.php");
@@ -24,8 +24,8 @@ $mpay24 = new MPAY24('9****', '*********');
 ```
 
 If you want to have a more flexible approach you can create a configuration object.
-Here you can either handover the Parameters like you do it with the MPAY24 Object
-and/or you use the methods coming with the Configuration Object
+Here you can either handover the parameters like you do it with the MPAY24 Object
+and/or you use the methods coming with the configuration object
 
 ```php
 require_once("../bootstrap.php");
@@ -45,7 +45,7 @@ $config->useTestSystem(true);   // true => Use the Test System [DEFAULT], false 
 $config->setDebug(true);        // true => Debug Mode On [DEFAULT], false => Debug Mode Off
 ```
 
-For Proxy Configuration (Only if needed)
+For proxy configuration (only if needed)
 
 ```php
 $config->setProxyHost('example.com');
@@ -62,14 +62,14 @@ $config->setFlexLinkPassword('*******');
 $config->useFlexLinkTestSystem(true);   // true => Use the Flex Link Test System [DEFAULT], false => use Flex Link Live System
 ```
 
-Logs are written into `./logs` per default but you can chang it in the config.php or
-with the configuration Object if used
+Logs are written into `./logs` per default but you can change it in the config.php or
+with the configuration object if used
 
 ```php
 $config->setLogPath('/absolute/path/to/log/dir');
 ```
 
-Other configuration Options:
+Other configuration options:
 ```php
 $config->setVerifyPeer(true);           // true => Verify the Peer  [DEFAULT], false => stop cURL from verifying the peer's certificate
 $config->setEnableCurlLog(false);       // false => we do not log Curl comunicatio [DEFAULT], true => we log it to a seperat Log file
