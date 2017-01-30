@@ -250,7 +250,7 @@ class MPAY24SDK
      *
      * @return string
      */
-    public function getMPya24LogPath()
+    public function getMPay24LogPath()
     {
         return $this->config->getLogPath() . '/' . $this->config->getLogFile();
     }
@@ -260,7 +260,7 @@ class MPAY24SDK
      *
      * @return string
      */
-    public function getMPya24CurlLogPath()
+    public function getMPay24CurlLogPath()
     {
         return $this->config->getLogPath() . '/' . $this->config->getCurlLogFile();
     }
@@ -692,7 +692,7 @@ class MPAY24SDK
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         if ( $this->config->isEnableCurlLog() ) {
-            $fh = fopen($this->getMPya24CurlLogPath(), 'a+') or $this->permissionError();
+            $fh = fopen($this->getMPay24CurlLogPath(), 'a+') or $this->permissionError();
 
             curl_setopt($ch, CURLOPT_VERBOSE, 1);
             curl_setopt($ch, CURLOPT_STDERR, $fh);
