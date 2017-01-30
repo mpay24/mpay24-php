@@ -9,6 +9,28 @@ Offical PHP SDK for SOAP Bindings
 A short demo implementation guide is available at https://docs.mpay24.com/docs/get-started</br>
 Documentation is available at https://docs.mpay24.com/docs.
 
+## Composer
+
+You can install the bindings via [Composer](http://getcomposer.org/). Run the following command:
+
+```bash
+composer require mpay24/mpay24-php
+```
+
+To use the bindings, use Composer's [autoload](https://getcomposer.org/doc/00-intro.md#autoloading):
+
+```php
+require_once('lib/Autoloader.php');
+```
+
+## Manual Installation
+
+If you do not want to use Composer, you can download the [latest release](https://github.com/mpay24/mpay24-php/releases). Then, to use the bindings, include the `bootstrap.php` file.
+
+```php
+require_once('bootstrap.php');
+```
+
 ## Configuration
 
 You can use the config.php file in the root directory
