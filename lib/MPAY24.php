@@ -22,20 +22,10 @@ class MPAY24 extends Transaction
 
     /**
      * MPAY24 constructor.
+     * @param MPay24Config $config
      */
-    function __construct()
+    function __construct( MPay24Config $config )
     {
-        $args = func_get_args();
-
-        if (isset($args[0]) && is_a($args[0], MPay24Config::class ))
-        {
-            $config = $args[0];
-        }
-        else
-        {
-            $config = new MPay24Config($args);
-        }
-
         $this->mPAY24SDK = new MPAY24SDK($config);
 
         $this->mPAY24SDK->checkRequirements(true, true, false);
