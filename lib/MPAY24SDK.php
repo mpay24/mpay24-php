@@ -3,6 +3,7 @@
 namespace mPay24;
 
 use DOMDocument;
+use DOMNode;
 
 use mPay24\Responses\PaymentResponse;
 use mPay24\Responses\PaymentTokenResponse;
@@ -435,10 +436,7 @@ class MPAY24SDK
             $buf = $xmlPayment->appendChild($buf);
         }
 
-        foreach ( $additional as $k => $v ) {
-            $buf = $xml->createElement($k, $v);
-            $buf = $operation->appendChild($buf);
-        }
+	    $this->appendArray($operation, $additional, $xml);
 
         $this->request = $xml->saveXML();
 
@@ -783,4 +781,32 @@ class MPAY24SDK
 
         return chunk_split(array_shift(unpack('H*', 'Salted__'.$salt.$encrypted_data)), 32, "\r\n");
     }
+
+	/**
+	 * @param DOMNode     $parent
+	 * @param array       $list
+	 * @param DOMDocument $document
+	 */
+	protected function appendArray( DOMNode &$parent, array &$list, &$document = null )
+	{
+		if (is_null($document))
+		{
+			$document = new DOMDocument();
+		}
+
+		foreach ($list as $name => $value)
+		{
+			if (is_array($value))
+			{
+				$element = $document->createElement($name);
+				$this->appendArray($element, $value, $document);
+				$element = $parent->appendChild($element);
+			}
+			else
+			{
+				$element = $document->createElement($name, $value);
+				$element = $parent->appendChild($element);
+			}
+		}
+	}
 }
