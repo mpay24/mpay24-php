@@ -33,21 +33,8 @@ require_once('bootstrap.php');
 
 ## Configuration
 
-You can use the config.php file in the root directory
-
-You also can handover the parameters while crating the MPAY24 Object
-
-```php
-require_once("../bootstrap.php");
-use mPay24\MPAY24;
-
-$mpay24 = new MPAY24('9****', '*********');
-
-```
-
-If you want to have a more flexible approach you can create a configuration object.
-Here you can either handover the parameters like you do it with the MPAY24 Object
-and/or you use the methods coming with the configuration object
+MPAY24 requires only one argument which is MPay24Config object.
+First use the configuration object to enter the required parameters and then pass it to MPAY24 object
 
 ```php
 require_once("../bootstrap.php");
@@ -106,7 +93,8 @@ First it is necessary to include and initialize the library with username and pa
 require_once("../bootstrap.php");
 use mPay24\MPAY24;
 
-$mpay24 = new MPAY24('9****', '*********');
+$config = new MPay24Config('9****', '*********');
+$mpay24 = new MPAY24($config);
 ```
 
 #### Create a token for seamless creditcard payments
