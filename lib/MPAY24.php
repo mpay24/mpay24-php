@@ -109,7 +109,7 @@ class MPAY24 extends Transaction
             $serverName = $_SERVER['SERVER_NAME'];
         }
 
-        $fh = fopen($this->mPAY24SDK->getMPya24LogPath(), 'a+') or die("can't open file");
+        $fh = fopen($this->mPAY24SDK->getMPay24LogPath(), 'a+') or die("can't open file");
         $MessageDate = date("Y-m-d H:i:s");
         $Message = $MessageDate." ".$serverName." mPAY24 : ";
         $result = $Message."$operation : $info_to_log\n";
