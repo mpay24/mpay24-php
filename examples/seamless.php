@@ -2,11 +2,11 @@
   require("../bootstrap.php");
   use mPay24\MPAY24;
   
-  $shop = new MPAY24();
+  $mpay24 = new MPAY24();
   $tokenizerConfig = array(
     "language" => "EN"
   );
-  $tokenizer = $shop->createPaymentToken("CC", $tokenizerConfig)->getPaymentResponse();
+  $tokenizer = $mpay24->createPaymentToken("CC", $tokenizerConfig)->getPaymentResponse();
 ?>
 
 <iframe src="<?php echo $tokenizer->location; ?>" frameBorder="0"></iframe>
