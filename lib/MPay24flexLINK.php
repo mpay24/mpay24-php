@@ -9,7 +9,7 @@ namespace mPay24;
  * @filesource MPAY24.php
  * @license MIT
  */
-abstract class MPay24flexLINK
+class MPay24flexLINK
 {
     /**
      * The mPAY24API Object, you are going to work with
@@ -186,17 +186,7 @@ abstract class MPay24flexLINK
         $params[$errorVar] = $error;
         $params[$confirmationVar] = $confirmation;
 
-        foreach ( $params as $key => $value ) {
-            if ($this->mPAY24SDK->isDebug()) {
-                $this->write_flexLINK_log("flexLINK:\t\t\tParameters: $key = $value\n");
-            }
-        }
-
         $parameters = $this->mPAY24SDK->flexLINK($params);
-
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_flexLINK_log("flexLINK:\t\t\tEncrypted parameters: $parameters\n");
-        }
 
         return $parameters;
     }
@@ -209,19 +199,6 @@ abstract class MPay24flexLINK
      */
     public function getPayLink( $encryptedParams )
     {
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_flexLINK_log(
-                "flexLINK:\t\t\tURL: https://" . $this->mPAY24SDK->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/" . $this->mPAY24SDK->getSPID() . "/$encryptedParams\n"
-            );
-        }
-
         return "https://" . $this->mPAY24SDK->getFlexLINKSystem() . ".mpay24.com/app/bin/checkout/".$this->mPAY24SDK->getSPID()."/$encryptedParams";
     }
-
-    /**
-     * Write a flexLINK log into a file, file system, data base
-     *
-     * @param string $info_to_log The information, which is to log: request, response, etc.
-     */
-    abstract function write_flexLINK_log($info_to_log);
 }
