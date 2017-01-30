@@ -9,16 +9,101 @@ Offical PHP SDK for SOAP Bindings
 A short demo implementation guide is available at https://docs.mpay24.com/docs/get-started</br>
 Documentation is available at https://docs.mpay24.com/docs.
 
+## Composer
+
+You can install the bindings via [Composer](http://getcomposer.org/). Run the following command:
+
+```bash
+composer require mpay24/mpay24-php
+```
+
+To use the bindings, use Composer's [autoload](https://getcomposer.org/doc/00-intro.md#autoloading):
+
+```php
+require_once('lib/Autoloader.php');
+```
+
+## Manual Installation
+
+If you do not want to use Composer, you can download the [latest release](https://github.com/mpay24/mpay24-php/releases). Then, to use the bindings, include the `bootstrap.php` file.
+
+```php
+require_once('bootstrap.php');
+```
+
 ## Configuration
 
-The `CURL_LOG` and `MPAY24_LOG` can be set within 'MPAY24.php'
-Logs are written into `/logs`
+You can use the config.php file in the root directory
+
+You also can handover the parameters while crating the MPAY24 Object
+
+```php
+require_once("../bootstrap.php");
+use mPay24\MPAY24;
+
+$mpay24 = new MPAY24('9****', '*********');
+
+```
+
+If you want to have a more flexible approach you can create a configuration object.
+Here you can either handover the parameters like you do it with the MPAY24 Object
+and/or you use the methods coming with the configuration object
+
+```php
+require_once("../bootstrap.php");
+use mPay24\MPay24Config;
+
+$config = new MPay24Config('9****', '*********');
+$mpay24 = new MPAY24($config);
+
+```
+
+You have the possibility to change any value as needed:
+
+```php
+$config->setMerchantID('9****');
+$config->setSoapPassword('*******');
+$config->useTestSystem(true);   // true => Use the Test System [DEFAULT], false => use the Live System
+$config->setDebug(true);        // true => Debug Mode On [DEFAULT], false => Debug Mode Off
+```
+
+For proxy configuration (only if needed)
+
+```php
+$config->setProxyHost('example.com');
+$config->setProxyPort(0815);            // Must be 4 digits
+$config->setProxyUser('proxyuser');
+$config->setProxyPass('*******');
+```
+
+Configure the for Flex Link usage:
+
+```php
+$config->setSPID('spid');
+$config->setFlexLinkPassword('*******');
+$config->useFlexLinkTestSystem(true);   // true => Use the Flex Link Test System [DEFAULT], false => use Flex Link Live System
+```
+
+Logs are written into `./logs` per default but you can change it in the config.php or
+with the configuration object if used
+
+```php
+$config->setLogPath('/absolute/path/to/log/dir');
+```
+
+Other configuration options:
+```php
+$config->setVerifyPeer(true);           // true => Verify the Peer  [DEFAULT], false => stop cURL from verifying the peer's certificate
+$config->setEnableCurlLog(false);       // false => we do not log Curl comunicatio [DEFAULT], true => we log it to a seperat Log file
+$config->setLogFile('file_name.log');   // default is mpay24.log
+$config->setCurlLogFile('curl.log');    // default is curllog.log
+```
 
 ## SDK Overview
 
 First it is necessary to include and initialize the library with username and password:
 ```php
-require("../bootstrap.php");
+require_once("../bootstrap.php");
 use mPay24\MPAY24;
 
 $mpay24 = new MPAY24('9****', '*********');
@@ -73,7 +158,7 @@ $mpay24->transactionStatus(null, "123 TID"); // with tid
 
 In order for the mPAY24 PHP SDK to work, your installation will have to meet the following prerequisites:
 
-* [PHP >= 5](http://www.php.net/)
+* [PHP >= 5.3.3](http://www.php.net/)
 * [cURL](http://at2.php.net/manual/de/book.curl.php)
 * [DOM](http://at2.php.net/manual/de/book.dom.php)
 * [Mcrypt](http://at2.php.net/manual/en/mcrypt)

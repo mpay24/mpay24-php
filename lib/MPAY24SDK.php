@@ -29,62 +29,38 @@ class MPAY24SDK
     const LIVE_ERROR_MSG = "We are sorry, an error occured - please contact the merchant!";
 
     /**
-     * @var string
+     * The link where the requests should be sent to if you use the
+     *
+     * TEST SYSTEM : https://test.mpay24.com/app/bin/etpproxy_v15
+     *
+     * @const string
+     *
      */
-    private $version = "3.0.1";
+    const ETP_TEST_URL = "https://test.mpay24.com/app/bin/etpproxy_v15";
 
     /**
-     * TRUE, when you want to use the test system, and FALSE otherwise
+     * The link where the requests should be sent to if you use the
      *
-     * @var bool
+     * LIVE SYSTEM : https://www.mpay24.com/app/bin/etpproxy_v15
+     *
+     * @const string
+     *
      */
-    private $test = false;
+    const ETP_LIVE_URL = "https://www.mpay24.com/app/bin/etpproxy_v15";
 
     /**
-     * 'test', when you want to use the test system, and 'www' otherwise
+     * User Agent Version Number
      *
-     * @var string
+     * @const string
      */
-    private $flexLINKSystem = "test";
+    const VERSION = "3.0.1"; // TODO: check if you want to change it, because of the reason updates
 
-    /**
-     * The link where the requests should be sent to
-     *
-     * DEFAULT : https://test.mpay24.com/app/bin/etpproxy_v15 (TEST SYSTEM)
-     *
-     * @var string
-     */
-    private $etp_url = "https://test.mpay24.com/app/bin/etpproxy_v15";
-
-    /**
-     * The merchant ID (supported from mPAY24).
-     * 5-digit number. Begin with 9
-     * for test system, begin with 7 for the live system.
-     *
-     * @var int
-     */
-    private $merchantid = "9xxxx";
-
-    /**
-     * SPID (supported from mPAY24).
-     *
-     * @var string
-     */
-    private $spid = "";
-
-    /**
-     * The SOAP password (supproted from mPAY24)
-     *
-     * @var string
-     */
-    private $soappass = "";
-
-    /**
-     * The flexLINK password (supproted from mPAY24)
-     *
-     * @var string
-     */
-    private $pass = "";
+	/**
+	 * Minimum PHP version Required
+	 *
+	 * @const string
+	 */
+	const MIN_PHP_VERSION = "5.3.3";
 
     /**
      * The fix (envelope) part of the soap xml, which is to be sent to mPAY24
@@ -92,34 +68,6 @@ class MPAY24SDK
      * @var string
      */
     private $soap_xml = "";
-
-    /**
-     * The host name, in case you are using proxy
-     *
-     * @var string
-     */
-    private $proxy_host = "";
-
-    /**
-     * 4-digit port number, in case you are using proxy
-     *
-     * @var int
-     */
-    private $proxy_port = "";
-
-    /**
-     * The user name, in case you are using proxy
-     *
-     * @var string
-     */
-    private $proxy_user = "";
-
-    /**
-     * The password, in case you are using proxy
-     *
-     * @var string
-     */
-    private $proxy_pass = "";
 
     /**
      * The whole soap-xml (envelope and body), which is to be sent to mPAY24 as request
@@ -136,69 +84,56 @@ class MPAY24SDK
     private $response = "";
 
     /**
-     * FALSE to stop cURL from verifying the peer's certificate, default - TRUE
-     *
-     * @var bool
+     * @var MPay24Config
      */
-    private $verify_peer = true;
+    protected $config;
 
-    /**
-     * TRUE if log files are to be written, by default - FALSE
-     *
-     * @var bool
-     */
-    private $debug = true;
-
-    /**
-     * @var bool
-     */
-    public $enableCurlLog = false;
-
-    /**
-     * Set the basic (mandatory) settings for the requests
-     *
-     * @param int $merchantID
-     *          5-digit account number, supported by mPAY24
-     *
-     *          TEST accounts - starting with 9
-     *
-     *          LIVE account - starting with 7
-     * @param string $soapPassword
-     *          The webservice's password, supported by mPAY24
-     * @param bool $test
-     *          TRUE - when you want to use the TEST system
-     *
-     *          FALSE - when you want to use the LIVE system
-     * @param string $proxyHost The host name in case you are behind a proxy server ("" when not)
-     * @param int $proxyPort 4-digit port number in case you are behind a proxy server ("" when not)
-     * @param string $proxyUser The proxy user in case you are behind a proxy server ("" when not)
-     * @param string $proxyPass The proxy password in case you are behind a proxy server ("" when not)
-     * @param bool $verifyPeer Set as FALSE to stop cURL from verifying the peer's certificate
-     */
-    public function configure( $merchantID, $soapPassword, $test, $proxyHost, $proxyPort, $proxyUser, $proxyPass, $verifyPeer )
+    public function __construct( MPay24Config &$config = null )
     {
-        /**
-         * The current directory, where the script is runnig from
-         * @const __DIR__
-         */
-        if ( !defined('__DIR__') ) {
-            define('__DIR__', dirname(__FILE__));
+        if ( is_null($config) ){
+            $config = new MPay24Config();
         }
 
-        $this->setMerchantID($merchantID);
-        $this->setSoapPassword($soapPassword);
-        $this->setSystem($test);
-
-        if ( $proxyHost != "" && $proxyPort != "" ) {
-            if ($proxyUser != "" && $proxyPass != "") {
-                $this->setProxySettings($proxyHost, $proxyPort, $proxyUser, $proxyPass);
-            } else {
-                $this->setProxySettings($proxyHost, $proxyPort);
-            }
-        }
-
-        $this->setVerifyPeer($verifyPeer);
+        $this->config = $config;
     }
+
+	/**
+	 * @param bool $checkDomExtension
+	 * @param bool $checkCurlExtension
+	 * @param bool $checkMCryptExtension
+	 */
+	public function checkRequirements( $checkDomExtension = true, $checkCurlExtension = true, $checkMCryptExtension = true )
+	{
+		if ( version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true
+		|| ( $checkCurlExtension   && !in_array('curl',   get_loaded_extensions()) )
+		|| ( $checkDomExtension    && !in_array('dom',    get_loaded_extensions()) )
+		|| ( $checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()) )
+		){
+			$this->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
+
+			if ( version_compare(phpversion(),  self::MIN_PHP_VERSION, '<') === true )
+			{
+				$this->printMsg('You need PHP version ' . self::MIN_PHP_VERSION . ' or newer!<br>');
+			}
+
+			if ( $checkCurlExtension && !in_array('curl', get_loaded_extensions()) )
+			{
+				$this->printMsg("You need cURL extension!<br>");
+			}
+
+			if ( $checkDomExtension && !in_array('dom', get_loaded_extensions()) )
+			{
+				$this->printMsg("You need DOM extension!<br>");
+			}
+
+			if ( $checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()) )
+			{
+				$this->printMsg("You need mcrypt extension!<br>");
+			}
+
+			$this->dieWithMsg("Please load the required extensions!");
+		}
+	}
 
     /**
      * Set the basic (mandatory) settings for the requests
@@ -211,30 +146,23 @@ class MPAY24SDK
      *          TRUE - when you want to use the TEST system
      *
      *          FALSE - when you want to use the LIVE system
+     * @deprecated Use Configuration Object instated
      */
-    public function configureFlexLINK( $spid, $password, $test )
+    public function configureFlexLINK( $spid, $password, $test)
     {
-        /**
-         * The current directory, where the script is runnig from
-         * @const __DIR__
-         */
-        if ( !defined('__DIR__') ) {
-            define('__DIR__', dirname(__FILE__));
-        }
-
-        $this->setSPID($spid);
-        $this->setPassword($password);
-        $this->setFlexLINKSystem($test);
+        $this->config->setSPID($spid);
+        $this->config->setFlexLinkPassword($password);
+        $this->config->useFlexLinkTestSystem($test);
     }
 
     /**
-     * Get the merchant ID, which was set by the function configure($merchantID, $soapPassword, $test, $proxyHost, $proxyPort)
+     * Get the merchant ID, which was set by the function configure(Config $config)
      *
      * @return string
      */
     public function getMerchantID()
     {
-        return substr($this->merchantid, 1);
+        return $this->config->getMerchantID();
     }
 
     /**
@@ -244,7 +172,7 @@ class MPAY24SDK
      */
     public function getSPID()
     {
-        return $this->spid;
+        return $this->config->getSPID();
     }
 
     /**
@@ -254,7 +182,7 @@ class MPAY24SDK
      */
     public function getFlexLINKSystem()
     {
-        return $this->flexLINKSystem;
+        return $this->config->isFlexLinkTestSystem() ? 'test' : 'www';
     }
 
     /**
@@ -264,7 +192,7 @@ class MPAY24SDK
      */
     public function getEtpURL()
     {
-        return $this->etp_url;
+        return $this->config->isTestSystem() ? self::ETP_TEST_URL : self::ETP_LIVE_URL;
     }
 
     /**
@@ -294,11 +222,7 @@ class MPAY24SDK
      */
     public function proxyUsed()
     {
-        if ( $this->proxy_host != '' && $this->proxy_port != '' ) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->config->getProxyHost() != '';
     }
 
     /**
@@ -308,7 +232,7 @@ class MPAY24SDK
      */
     public function setDebug( $debug )
     {
-        $this->debug = $debug;
+        $this->config->setDebug( (bool) $debug);
     }
 
     /**
@@ -316,9 +240,29 @@ class MPAY24SDK
      *
      * @return bool
      */
-    public function getDebug()
+    public function isDebug()
     {
-        return $this->debug;
+        return $this->config->isDebug();
+    }
+
+    /**
+     * Return MPay24 Log Path
+     *
+     * @return string
+     */
+    public function getMPay24LogPath()
+    {
+        return $this->config->getLogPath() . '/' . $this->config->getLogFile();
+    }
+
+    /**
+     * Return MPay24 Curl Log Path
+     *
+     * @return string
+     */
+    public function getMPay24CurlLogPath()
+    {
+        return $this->config->getLogPath() . '/' . $this->config->getCurlLogFile();
     }
 
     /**
@@ -329,7 +273,7 @@ class MPAY24SDK
      */
     public function dieWithMsg( $msg )
     {
-        if ( $this->test ) {
+        if ( $this->config->isTestSystem() ) {
             throw new \Exception($msg);
         } else {
             throw new \Exception();
@@ -343,7 +287,7 @@ class MPAY24SDK
      */
     public function printMsg( $msg )
     {
-        if ( $this->test ) {
+        if ( $this->config->isTestSystem() ) {
             print($msg);
         } else {
             print(self::LIVE_ERROR_MSG);
@@ -378,7 +322,7 @@ class MPAY24SDK
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ListPaymentMethods');
         $operation = $body->appendChild($operation);
 
-        $xmlMerchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $xmlMerchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $xmlMerchantID = $operation->appendChild($xmlMerchantID);
 
         $this->request = $xml->saveXML();
@@ -406,7 +350,7 @@ class MPAY24SDK
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:SelectPayment');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $merchantID = $operation->appendChild($merchantID);
 
         $xmlMDXI = $xml->createElement('mdxi', htmlspecialchars($mdxi));
@@ -436,7 +380,7 @@ class MPAY24SDK
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:CreatePaymentToken');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $merchantID = $operation->appendChild($merchantID);
 
         $pType = $xml->createElement('pType', $pType);
@@ -473,7 +417,7 @@ class MPAY24SDK
         $operation = $xml->createElement('etp:AcceptPayment');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $merchantID = $operation->appendChild($merchantID);
 
         $xmlTID = $xml->createElement('tid', $tid);
@@ -563,7 +507,7 @@ class MPAY24SDK
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualClear');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $merchantID = $operation->appendChild($merchantID);
 
         $clearingDetails = $xml->createElement('clearingDetails');
@@ -601,7 +545,7 @@ class MPAY24SDK
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualCredit');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $merchantID = $operation->appendChild($merchantID);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
@@ -633,7 +577,7 @@ class MPAY24SDK
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualReverse');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $merchantID = $operation->appendChild($merchantID);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
@@ -663,7 +607,7 @@ class MPAY24SDK
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:TransactionStatus');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', substr($this->merchantid, 1));
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
         $merchantID = $operation->appendChild($merchantID);
 
         if ($mPAYTid) {
@@ -684,7 +628,7 @@ class MPAY24SDK
     }
 
     /**
-     * Encoded the parameters (AES256-CBC) for the pay link and retunr them
+     * Encoded the parameters (AES256-CBC) for the pay link and return them
      *
      * @param array $params The parameters, which are going to be posted to mPAY24
      * @return string
@@ -697,126 +641,9 @@ class MPAY24SDK
             $paramsString .= "$key=$value&";
         }
 
-        $encryptedParams = $this->ssl_encrypt($this->pass, $paramsString);
+        $encryptedParams = $this->ssl_encrypt($this->config->getFlexLinkPassword(), $paramsString);
 
         return $encryptedParams;
-    }
-
-    /**
-     * Set the merchant ID (without 'u')
-     *
-     * @param string $merchantID The merchant ID
-     * @throws \Exception
-     */
-    private function setMerchantID( $merchantID )
-    {
-        if ( $merchantID == null ) {
-            throw new \Exception('You have to provide a merchant ID');
-        } else {
-            $this->merchantid = 'u' . $merchantID;
-        }
-    }
-
-    /**
-     * Set the SPID, in order to make flexLINK transactions
-     *
-     * @param string $spid The SPID of your account, supported by mPAY24
-     */
-    private function setSPID( $spid )
-    {
-        $this->spid = $spid;
-    }
-
-    /**
-     * Set the Web-Services/SOAP password
-     *
-     * @param string $pass The SOAP password, provided by mPAY24
-     */
-    private function setSoapPassword( $pass = null )
-    {
-        if ( defined("SOAP_PASSWORD") ) {  // TODO: check if this will be used in the future, at the moment SOAP_PASSWORD is nowhere defined
-            $this->soappass = SOAP_PASSWORD;
-        } else {
-            $this->soappass = $pass;
-        }
-    }
-
-    /**
-     * Set the flexLINK password
-     *
-     * @param string $pass
-     *          The flexLINK password, provided by mPAY24
-     */
-    private function setPassword( $pass )
-    {
-        $this->pass = $pass;
-    }
-
-    /**
-     * Set whether the tets system (true) or the live system (false) will be used for the SOAP requests
-     * Set the POST url
-     *
-     * ("https://test.mpay24.com/app/bin/etpproxy_v14" or
-     *
-     * "https://www.mpay24.com/app/bin/etpproxy_v14")
-     *
-     * @param bool $test TRUE for TEST system and FALSE for LIVE system.
-     */
-    private function setSystem( $test = null )
-    {
-        if ( $test ) {
-            $this->test = true;
-            $this->etp_url = "https://test.mpay24.com/app/bin/etpproxy_v15";
-        } else {
-            $this->test = false;
-            $this->etp_url = "https://www.mpay24.com/app/bin/etpproxy_v15";
-        }
-    }
-
-    /**
-     * Set whether the tets system (true) or the live system (false) will be used for the flexLINK requests
-     *
-     * @param bool $test
-     *          TRUE for TEST system and FALSE for LIVE system.
-     */
-    private function setFlexLINKSystem( $test = null )
-    {
-        if ( $test ) {
-            $this->flexLINKSystem = "test";
-        } else {
-            $this->flexLINKSystem = "www";
-        }
-    }
-
-    /**
-     * Set the used proxy host and proxy port in case proxy is used
-     *
-     * @param string $proxy_host Proxy host
-     * @param string $proxy_port Proxy port
-     * @param string $proxy_user Proxy user
-     * @param string $proxy_pass Proxy pass
-     */
-    private function setProxySettings( $proxy_host = "", $proxy_port = "", $proxy_user = "", $proxy_pass = "" )
-    {
-        if ( $proxy_host != "" && $proxy_port != "" ) {
-            $this->proxy_host = $proxy_host;
-            $this->proxy_port = $proxy_port;
-        }
-
-        if ( $proxy_user != "" && $proxy_pass != "" ) {
-            $this->proxy_user = $proxy_user;
-            $this->proxy_pass = $proxy_pass;
-        }
-    }
-
-    /**
-     * Set whether to stop cURL from verifying the peer's certificate
-     *
-     * @param bool $verify_peer Set as FALSE to stop cURL from verifying the peer's certificate
-     */
-    private function setVerifyPeer( $verify_peer )
-    {
-        $this->verify_peer = $verify_peer;
     }
 
     /**
@@ -854,18 +681,18 @@ class MPAY24SDK
      */
     private function send()
     {
-        $userAgent = "mpay24-php/".$this->version;
+        $userAgent = 'mpay24-php/' . self::VERSION;
 
-        $ch = curl_init($this->etp_url);
+        $ch = curl_init($this->getEtpURL());
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_USERPWD, "$this->merchantid:$this->soappass");
+        curl_setopt($ch, CURLOPT_USERPWD, 'u' . $this->config->getMerchantID() . ':' . $this->config->getSoapPassword());
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->request);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-        if ( $this->enableCurlLog ) {
-            $fh = fopen(__DIR__ . '/' . MPAY24::CURL_LOG, 'a+') or $this->permissionError();
+        if ( $this->config->isEnableCurlLog() ) {
+            $fh = fopen($this->getMPay24CurlLogPath(), 'a+') or $this->permissionError();
 
             curl_setopt($ch, CURLOPT_VERBOSE, 1);
             curl_setopt($ch, CURLOPT_STDERR, $fh);
@@ -874,30 +701,36 @@ class MPAY24SDK
         try {
             curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/bin/cacert.pem');
 
-            if ($this->proxy_host !== '' && $this->proxy_port !== '') {
-                curl_setopt($ch, CURLOPT_PROXY, $this->proxy_host.':'.$this->proxy_port);
+            if ($this->config->getProxyHost())
+            {
+                curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());
 
-                if ($this->proxy_user !== '' && $this->proxy_pass !== '') {
-                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->proxy_user.':'.$this->proxy_pass);
+                if ($this->config->getProxyUser())
+                {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
                 }
 
-                if ($this->verify_peer !== true) {
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->verify_peer);
+                if ($this->config->isVerifyPeer() !== true)
+                {
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->config->isVerifyPeer());
                 }
             }
 
             $this->response = curl_exec($ch);
             curl_close($ch);
 
-            if ($this->enableCurlLog) {
+            if ($this->config->isEnableCurlLog()) {
                 fclose($fh);
             }
         } catch ( \Exception $e ) {
-            if ( $this->test ) {
+            if ( $this->config->isTestSystem() )
+            {
                 $dieMSG = "Your request couldn't be sent because of the following error:"."\n".curl_error(
                         $ch
                     )."\n".$e->getMessage().' in '.$e->getFile().', line: '.$e->getLine().'.';
-            } else {
+            }
+            else
+            {
                 $dieMSG = self::LIVE_ERROR_MSG;
             }
 
