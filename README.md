@@ -31,7 +31,9 @@ If you do not want to use Composer, you can download the [latest release](https:
 require_once('bootstrap.php');
 ```
 
-## Configuration
+## SDK overview
+
+#### Configuration
 
 You can use the config.php file in the root directory
 
@@ -99,16 +101,6 @@ $config->setLogFile('file_name.log');   // default is mpay24.log
 $config->setCurlLogFile('curl.log');    // default is curllog.log
 ```
 
-## SDK Overview
-
-First it is necessary to include and initialize the library with username and password:
-```php
-require_once("../bootstrap.php");
-use mPay24\MPAY24;
-
-$mpay24 = new MPAY24('9****', '*********');
-```
-
 #### Create a token for seamless creditcard payments
 
 ```php
@@ -122,9 +114,9 @@ Creditcard payment with a token
 $payment = array(
   "amount" => "100",
   "currency" => "EUR",
-  "token" => ""
+  "token" => $_POST['token']
 );
-$result = $mpay24->acceptPayment("TOKEN", "123", $payment);
+$result = $mpay24->acceptPayment("TOKEN", "123 TID", $payment);
 ```
 Paypal payment
 ```php
@@ -132,7 +124,7 @@ $payment = array(
   "amount" => "100",
   "currency" => "EUR"
 );
-$result = $mpay24->acceptPayment("PAYPAL", "123", $payment);
+$result = $mpay24->acceptPayment("PAYPAL", "123 TID", $payment);
 ```
 
 #### Create a checkout
@@ -149,11 +141,18 @@ header('Location: '.$checkoutURL);
 ```
 
 #### Get current transaction status
+With the TID number that we received by the merchant request
 
+*If you don't have unique TID you will only get the last transaction with this number*
 ```php
-$mpay24->transactionStatus(12345); // with mpaytid
-$mpay24->transactionStatus(null, "123 TID"); // with tid
+$mpay24->transactionStatusByTID("123 TID");
 ```
+
+With the unique mPAYTID number that we send back in the response messages
+```php
+$mpay24->transactionStatusByMPayID("12345");
+```
+
 ### Prerequisites
 
 In order for the mPAY24 PHP SDK to work, your installation will have to meet the following prerequisites:
