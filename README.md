@@ -17,10 +17,10 @@ You can install the bindings via [Composer](http://getcomposer.org/). Run the fo
 composer require mpay24/mpay24-php
 ```
 
-To use the bindings, use Composer's [autoload](https://getcomposer.org/doc/00-intro.md#autoloading):
+To use the bindings, use Composer's [autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading):
 
 ```php
-require_once('lib/Autoloader.php');
+require __DIR__ . '/vendor/autoload.php';
 ```
 
 ## Manual Installation

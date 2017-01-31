@@ -333,7 +333,7 @@ class MPAY24SDK
      * the sensible data (credit card numbers, bank account numbers etc)
      * is (will be) not saved in the shop
      *
-     * @param ORDER $mdxi The mdxi xml, which contains the shopping cart
+     * @param string $mdxi The mdxi xml, which contains the shopping cart
      * @return PaymentResponse
      */
     public function SelectPayment( $mdxi )
