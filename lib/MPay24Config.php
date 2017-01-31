@@ -9,6 +9,7 @@ include_once(dirname(__FILE__) . '/../config.php');
 
 /**
  * Class MPay24Config
+ * @package    mPay24
  *
  * @author Stefan Polzer <develop@posit.at>
  * @filesource MPay24Config.php
@@ -116,7 +117,7 @@ class MPay24Config
     {
         $args = func_get_args();
 
-        if (is_array($args[0]))
+        if (isset($args[0]) && is_array($args[0]))
         {
             $args = $args[0];
         }
