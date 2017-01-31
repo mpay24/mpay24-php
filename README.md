@@ -134,6 +134,9 @@ Initialize a minimum paypage
 $mdxi = new ORDER();
 $mdxi->Order->Tid = "123";
 $mdxi->Order->Price = "1.00";
+$mdxi->Order->URL->Success      = 'http://yourpage.com/success';
+$mdxi->Order->URL->Error        = 'http://yourpage.com/error';
+$mdxi->Order->URL->Confirmation = 'http://yourpage.com/confirmation';
 
 $checkoutURL = $mpay24->selectPayment($mdxi)->location; // redirect location to the payment page
 
