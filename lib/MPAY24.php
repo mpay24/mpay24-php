@@ -125,7 +125,7 @@ class MPAY24
 	}
 
 	/**
-	 * Get the status for a transaction by the merchant TID number
+	 * Get the status for the last transaction with the given merchant TID number
 	 *
 	 * @param string $tid
 	 * @return Responses\TransactionStatusResponse
