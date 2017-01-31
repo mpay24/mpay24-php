@@ -42,81 +42,6 @@ class MPAY24
     }
 
     /**
-     * Create a transaction and save/return this (in a data base or file system (for example XML))
-     */
-	public function createTransaction() { }
-
-    /**
-     * Actualize the transaction, which has a transaction ID = $tid with the values from $args in your shop and return it
-     *
-     * @param string $tid The transaction ID you want to update with the confirmation
-     * @param array $args Arguments with them the transaction is to be updated
-     * @param bool $shippingConfirmed TRUE if the shipping address is confirmed, FALSE - otherwise (in case of PayPal or MasterPass Express Checkout)
-     */
-	public function updateTransaction( $tid, $args, $shippingConfirmed ) { }
-
-    /**
-     * Give the transaction object back, for a transaction which has a transaction ID = $tid
-     *
-     * @param string $tid The transaction ID of the transaction you want get
-     */
-	public function getTransaction( $tid ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a MDXI-XML, which is needed for a transaction to be started
-     *
-     * @param Transaction $transaction The transaction you want to make a MDXI XML file for
-     */
-	public function createMDXI( $transaction ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with profiles to be started
-     *
-     * @param string $tid The transaction ID of the transaction you want to make an order transaction XML file for
-     */
-	public function createProfileOrder( $tid ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a order-xml, which is needed for a backend to backend transaction to be started
-     *
-     * @param string $tid The transaction ID of the transaction you want to make an order transaction XML file for
-     * @param string $paymentType The payment type which will be used for the backend to backend payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
-     */
-	public function createBackend2BackendOrder( $tid, $paymentType ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be finished
-     *
-     * @param string $tid The transaction ID of the transaction you want to make an order transaction XML file for
-     * @param string $shippingCosts The shipping costs amount for the transaction, provided by PayPal or MasterPass, after changing the shipping address
-     * @param string $amount The new amount for the transaction, provided by PayPal or MasterPass, after changing the shipping address
-     * @param bool $cancel TRUE if the a cancellation is wanted after renewing the amounts and FALSE otherwise
-     */
-	public function createFinishExpressCheckoutOrder( $tid, $shippingCosts, $amount, $cancel ) { }
-
-    /**
-     * This is an optional function, but it's strongly recomended that you implement it - see details.
-     * It should build a hash from the transaction ID of your shop, the amount of the transaction,
-     * the currency and the timeStamp of the transaction. The mPAY24 confirmation interface will be called
-     * with this hash (parameter name 'token'), so you would be able to check whether the confirmation is
-     * really coming from mPAY24 or not. The hash should be then saved in the transaction object, so that
-     * every transaction has an unique secret token.
-     *
-     * @param string $tid The transaction ID you want to make a secret key for
-     * @param string $amount The amount, reserved for this transaction
-     * @param string $currency The currency (3-digit ISO-Currency-Code) at the moment the transaction is created
-     * @param string $timeStamp The timeStamp at the moment the transaction is created
-     */
-	public function createSecret( $tid, $amount, $currency, $timeStamp ) { }
-
-    /**
-     * Get the secret (hashed) token for a transaction
-     *
-     * @param string $tid The transaction ID you want to get the secret key for
-     */
-	public function getSecret($tid) { }
-
-    /**
      * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
      *
      * @return ListPaymentMethodsResponse
@@ -181,13 +106,10 @@ class MPAY24
      * @return PaymentResponse
      */
 	public function acceptPayment( $paymentType, $tid, $payment, $additional )
-    {
-	    $this->integrityCheck();
-
-        $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
-
-        $this->recordedLastMessageExchange('AcceptPayment');
-
+	{
+		$this->integrityCheck();
+		$payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
+		$this->recordedLastMessageExchange('AcceptPayment');
         return $payBackend2BackendResult;
     }
 
@@ -437,24 +359,4 @@ class MPAY24
 
 		return $result;
 	}
-
-	/**
-     * Check if the a transaction is created, whether the object is from type Transaction and whether the mandatory settings (TID and PRICE) of a transaction are setted
-     *
-     * @param Transaction $transaction The transaction, which should be checked
-     */
-    private function checkTransaction( $transaction )
-    {
-        if ( !$transaction || !$transaction instanceof Transaction ) {
-            $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create a Transaction object, which contains at least TID and PRICE!");
-        } else {
-            if ( !$transaction->TID ) {
-                $this->mPAY24SDK->dieWithMsg("The Transaction must contain TID!");
-            } else {
-                if ( !$transaction->PRICE ) {
-                    $this->mPAY24SDK->dieWithMsg("The Transaction must contain PRICE!");
-                }
-            }
-        }
-    }
 }
