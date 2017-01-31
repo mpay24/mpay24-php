@@ -38,7 +38,7 @@ class Confirmation
 	 * The properties, which are allowed for a transaction
 	 * @const TRANSACTION_PROPERTIES
 	 */
-	const TRANSACTION_PROPERTIES = [
+	const CONFIRMATION_PROPERTIES = [
 		'OPERATION'      => 'CONFIRMATION',
 		'TID'            => '.{0,32}',
 		'STATUS'         => '(RESERVED|BILLED|REVERSED|CREDITED|ERROR)',
@@ -128,7 +128,7 @@ class Confirmation
 
 		foreach ($parameters as $name => $value)
 		{
-			if (array_key_exists($name, self::TRANSACTION_PROPERTIES))
+			if (array_key_exists($name, self::CONFIRMATION_PROPERTIES))
 			{
 				$cleanup[$name] = $value;
 			}
@@ -144,7 +144,7 @@ class Confirmation
 	 */
 	protected function isPropertyValid($property)
 	{
-		if (!array_key_exists($property, self::TRANSACTION_PROPERTIES))
+		if (!array_key_exists($property, self::CONFIRMATION_PROPERTIES))
 		{
 			throw new InvalidArgumentException("The confirmation property " . $property . ", you want to get is not defined!");
 		}
@@ -161,7 +161,7 @@ class Confirmation
 	{
 		$this->isPropertyValid($property);
 
-		$regEx = '/^' . self::TRANSACTION_PROPERTIES[$property] . '$/';
+		$regEx = '/^' . self::CONFIRMATION_PROPERTIES[$property] . '$/';
 
 		if (preg_match($regEx, $value) != 1)
 		{
