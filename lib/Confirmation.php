@@ -37,7 +37,7 @@ class Confirmation
 {
 	/**
 	 * The properties, which are allowed for a transaction
-	 * @const TRANSACTION_PROPERTIES
+	 * @const CONFIRMATION_PROPERTIES
 	 */
 	const CONFIRMATION_PROPERTIES = [
 		'OPERATION'      => 'CONFIRMATION',
@@ -64,10 +64,17 @@ class Confirmation
 	 * An array, which contains the set properties for the confirmation object
 	 *
 	 * @property array $properties
-	 * @throws InvalidArgumentException
 	 */
 	protected $parameters = [];
 
+	/**
+	 * Confirmation constructor.
+	 *
+	 * @param array $parameters
+	 * @param bool  $cleanUp
+	 *
+	 * @throws InvalidArgumentException
+	 */
 	public function __construct(array $parameters, $cleanUp = false)
 	{
 		if ($cleanUp)
@@ -93,14 +100,7 @@ class Confirmation
 	{
 		$this->isPropertyValid($name);
 
-		if (isset($this->parameters[$name]))
-		{
-			return $this->parameters[$name];
-		}
-		else
-		{
-			return false;
-		}
+		return isset($this->parameters[$name]) ? $this->parameters[$name] : false;
 	}
 
 	/**
@@ -109,6 +109,7 @@ class Confirmation
 	 * @param string $parameter The name of the property you want to set, see TRANSACTION_PROPERTIES
 	 * @param mixed  $value     The value of the property you want to set
 	 *
+	 * @return void
 	 * @throws InvalidArgumentException
 	 */
 	public function __set($parameter, $value)
@@ -141,6 +142,7 @@ class Confirmation
 	/**
 	 * @param $property
 	 *
+	 * @return void
 	 * @throws InvalidArgumentException
 	 */
 	protected function isPropertyValid($property)

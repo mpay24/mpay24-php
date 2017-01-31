@@ -13,9 +13,15 @@ namespace mPay24;
  */
 class Autoloader
 {
+	/**
+	 * @var bool $registered
+	 */
 	private static $registered = false;
 
-	static public function register()
+	/**
+	 * Register the autoload method
+	 */
+	public static function register()
 	{
 		if (self::$registered === true)
 		{
@@ -27,11 +33,15 @@ class Autoloader
 		self::$registered = true;
 	}
 
-	static public function autoload($class)
+	/**
+	 * @param $class
+	 */
+	public static function autoload($class)
 	{
-		if (0 === strpos($class, 'mPay24\\'))
+		if (strpos($class, 'mPay24\\') === 0)
 		{
 			$fileName = __DIR__ . strtr(substr($class, 6), '\\', '/') . '.php';
+
 			if (file_exists($fileName))
 			{
 				require_once $fileName;
