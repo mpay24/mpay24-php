@@ -7,26 +7,27 @@ use InvalidArgumentException;
 /**
  * The confirmation class allows you to make a basic validation of the GET parameters send by mPay24
  *
- * TYPE:   PARAMETER      - VALUE(s)
+ * Class Confirmation
+ * @package    mPay24
  *
- * STRING: OPERATION      - CONFIRMATION
- * STRING: TID            - length <= 32
- * STRING: STATUS         - RESERVED, BILLED, REVERSED, CREDITED, ERROR
- * INT:    PRICE          - length = 11 (e. g. "10" = "0,10")
- * STRING: CURRENCY       - length = 3 (ISO currency code, e. g. "EUR")
- * STRING: P_TYPE         - CC, ELV, EPS, GIROPAY, MAESTRO, PB, PSC, QUICK
- * STRING: BRAND          - AMEX, DINERS, JCB, MASTERCARD, VISA, ATOS, HOBEX-AT, HOBEX-DE
- * INT:    MPAYTID        - length = 11
- * STRING: USER_FIELD
- * STRING: ORDERDESC
- * STRING: CUSTOMER
- * STRING: CUSTOMER_EMAIL
- * STRING: LANGUAGE       - length = 2
- * STRING: CUSTOMER_ID    - length = 11
- * STRING: PROFILE_ID     -
- * STRING: PROFILE_STATUS - IGNORED, USED, ERROR, CREATED, UPDATED, DELETED
- * STRING: FILTER_STATUS
- * STRING: APPR_CODE
+ * @property string OPERATION      // CONFIRMATION
+ * @property string TID            // length <= 32
+ * @property string STATUS         // RESERVED, BILLED, REVERSED, CREDITED, ERROR
+ * @property int    PRICE          // length = 11 (e. g. "10" = "0,10")
+ * @property string CURRENCY       // length = 3 (ISO currency code, e. g. "EUR")
+ * @property string P_TYPE         // CC, ELV, EPS, GIROPAY, MAESTRO, PB, PSC, QUICK, PAYPAL, MPASS, BILLPAY, KLARNA, SOFORT, MASTERPASS
+ * @property string BRAND          // AMEX, DINERS, JCB, MASTERCARD, VISA, ATOS, B4P, HOBEX-AT, HOBEX-DE, HOBEX-NL, BILLPAY, INVOICE, HP
+ * @property int    MPAYTID        // length = 11
+ * @property string USER_FIELD
+ * @property string ORDERDESC
+ * @property string CUSTOMER
+ * @property string CUSTOMER_EMAIL
+ * @property string LANGUAGE       // length = 2
+ * @property string CUSTOMER_ID    // length = 11
+ * @property string PROFILE_ID     //
+ * @property string PROFILE_STATUS // IGNORED, USED, ERROR, CREATED, UPDATED, DELETED
+ * @property string FILTER_STATUS
+ * @property string APPR_CODE
  *
  * @author     Stefan Polzer <develop@posit.at>
  * @filesource Confirmation.php
@@ -62,7 +63,7 @@ class Confirmation
 	/**
 	 * An array, which contains the set properties for the confirmation object
 	 *
-	 * @var array $properties
+	 * @property array $properties
 	 * @throws InvalidArgumentException
 	 */
 	protected $parameters = [];
