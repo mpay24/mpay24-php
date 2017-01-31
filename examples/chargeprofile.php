@@ -5,15 +5,15 @@ use mPay24\MPAY24;
 $mpay24 = new MPAY24();
 
 $payment = array(
-	'amount'     => '100',
-	'currency'   => 'EUR',
+	"amount"     => "100",
+	"currency"   => "EUR",
 );
 
 $additional = array(
 	"customerID"      => "customer123",
-	"customerName"    => 'Jon Doe',
+	"customerName"    => "Jon Doe",
 	"confirmationURL" => "http://yourdomain.com/confirmation",
-	"order"           => ['description' => "Your description of the Order"], // Optional
+	"order"           => ["description" => "Your description of the Order"], // Optional
 );
 
 $type = "PROFILE";

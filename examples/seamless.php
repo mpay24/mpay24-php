@@ -6,12 +6,12 @@ $mpay24 = new MPAY24();
 
 // Each Line is Optional so only add the lines that you need
 $tokenizerConfig = array(
-	'templateSet' => 'DEFAULT',
-	'style'       => 'DEFAULT',
-	'customerID'  => 'customer123',
-	'profileID'   => 'profile123',
-	'domain'      => 'http://yourdomain.com',
-	'language'    => 'EN',
+	"templateSet" => "DEFAULT",
+	"style"       => "DEFAULT",
+	"customerID"  => "customer123",
+	"profileID"   => "profile123",
+	"domain"      => "http://yourdomain.com",
+	"language"    => "EN",
 );
 
 $tokenizer = $mpay24->createPaymentToken("CC", $tokenizerConfig)->getPaymentResponse();
