@@ -3,6 +3,7 @@
 namespace mPay24;
 
 use DOMDocument;
+use DOMNode;
 
 use mPay24\Responses\PaymentResponse;
 use mPay24\Responses\PaymentTokenResponse;
@@ -61,13 +62,6 @@ class MPAY24SDK
     * @const string
     */
     const MIN_PHP_VERSION = "5.3.3";
-
-    /**
-     * The fix (envelope) part of the soap xml, which is to be sent to mPAY24
-     *
-     * @var string
-     */
-    private $soap_xml = "";
 
     /**
      * The whole soap-xml (envelope and body), which is to be sent to mPAY24 as request
@@ -435,10 +429,7 @@ class MPAY24SDK
             $buf = $xmlPayment->appendChild($buf);
         }
 
-        foreach ( $additional as $k => $v ) {
-            $buf = $xml->createElement($k, $v);
-            $buf = $operation->appendChild($buf);
-        }
+	    $this->appendArray($operation, $additional, $xml);
 
         $this->request = $xml->saveXML();
 
@@ -653,10 +644,10 @@ class MPAY24SDK
      */
     private function buildEnvelope()
     {
-        $this->soap_xml = new DOMDocument("1.0", "UTF-8");
-        $this->soap_xml->formatOutput = true;
+        $soap_xml = new DOMDocument("1.0", "UTF-8");
+        $soap_xml->formatOutput = true;
 
-        $envelope = $this->soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
+        $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
         $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
         $envelope->setAttributeNS(
             'http://www.w3.org/2000/xmlns/',
@@ -668,12 +659,12 @@ class MPAY24SDK
             'xmlns:xsi',
             'http://www.w3.org/2001/XMLSchema-instance'
         );
-        $envelope = $this->soap_xml->appendChild($envelope);
+        $envelope = $soap_xml->appendChild($envelope);
 
-        $body = $this->soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
+        $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
         $body = $envelope->appendChild($body);
 
-        return $this->soap_xml;
+        return $soap_xml;
     }
 
     /**
@@ -783,4 +774,32 @@ class MPAY24SDK
 
         return chunk_split(array_shift(unpack('H*', 'Salted__'.$salt.$encrypted_data)), 32, "\r\n");
     }
+
+	/**
+	 * @param DOMNode     $parent
+	 * @param array       $list
+	 * @param DOMDocument $document
+	 */
+	protected function appendArray( DOMNode &$parent, array &$list, &$document = null )
+	{
+		if (is_null($document))
+		{
+			$document = new DOMDocument();
+		}
+
+		foreach ($list as $name => $value)
+		{
+			if (is_array($value))
+			{
+				$element = $document->createElement($name);
+				$this->appendArray($element, $value, $document);
+				$element = $parent->appendChild($element);
+			}
+			else
+			{
+				$element = $document->createElement($name, $value);
+				$element = $parent->appendChild($element);
+			}
+		}
+	}
 }

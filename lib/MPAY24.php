@@ -13,7 +13,7 @@ use mPay24\Responses\ListPaymentMethodsResponse;
  * @filesource MPAY24.php
  * @license MIT
  */
-class MPAY24 extends Transaction
+class MPAY24
 {
     /**
      * @var MPAY24SDK|null
@@ -23,7 +23,7 @@ class MPAY24 extends Transaction
     /**
      * MPAY24 constructor.
      */
-    function __construct()
+	public function __construct()
     {
         $args = func_get_args();
 
@@ -42,122 +42,19 @@ class MPAY24 extends Transaction
     }
 
     /**
-     * Create a transaction and save/return this (in a data base or file system (for example XML))
-     */
-    function createTransaction() { }
-
-    /**
-     * Actualize the transaction, which has a transaction ID = $tid with the values from $args in your shop and return it
-     *
-     * @param string $tid The transaction ID you want to update with the confirmation
-     * @param array $args Arguments with them the transaction is to be updated
-     * @param bool $shippingConfirmed TRUE if the shipping address is confirmed, FALSE - otherwise (in case of PayPal or MasterPass Express Checkout)
-     */
-    function updateTransaction( $tid, $args, $shippingConfirmed ) { }
-
-    /**
-     * Give the transaction object back, for a transaction which has a transaction ID = $tid
-     *
-     * @param string $tid The transaction ID of the transaction you want get
-     */
-    function getTransaction( $tid ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a MDXI-XML, which is needed for a transaction to be started
-     *
-     * @param Transaction $transaction The transaction you want to make a MDXI XML file for
-     */
-    function createMDXI( $transaction ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with profiles to be started
-     *
-     * @param string $tid The transaction ID of the transaction you want to make an order transaction XML file for
-     */
-    function createProfileOrder( $tid ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a order-xml, which is needed for a backend to backend transaction to be started
-     *
-     * @param string $tid The transaction ID of the transaction you want to make an order transaction XML file for
-     * @param string $paymentType The payment type which will be used for the backend to backend payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
-     */
-    function createBackend2BackendOrder( $tid, $paymentType ) { }
-
-    /**
-     * Using the ORDER object from order.php, create a order-xml, which is needed for a transaction with PayPal or MasterPass Express Checkout to be finished
-     *
-     * @param string $tid The transaction ID of the transaction you want to make an order transaction XML file for
-     * @param string $shippingCosts The shipping costs amount for the transaction, provided by PayPal or MasterPass, after changing the shipping address
-     * @param string $amount The new amount for the transaction, provided by PayPal or MasterPass, after changing the shipping address
-     * @param bool $cancel TRUE if the a cancellation is wanted after renewing the amounts and FALSE otherwise
-     */
-    function createFinishExpressCheckoutOrder( $tid, $shippingCosts, $amount, $cancel ) { }
-
-    /**
-     * Write a log into a file, file system, data base
-     *
-     * @param string $operation The operation, which is to log: GetPaymentMethods, Pay, PayWithProfile, Confirmation, UpdateTransactionStatus, ClearAmount, CreditAmount, CancelTransaction, etc.
-     * @param string $info_to_log The information, which is to log: request, response, etc.
-     */
-    function write_log( $operation, $info_to_log )
-    {
-        $serverName = php_uname('n');
-
-        if (isset($_SERVER['SERVER_NAME']))
-        {
-            $serverName = $_SERVER['SERVER_NAME'];
-        }
-
-        $fh = fopen($this->mPAY24SDK->getMPay24LogPath(), 'a+') or die("can't open file");
-        $MessageDate = date("Y-m-d H:i:s");
-        $Message = $MessageDate." ".$serverName." mPAY24 : ";
-        $result = $Message."$operation : $info_to_log\n";
-        fwrite($fh, $result);
-        fclose($fh);
-    }
-
-    /**
-     * This is an optional function, but it's strongly recomended that you implement it - see details.
-     * It should build a hash from the transaction ID of your shop, the amount of the transaction,
-     * the currency and the timeStamp of the transaction. The mPAY24 confirmation interface will be called
-     * with this hash (parameter name 'token'), so you would be able to check whether the confirmation is
-     * really coming from mPAY24 or not. The hash should be then saved in the transaction object, so that
-     * every transaction has an unique secret token.
-     *
-     * @param string $tid The transaction ID you want to make a secret key for
-     * @param string $amount The amount, reserved for this transaction
-     * @param string $currency The currency (3-digit ISO-Currency-Code) at the moment the transaction is created
-     * @param string $timeStamp The timeStamp at the moment the transaction is created
-     */
-    function createSecret( $tid, $amount, $currency, $timeStamp ) { }
-
-    /**
-     * Get the secret (hashed) token for a transaction
-     *
-     * @param string $tid The transaction ID you want to get the secret key for
-     */
-    function getSecret($tid) { }
-
-    /**
      * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
      *
      * @return ListPaymentMethodsResponse
      */
-    function listPaymentMethods()
+	public function listPaymentMethods()
     {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	    $this->integrityCheck();
 
-        $paymentMethods = $this->mPAY24SDK->ListPaymentMethods();
+	    $paymentMethods = $this->mPAY24SDK->ListPaymentMethods();
 
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_log( "GetPaymentMethods", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "GetPaymentMethods", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
+	    $this->recordedLastMessageExchange("GetPaymentMethods");
 
-        return $paymentMethods;
+	    return $paymentMethods;
     }
 
     /**
@@ -166,11 +63,9 @@ class MPAY24 extends Transaction
      * @param $mdxi
      * @return PaymentResponse
      */
-    function selectPayment( $mdxi )
+	public function selectPayment( $mdxi )
     {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	    $this->integrityCheck();
 
         libxml_use_internal_errors(true);
 
@@ -196,16 +91,12 @@ class MPAY24 extends Transaction
 
         $payResult = $this->mPAY24SDK->SelectPayment($mdxiXML);
 
-        if ($this->mPAY24SDK->isDebug()) {
-            $this->write_log( "SelectPayment", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "SelectPayment", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
+        $this->recordedLastMessageExchange('SelectPayment');
 
         return $payResult;
     }
 
     /**
-     *
      * Start a backend to backend payment
      *
      * @param string $paymentType The payment type which will be used for the payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
@@ -214,42 +105,35 @@ class MPAY24 extends Transaction
      * @param $additional
      * @return PaymentResponse
      */
-    function acceptPayment( $paymentType, $tid, $payment, $additional )
-    {
-        if (!$this->mPAY24SDK) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
-
-        $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
-
-        if ($this->mPAY24SDK->isDebug()) {
-            $this->write_log( "AcceptPayment", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "AcceptPayment", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
-
+	public function acceptPayment( $paymentType, $tid, $payment, $additional )
+	{
+		$this->integrityCheck();
+		$payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
+		$this->recordedLastMessageExchange('AcceptPayment');
         return $payBackend2BackendResult;
     }
 
-    /**
-     * @param null $mpaytid
-     * @param null $tid
-     * @return Responses\TransactionStatusResponse
-     */
-    function transactionStatus( $mpaytid = null, $tid = null )
-    {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	/**
+	 * Get the status for a transaction by the unique mPAYTID number
+	 *
+	 * @param string $mpaytid
+	 * @return Responses\TransactionStatusResponse
+	 */
+	public function transactionStatusByMPayID( $mpaytid )
+	{
+		return $this->transactionStatus($mpaytid);
+	}
 
-        $result = $this->mPAY24SDK->TransactionStatus($mpaytid, $tid);
-
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_log( "AcceptPayment", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "AcceptPayment", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
-
-        return $result;
-    }
+	/**
+	 * Get the status for a transaction by the merchant TID number
+	 *
+	 * @param string $tid
+	 * @return Responses\TransactionStatusResponse
+	 */
+	public function transactionStatusByTID( $tid )
+	{
+		return $this->transactionStatus(null, $tid);
+	}
 
     /**
      * Finish the payment, started with PayPal Express Checkout - reserve, bill or cancel it: Whether are you going to reserve or bill a payment is setted at the beginning of the payment.
@@ -262,11 +146,9 @@ class MPAY24 extends Transaction
      * @param string $paymentType The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
      * @return PaymentResponse
      */
-    function manualCallback( $tid, $shippingCosts, $amount, $cancel, $paymentType )
+	public function manualCallback( $tid, $shippingCosts, $amount, $cancel, $paymentType )
     {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	    $this->integrityCheck();
 
         if ( $cancel !== "true" && $cancel !== "false" ) {
             $this->mPAY24SDK->dieWithMsg("The allowed values for the parameter 'cancel' by finishing a PayPal (Express Checkout) payment are 'true' or 'false'!");
@@ -298,10 +180,7 @@ class MPAY24 extends Transaction
 
         $finishExpressCheckoutResult = $this->mPAY24SDK->ManualCallback($order->toXML(), $paymentType);
 
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_log( "FinishExpressCheckoutResult", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "FinishExpressCheckoutResult", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
+        $this->recordedLastMessageExchange('FinishExpressCheckoutResult');
 
         return $finishExpressCheckoutResult;
     }
@@ -313,11 +192,9 @@ class MPAY24 extends Transaction
      * @param array $additional Additional parameters
      * @return PaymentTokenResponse
      */
-    function createPaymentToken( $paymentType, array $additional = [] )
+    public function createPaymentToken( $paymentType, array $additional = [] )
     {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	    $this->integrityCheck();
 
         if ( $paymentType !== 'CC' ) {
             die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
@@ -325,10 +202,7 @@ class MPAY24 extends Transaction
 
         $tokenResult = $this->mPAY24SDK->CreateTokenPayment($paymentType, $additional);
 
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_log( "CreatePaymentToken", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "CreatePaymentToken", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
+        $this->recordedLastMessageExchange('CreatePaymentToken');
 
         return $tokenResult;
     }
@@ -340,11 +214,9 @@ class MPAY24 extends Transaction
      * @param int $amount The amount you want to clear multiply by 100
      * @return Responses\ManagePaymentResponse
      */
-    function manualClear( $tid, $amount )
+	public function manualClear( $tid, $amount )
     {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	    $this->integrityCheck();
 
         $mPAYTid = $transaction->MPAYTID; // ToDo: again...find from where this came from..
         $currency = $transaction->CURRENCY;
@@ -365,10 +237,7 @@ class MPAY24 extends Transaction
 
         $clearAmountResult = $this->mPAY24SDK->ManualClear($mPAYTid, $amount, $currency);
 
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_log( "ClearAmount", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "ClearAmount", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
+        $this->recordedLastMessageExchange('ClearAmount');
 
         return $clearAmountResult;
     }
@@ -380,11 +249,9 @@ class MPAY24 extends Transaction
      * @param int $amount The amount you want to credit multiply by 100
      * @return Responses\ManagePaymentResponse
      */
-    function manualCredit( $tid, $amount )
+	public function manualCredit( $tid, $amount )
     {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	    $this->integrityCheck();
 
         $mPAYTid = $transaction->MPAYTID; // ToDo: again...find from where this came from..
         $currency = $transaction->CURRENCY;
@@ -406,10 +273,7 @@ class MPAY24 extends Transaction
 
         $creditAmountResult = $this->mPAY24SDK->ManualCredit($mPAYTid, $amount, $currency, $customer);
 
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_log( "CreditAmount", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "CreditAmount", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
+        $this->recordedLastMessageExchange('CreditAmount');
 
         return $creditAmountResult;
     }
@@ -420,11 +284,9 @@ class MPAY24 extends Transaction
      * @param string $tid The transaction ID, for the transaction you want to cancel
      * @return Responses\ManagePaymentResponse
      */
-    function cancelTransaction( $tid )
+	public function cancelTransaction( $tid )
     {
-        if ( !$this->mPAY24SDK ) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
-        }
+	    $this->integrityCheck();
 
         $mPAYTid = $transaction->MPAYTID; // ToDo: again...find from where this came from..
 
@@ -434,15 +296,71 @@ class MPAY24 extends Transaction
 
         $cancelTransactionResult = $this->mPAY24SDK->ManualReverse($mPAYTid);
 
-        if ( $this->mPAY24SDK->isDebug() ) {
-            $this->write_log( "CancelTransaction", sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())) );
-            $this->write_log( "CancelTransaction", sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())) );
-        }
+        $this->recordedLastMessageExchange('CancelTransaction');
 
         return $cancelTransactionResult;
     }
 
-    /**
+	protected function integrityCheck()
+	{
+		if (!$this->mPAY24SDK)
+		{
+			die("You are not allowed to define a constructor in the child class of MPAY24!");
+		}
+	}
+
+	/**
+	 * @param $messageExchange
+	 */
+	protected function recordedLastMessageExchange($messageExchange)
+	{
+		if ($this->mPAY24SDK->isDebug())
+		{
+			$this->writeLog($messageExchange, sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(), str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())));
+			$this->writeLog($messageExchange, sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())));
+		}
+	}
+
+	/**
+	 * Write a log into a file, file system, data base
+	 *
+	 * @param string $operation The operation, which is to log: GetPaymentMethods, Pay, PayWithProfile, Confirmation, UpdateTransactionStatus, ClearAmount, CreditAmount, CancelTransaction, etc.
+	 * @param string $info_to_log The information, which is to log: request, response, etc.
+	 */
+	protected function writeLog($operation, $info_to_log )
+	{
+		$serverName = php_uname('n');
+
+		if (isset($_SERVER['SERVER_NAME']))
+		{
+			$serverName = $_SERVER['SERVER_NAME'];
+		}
+
+		$fh = fopen($this->mPAY24SDK->getMPay24LogPath(), 'a+') or die("can't open file");
+		$MessageDate = date("Y-m-d H:i:s");
+		$Message = $MessageDate." ".$serverName." mPAY24 : ";
+		$result = $Message."$operation : $info_to_log\n";
+		fwrite($fh, $result);
+		fclose($fh);
+	}
+
+	/**
+	 * @param null $mpaytid
+	 * @param null $tid
+	 * @return Responses\TransactionStatusResponse
+	 */
+	protected function transactionStatus( $mpaytid = null, $tid = null )
+	{
+		$this->integrityCheck();
+
+		$result = $this->mPAY24SDK->TransactionStatus($mpaytid, $tid);
+
+		$this->recordedLastMessageExchange('TransactionStatus');
+
+		return $result;
+	}
+
+	/**
      * Check if the a transaction is created, whether the object is from type Transaction and whether the mandatory settings (TID and PRICE) of a transaction are setted
      *
      * @param Transaction $transaction The transaction, which should be checked
