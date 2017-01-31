@@ -359,24 +359,4 @@ class MPAY24
 
 		return $result;
 	}
-
-	/**
-     * Check if the a transaction is created, whether the object is from type Transaction and whether the mandatory settings (TID and PRICE) of a transaction are setted
-     *
-     * @param Transaction $transaction The transaction, which should be checked
-     */
-    private function checkTransaction( $transaction )
-    {
-        if ( !$transaction || !$transaction instanceof Transaction ) {
-            $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create a Transaction object, which contains at least TID and PRICE!");
-        } else {
-            if ( !$transaction->TID ) {
-                $this->mPAY24SDK->dieWithMsg("The Transaction must contain TID!");
-            } else {
-                if ( !$transaction->PRICE ) {
-                    $this->mPAY24SDK->dieWithMsg("The Transaction must contain PRICE!");
-                }
-            }
-        }
-    }
 }
