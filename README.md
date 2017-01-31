@@ -47,59 +47,7 @@ $mpay24 = new MPAY24('9****', '*********');
 
 ```
 
-If you want to have a more flexible approach you can create a configuration object.
-Here you can either handover the parameters like you do it with the MPAY24 Object
-and/or you use the methods coming with the configuration object
-
-```php
-require_once("../bootstrap.php");
-use mPay24\MPay24Config;
-
-$config = new MPay24Config('9****', '*********');
-$mpay24 = new MPAY24($config);
-
-```
-
-You have the possibility to change any value as needed:
-
-```php
-$config->setMerchantID('9****');
-$config->setSoapPassword('*******');
-$config->useTestSystem(true);   // true => Use the Test System [DEFAULT], false => use the Live System
-$config->setDebug(true);        // true => Debug Mode On [DEFAULT], false => Debug Mode Off
-```
-
-For proxy configuration (only if needed)
-
-```php
-$config->setProxyHost('example.com');
-$config->setProxyPort(0815);            // Must be 4 digits
-$config->setProxyUser('proxyuser');
-$config->setProxyPass('*******');
-```
-
-Configure the for Flex Link usage:
-
-```php
-$config->setSPID('spid');
-$config->setFlexLinkPassword('*******');
-$config->useFlexLinkTestSystem(true);   // true => Use the Flex Link Test System [DEFAULT], false => use Flex Link Live System
-```
-
-Logs are written into `./logs` per default but you can change it in the config.php or
-with the configuration object if used
-
-```php
-$config->setLogPath('/absolute/path/to/log/dir');
-```
-
-Other configuration options:
-```php
-$config->setVerifyPeer(true);           // true => Verify the Peer  [DEFAULT], false => stop cURL from verifying the peer's certificate
-$config->setEnableCurlLog(false);       // false => we do not log Curl comunicatio [DEFAULT], true => we log it to a seperat Log file
-$config->setLogFile('file_name.log');   // default is mpay24.log
-$config->setCurlLogFile('curl.log');    // default is curllog.log
-```
+If you want to have a more flexible approach you can create a [configuration object](https://github.com/mpay24/mpay24-php/wiki/Configuring-the-php-sdk).
 
 #### Create a token for seamless creditcard payments
 
