@@ -152,13 +152,8 @@ class Mpay24Soap
      *
      * @return PaymentResponse
      */
-    public function manualCallback(
-        $tid,
-        $shippingCosts,
-        $amount,
-        $cancel,
-        $paymentType
-    ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
+    // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
+    public function manualCallback($tid, $shippingCosts, $amount, $cancel, $paymentType)
     {
         $this->integrityCheck();
 
@@ -227,10 +222,8 @@ class Mpay24Soap
      *
      * @return Responses\ManagePaymentResponse
      */
-    public function manualClear(
-        $tid,
-        $amount
-    ) // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
+    // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
+    public function manualClear($tid, $amount)
     {
         $this->integrityCheck();
 
@@ -263,10 +256,8 @@ class Mpay24Soap
      *
      * @return Responses\ManagePaymentResponse
      */
-    public function manualCredit(
-        $tid,
-        $amount
-    ) // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
+    // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
+    public function manualCredit($tid, $amount)
     {
         $this->integrityCheck();
 
@@ -300,8 +291,8 @@ class Mpay24Soap
      *
      * @return Responses\ManagePaymentResponse
      */
-    public function cancelTransaction($tid
-    ) // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
+    // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
+    public function cancelTransaction($tid)
     {
         $this->integrityCheck();
 
@@ -310,7 +301,7 @@ class Mpay24Soap
         $mpayTid = null;
 
         if ($response->hasStatusOk()) {
-            $mpayTid  = $response->getParam('MPAYTID');
+            $mpayTid = $response->getParam('MPAYTID');
         }
 
         $this->validateTid($tid, $mpayTid);

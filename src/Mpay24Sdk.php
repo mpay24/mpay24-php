@@ -34,22 +34,22 @@ class Mpay24Sdk
     /**
      * The link where the requests should be sent to if you use the
      *
-     * TEST SYSTEM : https://test.Mpay24.com/app/bin/etpproxy_v15
+     * TEST SYSTEM : https://test.mpay24.com/app/bin/etpproxy_v15
      *
      * @const string
      *
      */
-    const ETP_TEST_URL = "https://test.Mpay24.com/app/bin/etpproxy_v15";
+    const ETP_TEST_URL = "https://test.mpay24.com/app/bin/etpproxy_v15";
 
     /**
      * The link where the requests should be sent to if you use the
      *
-     * LIVE SYSTEM : https://www.Mpay24.com/app/bin/etpproxy_v15
+     * LIVE SYSTEM : https://www.mpay24.com/app/bin/etpproxy_v15
      *
      * @const string
      *
      */
-    const ETP_LIVE_URL = "https://www.Mpay24.com/app/bin/etpproxy_v15";
+    const ETP_LIVE_URL = "https://www.mpay24.com/app/bin/etpproxy_v15";
 
     /**
      * User Agent Version Number
@@ -66,14 +66,14 @@ class Mpay24Sdk
     const MIN_PHP_VERSION = "5.3.3";
 
     /**
-     * The whole soap-xml (envelope and body), which is to be sent to Mpay24 as request
+     * The whole soap-xml (envelope and body), which is to be sent to mPAY24 as request
      *
      * @var string
      */
     private $request = "";
 
     /**
-     * The response from Mpay24
+     * The response from mPAY24
      *
      * @var string
      */
@@ -134,9 +134,9 @@ class Mpay24Sdk
      * Set the basic (mandatory) settings for the requests
      *
      * @param string $spid
-     *          The SPID of your account, supported by Mpay24
+     *          The SPID of your account, supported by mPAY24
      * @param string $password
-     *          The flexLINK password, supported by Mpay24
+     *          The flexLINK password, supported by mPAY24
      * @param bool   $test
      *          TRUE - when you want to use the TEST system
      *
@@ -192,7 +192,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Get the request, which was sent to Mpay24 (in XML form)
+     * Get the request, which was sent to mPAY24 (in XML form)
      *
      * @return string
      */
@@ -202,7 +202,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Get the response from Mpay24 (in XML form)
+     * Get the response from mPAY24 (in XML form)
      *
      * @return string
      */
@@ -242,7 +242,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Return Mpay24 Log Path
+     * Return mPAY24 Log Path
      *
      * @return string
      */
@@ -252,7 +252,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Return Mpay24 Curl Log Path
+     * Return mPAY24 Curl Log Path
      *
      * @return string
      */
@@ -307,7 +307,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Get all the payment methods, that are available for the merchant by Mpay24
+     * Get all the payment methods, that are available for the merchant by mPAY24
      *
      * @return ListPaymentMethodsResponse
      */
@@ -316,7 +316,7 @@ class Mpay24Sdk
         $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
-        $operation = $xml->createElementNS('https://www.Mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ListPaymentMethods');
+        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ListPaymentMethods');
         $operation = $body->appendChild($operation);
 
         $xmlMerchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
@@ -332,7 +332,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Start a secure payment through the Mpay24 payment window -
+     * Start a secure payment through the mPAY24 payment window -
      * the sensible data (credit card numbers, bank account numbers etc)
      * is (will be) not saved in the shop
      *
@@ -345,7 +345,7 @@ class Mpay24Sdk
         $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
-        $operation = $xml->createElementNS('https://www.Mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:SelectPayment');
+        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:SelectPayment');
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
@@ -364,7 +364,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Start a secure payment using the Mpay24 Tokenizer.
+     * Start a secure payment using the mPAY24 Tokenizer.
      *
      * @param string $pType The payment type used for the tokenization (currently supported 'CC')
      * @param array  $additional
@@ -376,7 +376,7 @@ class Mpay24Sdk
         $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
-        $operation = $xml->createElementNS('https://www.Mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:CreatePaymentToken');
+        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:CreatePaymentToken');
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
@@ -400,7 +400,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Initialize a manual callback to Mpay24 in order to check the information provided by PayPal
+     * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
      *
      * @param        $type
      * @param string $tid The TID used for the transaction
@@ -446,9 +446,9 @@ class Mpay24Sdk
     }
 
     /**
-     * Initialize a manual callback to Mpay24 in order to check the information provided by PayPal
+     * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
      *
-     * @param string $requestString The callback request to Mpay24
+     * @param string $requestString The callback request to mPAY24
      * @param string $paymentType   The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
      *
      * @return PaymentResponse
@@ -492,7 +492,7 @@ class Mpay24Sdk
     /**
      * Clear a transaction with an amount
      *
-     * @param int    $mPAYTid  The Mpay24 transaction ID
+     * @param int    $mPAYTid  The mPAY24 transaction ID
      * @param int    $amount   The amount to be cleared multiplay by 100
      * @param string $currency 3-digit ISO currency code: EUR, USD, etc
      *
@@ -503,7 +503,7 @@ class Mpay24Sdk
         $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
-        $operation = $xml->createElementNS('https://www.Mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualClear');
+        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualClear');
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
@@ -530,7 +530,7 @@ class Mpay24Sdk
     /**
      * Credit a transaction with an amount
      *
-     * @param int    $mPAYTid  The Mpay24 transaction ID
+     * @param int    $mPAYTid  The mPAY24 transaction ID
      * @param int    $amount   The amount to be credited multiplay by 100
      * @param string $currency 3-digit ISO currency code: EUR, USD, etc
      * @param string $customer The name of the customer, who has paid
@@ -661,11 +661,8 @@ class Mpay24Sdk
 
         $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
         $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp',
-            'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi',
-            'http://www.w3.org/2001/XMLSchema-instance'
-        );
+        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp', 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
+        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $envelope = $soap_xml->appendChild($envelope);
 
         $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
@@ -675,7 +672,7 @@ class Mpay24Sdk
     }
 
     /**
-     * Create a curl request and send the cretaed SOAP XML
+     * Create a curl request and send the created SOAP XML
      */
     private function send()
     {
