@@ -3,7 +3,7 @@ require("../bootstrap.php");
 
 use Mpay24\Mpay24Soap;
 
-$Mpay24 = new Mpay24Soap();
+$mpay24 = new Mpay24Soap();
 
 // Each Line is Optional so only add the lines that you need
 $tokenizerConfig = array(
@@ -15,7 +15,7 @@ $tokenizerConfig = array(
     "language"    => "EN",
 );
 
-$tokenizer = $Mpay24->createPaymentToken("CC", $tokenizerConfig);
+$tokenizer = $mpay24->createPaymentToken("CC", $tokenizerConfig);
 ?>
 
 <iframe src="<?php echo $tokenizer->getLocation(); ?>" frameBorder="0"></iframe>

@@ -3,7 +3,7 @@ require("../bootstrap.php");
 
 use Mpay24\Mpay24Soap;
 
-$Mpay24 = new Mpay24Soap();
+$mpay24 = new Mpay24Soap();
 
 $payment = array(
     "amount"         => "100",
@@ -32,7 +32,7 @@ if (isset($_POST["type"])) {
             break;
     }
 
-    $result = $Mpay24->acceptPayment($type, "123 TID", $payment, $additional);
+    $result = $mpay24->acceptPayment($type, "123 TID", $payment, $additional);
 
     if ($result->getReturnCode() == "REDIRECT") {
         header("Location: " . $result->getLocation());

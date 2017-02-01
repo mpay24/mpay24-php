@@ -37,7 +37,7 @@ require_once('bootstrap.php');
 
 You can use the config.php file in the root directory
 
-You also can handover the parameters while crating the mpay24 Object
+You also can handover the parameters while crating the Mpay24Soap Object
 
 ```php
 require_once("../bootstrap.php");
@@ -96,7 +96,7 @@ With the TID number that we received by the merchant request
 
 *If you don't have unique TID you will only get the last transaction with this number*
 ```php
-$Mpay24->transactionStatusByTID("123 TID");
+$mpay24->transactionStatusByTID("123 TID");
 ```
 
 With the unique mPAYTID number that we send back in the response messages
