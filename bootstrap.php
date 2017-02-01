@@ -9,7 +9,7 @@
 
 if (!class_exists('mPay24\Autoloader'))
 {
-	require __DIR__ . '/lib/Autoloader.php';
+	require __DIR__ . '/src/Autoloader.php';
 }
 
 mPay24\Autoloader::register();

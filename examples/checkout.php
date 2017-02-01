@@ -1,9 +1,9 @@
 <?php
 require("../bootstrap.php");
-use mPay24\MPAY24;
+use mPay24\Mpay24Soap;
 use mPay24\ORDER;
 
-$mpay24 = new MPAY24();
+$mpay24 = new Mpay24Soap();
 
 $mdxi                           = new ORDER();
 $mdxi->Order->Tid               = "123 TID";

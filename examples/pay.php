@@ -1,8 +1,8 @@
 <?php
 require("../bootstrap.php");
-use mPay24\MPAY24;
+use mPay24\Mpay24Soap;
 
-$mpay24 = new MPAY24();
+$mpay24 = new Mpay24Soap();
 
 $payment = array(
 	"amount"         => "100",
