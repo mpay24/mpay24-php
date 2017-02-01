@@ -11,5 +11,10 @@
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-mcrypt": "*"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mpay24Test\\": "test/"
+    }
   }
 }
