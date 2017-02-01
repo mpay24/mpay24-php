@@ -146,7 +146,7 @@ class MPAY24
      * @param string $paymentType The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
      * @return PaymentResponse
      */
-	public function manualCallback( $tid, $shippingCosts, $amount, $cancel, $paymentType )
+	public function manualCallback( $tid, $shippingCosts, $amount, $cancel, $paymentType ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
     {
 	    $this->integrityCheck();
 
@@ -158,21 +158,19 @@ class MPAY24
             die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
         }
 
-        $mPAYTid = $transaction->MPAYTID; // ToDo: find from where this came from..
+	    $response = $this->transactionStatusByTID($tid);
 
-        if ( !$mPAYTid ) {
-            $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to finish with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
-        }
+	    if ($response->getGeneralResponse()->status == 'OK')
+	    {
+		    $mPAYTid  = $response->transaction['mpaytid'];
+	    }
 
-        if ( !$amount || !is_numeric($amount) ) {
-            $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to pay by '$paymentType' is not valid!");
-        }
+	    $this->validateTID($tid, $mPAYTid);
+	    $this->validateAmount($amount);
+	    $this->validateShippingCosts($shippingCosts);
 
-        if ( !$shippingCosts || !is_numeric($shippingCosts) ) {
-            $this->mPAY24SDK->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
-        }
-
-        $order = $this->createFinishExpressCheckoutOrder($transaction, $shippingCosts, $amount, $cancel);
+	    // TODO: implement the logic again
+	    $order = $this->createFinishExpressCheckoutOrder($transaction, $shippingCosts, $amount, $cancel);
 
         if ( !$order || !$order instanceof ORDER ) {
             $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
@@ -214,28 +212,23 @@ class MPAY24
      * @param int $amount The amount you want to clear multiply by 100
      * @return Responses\ManagePaymentResponse
      */
-	public function manualClear( $tid, $amount )
+	public function manualClear( $tid, $amount ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
     {
 	    $this->integrityCheck();
 
-        $mPAYTid = $transaction->MPAYTID; // ToDo: again...find from where this came from..
-        $currency = $transaction->CURRENCY;
+	    $response = $this->transactionStatusByTID($tid);
 
-        if ( !$mPAYTid ) {
-            $this->mPAY24SDK->dieWithMsg(
-                "The transaction '$tid' you want to clear with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!"
-            );
-        }
+	    if ($response->getGeneralResponse()->status == 'OK')
+	    {
+		    $mPAYTid  = $response->transaction['mpaytid'];
+		    $currency = $response->transaction['currency'];
+	    }
 
-        if ( !$amount || !is_numeric($amount) ) {
-            $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to clear is not valid!");
-        }
+	    $this->validateTID($tid, $mPAYTid);
+	    $this->validateAmount($amount);
+	    $this->validateCurrency($currency);
 
-        if ( !$currency || strlen($currency) != 3 ) {
-            $this->mPAY24SDK->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
-        }
-
-        $clearAmountResult = $this->mPAY24SDK->ManualClear($mPAYTid, $amount, $currency);
+	    $clearAmountResult = $this->mPAY24SDK->ManualClear($mPAYTid, $amount, $currency);
 
         $this->recordedLastMessageExchange('ClearAmount');
 
@@ -249,27 +242,22 @@ class MPAY24
      * @param int $amount The amount you want to credit multiply by 100
      * @return Responses\ManagePaymentResponse
      */
-	public function manualCredit( $tid, $amount )
+	public function manualCredit( $tid, $amount ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
     {
 	    $this->integrityCheck();
 
-        $mPAYTid = $transaction->MPAYTID; // ToDo: again...find from where this came from..
-        $currency = $transaction->CURRENCY;
-        $customer = $transaction->CUSTOMER;
+	    $response = $this->transactionStatusByTID($tid);
 
-        if (!$mPAYTid) {
-            $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to credit with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
-        }
+	    if ($response->getGeneralResponse()->status == 'OK')
+	    {
+		    $mPAYTid  = $response->transaction['mpaytid'];
+		    $currency = $response->transaction['currency'];
+		    $customer = $response->transaction['customer'];
+	    }
 
-        if ( !$amount || !is_numeric($amount) ) {
-            $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
-        }
-
-        if ( !$currency || strlen($currency) != 3 ) {
-            $this->mPAY24SDK->dieWithMsg(
-                "The currency code '$currency' for the amount you are trying to credit is not valid (3-digit ISO-Currency-Code)!"
-            );
-        }
+	    $this->validateTID($tid, $mPAYTid);
+	    $this->validateAmount($amount);
+	    $this->validateCurrency($currency);
 
         $creditAmountResult = $this->mPAY24SDK->ManualCredit($mPAYTid, $amount, $currency, $customer);
 
@@ -284,17 +272,20 @@ class MPAY24
      * @param string $tid The transaction ID, for the transaction you want to cancel
      * @return Responses\ManagePaymentResponse
      */
-	public function cancelTransaction( $tid )
+	public function cancelTransaction( $tid ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
     {
 	    $this->integrityCheck();
 
-        $mPAYTid = $transaction->MPAYTID; // ToDo: again...find from where this came from..
+	    $response = $this->transactionStatusByTID($tid);
 
-        if (!$mPAYTid) {
-            $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
-        }
+	    if ($response->getGeneralResponse()->status == 'OK')
+	    {
+		    $mPAYTid  = $response->transaction['mpaytid'];
+	    }
 
-        $cancelTransactionResult = $this->mPAY24SDK->ManualReverse($mPAYTid);
+	    $this->validateTID($tid, $mPAYTid);
+
+	    $cancelTransactionResult = $this->mPAY24SDK->ManualReverse($mPAYTid);
 
         $this->recordedLastMessageExchange('CancelTransaction');
 
@@ -358,5 +349,50 @@ class MPAY24
 		$this->recordedLastMessageExchange('TransactionStatus');
 
 		return $result;
+	}
+
+	/**
+	 * @param $tid
+	 * @param $mPAYTid
+	 */
+	protected function validateTID($tid, $mPAYTid)
+	{
+		if (!$mPAYTid)
+		{
+			$this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+		}
+	}
+
+	/**
+	 * @param $amount
+	 */
+	protected function validateAmount($amount)
+	{
+		if (!$amount || !is_numeric($amount))
+		{
+			$this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
+		}
+	}
+
+	/**
+	 * @param $currency
+	 */
+	protected function validateCurrency($currency)
+	{
+		if (!$currency || strlen($currency) != 3)
+		{
+			$this->mPAY24SDK->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
+		}
+	}
+
+	/**
+	 * @param $shippingCosts
+	 */
+	protected function validateShippingCosts($shippingCosts)
+	{
+		if (!$shippingCosts || !is_numeric($shippingCosts))
+		{
+			$this->mPAY24SDK->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
+		}
 	}
 }
