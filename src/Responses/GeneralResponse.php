@@ -1,31 +1,41 @@
 <?php
 
-namespace mPay24\Responses;
+namespace Mpay24\Responses;
 
 use DOMDocument;
 
 /**
  * The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request
  *
- * @author mPAY24 GmbH <support@mpay24.com>
- * @filesource MPAY24SDK.php
- * @license MIT
+ * Class GeneralResponse
+ * @package    Mpay24\Responses
+ *
+ * @author     mPAY24 GmbH <support@mpay24.com>
+ * @filesource GeneralResponse.php
+ * @license    MIT
  */
 class GeneralResponse
 {
+    /**
+     * The response as Dom Document Object
+     *
+     * @var DOMDocument
+     */
+    protected $responseAsDom;
+
     /**
      * The status of the request, which was sent to mPAY24
      *
      * @var string
      */
-    var $status;
+    protected $status;
 
     /**
      * The return code from the request, which was sent to mPAY24
      *
      * @var string
      */
-    var $returnCode;
+    protected $returnCode;
 
     /**
      * Sets the basic values from the response from mPAY24: status and return code
@@ -33,23 +43,25 @@ class GeneralResponse
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
      */
-    function __construct( $response )
+    public function __construct($response)
     {
-        if( '' != $response ) {
-            $responseAsDOM = new DOMDocument();
-            $responseAsDOM->loadXML($response);
+        if ('' != $response) {
+            $this->responseAsDom = new DOMDocument();
+            $this->responseAsDom->loadXML($response);
 
-            if( !empty($responseAsDOM) && is_object($responseAsDOM) ) {
-                if (!$responseAsDOM || $responseAsDOM->getElementsByTagName('status')->length == 0 || $responseAsDOM->getElementsByTagName('returnCode')->length == 0 ) {
-                    $this->status = "ERROR";
+            if (!empty($this->responseAsDom) && is_object($this->responseAsDom)) {
+                if ($this->responseAsDom->getElementsByTagName('status')->length == 0
+                    || $this->responseAsDom->getElementsByTagName('returnCode')->length == 0
+                ) {
+                    $this->status     = "ERROR";
                     $this->returnCode = urldecode($response);
                 } else {
-                    $this->status = $responseAsDOM->getElementsByTagName('status')->item(0)->nodeValue;
-                    $this->returnCode = $responseAsDOM->getElementsByTagName('returnCode')->item(0)->nodeValue;
+                    $this->status     = $this->responseAsDom->getElementsByTagName('status')->item(0)->nodeValue;
+                    $this->returnCode = $this->responseAsDom->getElementsByTagName('returnCode')->item(0)->nodeValue;
                 }
             }
         } else {
-            $this->status = "ERROR";
+            $this->status     = "ERROR";
             $this->returnCode = "The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!";
         }
     }
@@ -75,12 +87,28 @@ class GeneralResponse
     }
 
     /**
+     * @return bool
+     */
+    public function hasNoError()
+    {
+        return $this->getStatus() != 'ERROR';
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasStatusOk()
+    {
+        return $this->getStatus() == 'OK';
+    }
+
+    /**
      * Set the status in the response, which was delivered by mPAY24
      *
      * @param string $status
      *          Status
      */
-    public function setStatus( $status )
+    protected function setStatus($status)
     {
         $this->status = $status;
     }
@@ -89,9 +117,10 @@ class GeneralResponse
      * Set the return code in the response, which was delivered by mPAY24
      *
      * @param $returnCode
+     *
      * @return mixed
      */
-    public function setReturnCode( $returnCode )
+    protected function setReturnCode($returnCode)
     {
         return $this->returnCode = $returnCode;
     }

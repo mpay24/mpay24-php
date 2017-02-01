@@ -1,41 +1,44 @@
 <?php
 
-namespace mPay24;
+namespace Mpay24;
 
-use mPay24\Responses\ListPaymentMethodsResponse;
-use mPay24\Responses\PaymentResponse;
-use mPay24\Responses\PaymentTokenResponse;
+use Mpay24\Responses\ListPaymentMethodsResponse;
+use Mpay24\Responses\PaymentResponse;
+use Mpay24\Responses\PaymentTokenResponse;
 
 /**
- * The abstract MPAY24 class provides abstract functions, which are used from the other functions in order to make a payment or a request to mPAY24
+ * The Mpay24Soap class provides functions, which are used to make a payment or a request to mPAY24
+ *
+ * Class Mpay24Soap
+ * @package    Mpay24
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @filesource MPAY24.php
+ * @filesource Mpay24Soap.php
  * @license    MIT
  */
 class Mpay24Soap
 {
     /**
-     * @var MPAY24SDK|null
+     * @var Mpay24Sdk|null
      */
-    var $mPAY24SDK = null;
+    var $mpay24Sdk = null;
 
     /**
-     * MPAY24 constructor.
+     * Mpay24Soap constructor.
      */
     public function __construct()
     {
         $args = func_get_args();
 
-        if (isset($args[0]) && is_a($args[0], MPay24Config::class)) {
+        if (isset($args[0]) && is_a($args[0], Mpay24Config::class)) {
             $config = $args[0];
         } else {
-            $config = new MPay24Config($args);
+            $config = new Mpay24Config($args);
         }
 
-        $this->mPAY24SDK = new MPAY24SDK($config);
+        $this->mpay24Sdk = new Mpay24Sdk($config);
 
-        $this->mPAY24SDK->checkRequirements(true, true, false);
+        $this->mpay24Sdk->checkRequirements(true, true, false);
     }
 
     /**
@@ -47,7 +50,7 @@ class Mpay24Soap
     {
         $this->integrityCheck();
 
-        $paymentMethods = $this->mPAY24SDK->ListPaymentMethods();
+        $paymentMethods = $this->mpay24Sdk->listPaymentMethods();
 
         $this->recordedLastMessageExchange("GetPaymentMethods");
 
@@ -67,13 +70,13 @@ class Mpay24Soap
 
         libxml_use_internal_errors(true);
 
-        if (!$mdxi || !$mdxi instanceof ORDER) {
-            $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php) and fulfill it with a MDXI!");
+        if (!$mdxi || !$mdxi instanceof Mpay24Order) {
+            $this->mpay24Sdk->dieWithMsg("To be able to use the Mpay24Api you must create an Mpay24Order object (Mpay24Order.php) and fulfill it with a MDXI!");
         }
 
         $mdxiXML = $mdxi->toXML();
 
-        if (!$this->mPAY24SDK->proxyUsed()) {
+        if (!$this->mpay24Sdk->proxyUsed()) {
             if (!$mdxi->validate()) {
                 $errors = "";
 
@@ -81,13 +84,13 @@ class Mpay24Soap
                     $errors .= trim($error->message) . "<br>";
                 }
 
-                $this->mPAY24SDK->dieWithMsg("The schema you have created is not valid!" . "<br><br>" . $errors . "<textarea cols='100' rows='30'>$mdxiXML</textarea>");
+                $this->mpay24Sdk->dieWithMsg("The schema you have created is not valid!" . "<br><br>" . $errors . "<textarea cols='100' rows='30'>$mdxiXML</textarea>");
             }
         }
 
         $mdxiXML = $mdxi->toXML();
 
-        $payResult = $this->mPAY24SDK->SelectPayment($mdxiXML);
+        $payResult = $this->mpay24Sdk->selectPayment($mdxiXML);
 
         $this->recordedLastMessageExchange('SelectPayment');
 
@@ -107,7 +110,7 @@ class Mpay24Soap
     public function acceptPayment($paymentType, $tid, $payment, $additional)
     {
         $this->integrityCheck();
-        $payBackend2BackendResult = $this->mPAY24SDK->AcceptPayment($paymentType, $tid, $payment, $additional);
+        $payBackend2BackendResult = $this->mpay24Sdk->acceptPayment($paymentType, $tid, $payment, $additional);
         $this->recordedLastMessageExchange('AcceptPayment');
 
         return $payBackend2BackendResult;
@@ -120,7 +123,7 @@ class Mpay24Soap
      *
      * @return Responses\TransactionStatusResponse
      */
-    public function transactionStatusByMPayID($mpaytid)
+    public function transactionStatusByMpay24Tid($mpaytid)
     {
         return $this->transactionStatus($mpaytid);
     }
@@ -132,7 +135,7 @@ class Mpay24Soap
      *
      * @return Responses\TransactionStatusResponse
      */
-    public function transactionStatusByTID($tid)
+    public function transactionStatusByTid($tid)
     {
         return $this->transactionStatus(null, $tid);
     }
@@ -160,31 +163,31 @@ class Mpay24Soap
         $this->integrityCheck();
 
         if ($cancel !== "true" && $cancel !== "false") {
-            $this->mPAY24SDK->dieWithMsg("The allowed values for the parameter 'cancel' by finishing a PayPal (Express Checkout) payment are 'true' or 'false'!");
+            $this->mpay24Sdk->dieWithMsg("The allowed values for the parameter 'cancel' by finishing a PayPal (Express Checkout) payment are 'true' or 'false'!");
         }
 
         if ($paymentType !== 'PAYPAL' && $paymentType !== 'MASTERPASS') {
             die("The payment type '$paymentType' is not allowed! Allowed are: 'PAYPAL' and 'MASTERPASS'");
         }
 
-        $response = $this->transactionStatusByTID($tid);
+        $response = $this->transactionStatusByTid($tid);
 
-        if ($response->getGeneralResponse()->status == 'OK') {
-            $mPAYTid = $response->transaction['mpaytid'];
+        if ($response->hasStatusOk()) {
+            $mpay24Tid = $response->transaction['mpaytid'];
         }
 
-        $this->validateTID($tid, $mPAYTid);
+        $this->validateTid($tid, $mpay24Tid);
         $this->validateAmount($amount);
         $this->validateShippingCosts($shippingCosts);
 
         // TODO: implement the logic again
         $order = $this->createFinishExpressCheckoutOrder($transaction, $shippingCosts, $amount, $cancel);
 
-        if (!$order || !$order instanceof ORDER) {
-            $this->mPAY24SDK->dieWithMsg("To be able to use the MPay24Api you must create an ORDER object (order.php)!");
+        if (!$order || !$order instanceof MPay24Order) {
+            $this->mpay24Sdk->dieWithMsg("To be able to use the Mpay24Api you must create an Mpay24Order object (Mpay24Order.php)!");
         }
 
-        $finishExpressCheckoutResult = $this->mPAY24SDK->ManualCallback($order->toXML(), $paymentType);
+        $finishExpressCheckoutResult = $this->mpay24Sdk->manualCallback($order->toXML(), $paymentType);
 
         $this->recordedLastMessageExchange('FinishExpressCheckoutResult');
 
@@ -207,7 +210,7 @@ class Mpay24Soap
             die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
         }
 
-        $tokenResult = $this->mPAY24SDK->CreateTokenPayment($paymentType, $additional);
+        $tokenResult = $this->mpay24Sdk->createTokenPayment($paymentType, $additional);
 
         $this->recordedLastMessageExchange('CreatePaymentToken');
 
@@ -225,22 +228,22 @@ class Mpay24Soap
     public function manualClear(
         $tid,
         $amount
-    ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
+    ) // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
     {
         $this->integrityCheck();
 
-        $response = $this->transactionStatusByTID($tid);
+        $response = $this->transactionStatusByTid($tid);
 
-        if ($response->getGeneralResponse()->status == 'OK') {
+        if ($response->hasStatusOk()) {
             $mPAYTid  = $response->transaction['mpaytid'];
             $currency = $response->transaction['currency'];
         }
 
-        $this->validateTID($tid, $mPAYTid);
+        $this->validateTid($tid, $mPAYTid);
         $this->validateAmount($amount);
         $this->validateCurrency($currency);
 
-        $clearAmountResult = $this->mPAY24SDK->ManualClear($mPAYTid, $amount, $currency);
+        $clearAmountResult = $this->mpay24Sdk->manualClear($mPAYTid, $amount, $currency);
 
         $this->recordedLastMessageExchange('ClearAmount');
 
@@ -258,23 +261,27 @@ class Mpay24Soap
     public function manualCredit(
         $tid,
         $amount
-    ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
+    ) // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
     {
         $this->integrityCheck();
 
-        $response = $this->transactionStatusByTID($tid);
+        $response = $this->transactionStatusByTid($tid);
 
-        if ($response->getGeneralResponse()->status == 'OK') {
+        $mPAYTid  = null;
+        $currency = null;
+        $customer = null;
+
+        if ($response->hasStatusOk()) {
             $mPAYTid  = $response->transaction['mpaytid'];
             $currency = $response->transaction['currency'];
             $customer = $response->transaction['customer'];
         }
 
-        $this->validateTID($tid, $mPAYTid);
+        $this->validateTid($tid, $mPAYTid);
         $this->validateAmount($amount);
         $this->validateCurrency($currency);
 
-        $creditAmountResult = $this->mPAY24SDK->ManualCredit($mPAYTid, $amount, $currency, $customer);
+        $creditAmountResult = $this->mpay24Sdk->ManualCredit($mPAYTid, $amount, $currency, $customer);
 
         $this->recordedLastMessageExchange('CreditAmount');
 
@@ -289,19 +296,21 @@ class Mpay24Soap
      * @return Responses\ManagePaymentResponse
      */
     public function cancelTransaction($tid
-    ) // TODO: check if you really want to use the merchant TID and not the mPAY24TID?
+    ) // TODO: check if you really want to use the merchant TID and not the Mpay24TID?
     {
         $this->integrityCheck();
 
-        $response = $this->transactionStatusByTID($tid);
+        $response = $this->transactionStatusByTid($tid);
 
-        if ($response->getGeneralResponse()->status == 'OK') {
+        $mPAYTid = null;
+
+        if ($response->hasStatusOk()) {
             $mPAYTid = $response->transaction['mpaytid'];
         }
 
-        $this->validateTID($tid, $mPAYTid);
+        $this->validateTid($tid, $mPAYTid);
 
-        $cancelTransactionResult = $this->mPAY24SDK->ManualReverse($mPAYTid);
+        $cancelTransactionResult = $this->mpay24Sdk->manualReverse($mPAYTid);
 
         $this->recordedLastMessageExchange('CancelTransaction');
 
@@ -310,8 +319,8 @@ class Mpay24Soap
 
     protected function integrityCheck()
     {
-        if (!$this->mPAY24SDK) {
-            die("You are not allowed to define a constructor in the child class of MPAY24!");
+        if (!$this->mpay24Sdk) {
+            die("You are not allowed to define a constructor in the child class of Mpay24!");
         }
     }
 
@@ -320,11 +329,11 @@ class Mpay24Soap
      */
     protected function recordedLastMessageExchange($messageExchange)
     {
-        if ($this->mPAY24SDK->isDebug()) {
-            $this->writeLog($messageExchange, sprintf("REQUEST to %s - %s\n", $this->mPAY24SDK->getEtpURL(),
-                str_replace("><", ">\n<", $this->mPAY24SDK->getRequest())));
+        if ($this->mpay24Sdk->isDebug()) {
+            $this->writeLog($messageExchange, sprintf("REQUEST to %s - %s\n", $this->mpay24Sdk->getEtpURL(),
+                str_replace("><", ">\n<", $this->mpay24Sdk->getRequest())));
             $this->writeLog($messageExchange,
-                sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mPAY24SDK->getResponse())));
+                sprintf("RESPONSE - %s\n", str_replace("><", ">\n<", $this->mpay24Sdk->getResponse())));
         }
     }
 
@@ -342,9 +351,9 @@ class Mpay24Soap
             $serverName = $_SERVER['SERVER_NAME'];
         }
 
-        $fh = fopen($this->mPAY24SDK->getMPay24LogPath(), 'a+') or die("can't open file");
+        $fh = fopen($this->mpay24Sdk->getMpay24LogPath(), 'a+') or die("can't open file");
         $MessageDate = date("Y-m-d H:i:s");
-        $Message     = $MessageDate . " " . $serverName . " mPAY24 : ";
+        $Message     = $MessageDate . " " . $serverName . " Mpay24 : ";
         $result      = $Message . "$operation : $info_to_log\n";
         fwrite($fh, $result);
         fclose($fh);
@@ -360,7 +369,7 @@ class Mpay24Soap
     {
         $this->integrityCheck();
 
-        $result = $this->mPAY24SDK->TransactionStatus($mpaytid, $tid);
+        $result = $this->mpay24Sdk->transactionStatus($mpaytid, $tid);
 
         $this->recordedLastMessageExchange('TransactionStatus');
 
@@ -371,10 +380,10 @@ class Mpay24Soap
      * @param $tid
      * @param $mPAYTid
      */
-    protected function validateTID($tid, $mPAYTid)
+    protected function validateTid($tid, $mPAYTid)
     {
         if (!$mPAYTid) {
-            $this->mPAY24SDK->dieWithMsg("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the mPAY24 data base!");
+            $this->mpay24Sdk->dieWithMsg("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the Mpay24 data base!");
         }
     }
 
@@ -384,7 +393,7 @@ class Mpay24Soap
     protected function validateAmount($amount)
     {
         if (!$amount || !is_numeric($amount)) {
-            $this->mPAY24SDK->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
+            $this->mpay24Sdk->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
         }
     }
 
@@ -394,7 +403,7 @@ class Mpay24Soap
     protected function validateCurrency($currency)
     {
         if (!$currency || strlen($currency) != 3) {
-            $this->mPAY24SDK->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
+            $this->mpay24Sdk->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
         }
     }
 
@@ -404,7 +413,7 @@ class Mpay24Soap
     protected function validateShippingCosts($shippingCosts)
     {
         if (!$shippingCosts || !is_numeric($shippingCosts)) {
-            $this->mPAY24SDK->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
+            $this->mpay24Sdk->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
         }
     }
 }

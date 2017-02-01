@@ -1,59 +1,53 @@
 <?php
 
-namespace mPay24\Responses;
-
-use DOMDocument;
+namespace Mpay24\Responses;
 
 /**
  * The ListPaymentMethodsResponse class contains a generalResponse object and all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)
  *
- * @author mPAY24 GmbH <support@mpay24.com>
- * @filesource MPAY24SDK.php
- * @license MIT
+ * Class ListPaymentMethodsResponse
+ * @package    Mpay24\Responses
+ *
+ * @author     mPAY24 GmbH <support@mpay24.com>
+ * @filesource ListPaymentMethodsResponse.php
+ * @license    MIT
  */
 class ListPaymentMethodsResponse extends GeneralResponse
 {
-    /**
-     * An object, that represents the basic values from the response from mPAY24: status and return code
-     *
-     * @var string
-     */
-    var $generalResponse;
-
     /**
      * The count of the payment methods, which are activated by mPAY24
      *
      * @var int
      */
-    var $all = 0;
+    protected $all = 0;
 
     /**
      * A list with the payment types, activated by mPAY24
      *
      * @var array
      */
-    var $pTypes = [];
+    protected $pTypes = [];
 
     /**
      * A list with the brands, activated by mPAY24
      *
      * @var array
      */
-    var $brands = [];
+    protected $brands = [];
 
     /**
      * A list with the descriptions of the payment methods, activated by mPAY24
      *
      * @var array
      */
-    var $descriptions = [];
+    protected $descriptions = [];
 
     /**
      * A list with the IDs of the payment methods, activated by mPAY24
      *
      * @var array
      */
-    var $pMethIds = [];
+    protected $pMethIds = [];
 
     /**
      * Sets the values for a payment from the response from mPAY24: count, payment types, brands and descriptions
@@ -61,26 +55,23 @@ class ListPaymentMethodsResponse extends GeneralResponse
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
      */
-    function __construct( $response ) {
-        $this->generalResponse = new GeneralResponse($response);
+    public function __construct($response)
+    {
+        parent::__construct($response);
 
-        if( '' != $response ) {
-            $responseAsDOM = new DOMDocument();
-            $responseAsDOM->loadXML($response);
+        if ($this->hasNoError()) {
 
-            if ( $responseAsDOM && $responseAsDOM->getElementsByTagName('all')->length != 0 ) {
-                $this->all = $responseAsDOM->getElementsByTagName('all')->item(0)->nodeValue;
+            if ($this->responseAsDom->getElementsByTagName('all')->length != 0) {
 
-                for( $i = 0; $i < $this->all; $i ++ ) {
-                    $this->pTypes[$i] = $responseAsDOM->getElementsByTagName('pType')->item($i)->nodeValue;
-                    $this->brands[$i] = $responseAsDOM->getElementsByTagName('brand')->item($i)->nodeValue;
-                    $this->descriptions[$i] = $responseAsDOM->getElementsByTagName('description')->item($i)->nodeValue;
-                    $this->pMethIds[$i] = $responseAsDOM->getElementsByTagName('paymentMethod')->item($i)->getAttribute("id");
+                $this->all = $this->responseAsDom->getElementsByTagName('all')->item(0)->nodeValue;
+
+                for ($i = 0; $i < $this->all; $i++) {
+                    $this->pTypes[$i]       = $this->responseAsDom->getElementsByTagName('pType')->item($i)->nodeValue;
+                    $this->brands[$i]       = $this->responseAsDom->getElementsByTagName('brand')->item($i)->nodeValue;
+                    $this->descriptions[$i] = $this->responseAsDom->getElementsByTagName('description')->item($i)->nodeValue;
+                    $this->pMethIds[$i]     = $this->responseAsDom->getElementsByTagName('paymentMethod')->item($i)->getAttribute("id");
                 }
             }
-        } else {
-            $this->generalResponse->setStatus("ERROR");
-            $this->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
         }
     }
 
@@ -139,9 +130,10 @@ class ListPaymentMethodsResponse extends GeneralResponse
      *
      * @param int $i
      *          The index of a payment type
+     *
      * @return string
      */
-    public function getPType( $i )
+    public function getPType($i)
     {
         return $this->pTypes[$i];
     }
@@ -151,9 +143,10 @@ class ListPaymentMethodsResponse extends GeneralResponse
      *
      * @param int $i
      *          The index of a brand
+     *
      * @return string
      */
-    public function getBrand( $i )
+    public function getBrand($i)
     {
         return $this->brands[$i];
     }
@@ -163,9 +156,10 @@ class ListPaymentMethodsResponse extends GeneralResponse
      *
      * @param int $i
      *          The index of a description
+     *
      * @return string
      */
-    public function getDescription( $i )
+    public function getDescription($i)
     {
         return $this->descriptions[$i];
     }
@@ -175,20 +169,11 @@ class ListPaymentMethodsResponse extends GeneralResponse
      *
      * @param int $i
      *          The index of an payment method ID
+     *
      * @return int
      */
-    public function getPMethID( $i )
+    public function getPMethID($i)
     {
         return $this->pMethIds[$i];
-    }
-
-    /**
-     * Get the object, that contains the basic values from the response from mPAY24: status and return code
-     *
-     * @return string
-     */
-    public function getGeneralResponse()
-    {
-        return $this->generalResponse;
     }
 }

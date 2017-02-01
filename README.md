@@ -37,13 +37,13 @@ require_once('bootstrap.php');
 
 You can use the config.php file in the root directory
 
-You also can handover the parameters while crating the MPAY24 Object
+You also can handover the parameters while crating the mpay24 Object
 
 ```php
 require_once("../bootstrap.php");
-use mPay24\MPAY24;
+use Mpay24\Mpay24Soap;
 
-$mpay24 = new MPAY24('9****', '*********');
+$mpay24 = new Mpay24Soap('9****', '*********');
 
 ```
 
@@ -96,17 +96,17 @@ With the TID number that we received by the merchant request
 
 *If you don't have unique TID you will only get the last transaction with this number*
 ```php
-$mpay24->transactionStatusByTID("123 TID");
+$Mpay24->transactionStatusByTID("123 TID");
 ```
 
 With the unique mPAYTID number that we send back in the response messages
 ```php
-$mpay24->transactionStatusByMPayID("12345");
+$mpay24->transactionStatusByMpay24Tid("12345");
 ```
 
 ### Prerequisites
 
-In order for the mPAY24 PHP SDK to work, your installation will have to meet the following prerequisites:
+In order for the Mpay24 PHP SDK to work, your installation will have to meet the following prerequisites:
 
 * [PHP >= 5.3.3](http://www.php.net/)
 * [cURL](http://at2.php.net/manual/de/book.curl.php)

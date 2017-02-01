@@ -1,34 +1,30 @@
 <?php
 
-namespace mPay24\Responses;
-
-use DOMDocument;
+namespace Mpay24\Responses;
 
 /**
  * Class PaymentTokenResponse
- * @package Responses
+ * @package    Mpay24\Responses
+ *
+ * @author     mPAY24 GmbH <support@mpay24.com>
+ * @filesource PaymentTokenResponse.php
+ * @license    MIT
  */
 class PaymentTokenResponse extends PaymentResponse
 {
     /**
-     * An object, that represents the basic payment values from the response from mPAY24: status, return code and location
+     * The token, got back from Mpay24, which will be used for the actual payment
      *
      * @var string
      */
-    var $paymentResponse;
-    /**
-     * The token, got back from mPAY24, which will be used for the actual payment
-     *
-     * @var string
-     */
-    var $token;
+    protected $token;
 
     /**
-     * The api key, got back from mPAY24, which will be used for the actual payment
+     * The api key, got back from Mpay24, which will be used for the actual payment
      *
      * @var string
      */
-    var $apiKey;
+    protected $apiKey;
 
     /**
      * Sets the values for a payment from the response from mPAY24: mPAY transaction ID, error number, location (URL), token and apiKey
@@ -36,28 +32,19 @@ class PaymentTokenResponse extends PaymentResponse
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
      */
-    function __construct( $response ) {
-        $this->paymentResponse = new PaymentResponse($response);
+    public function __construct($response)
+    {
+        parent::__construct($response);
 
-        if ( '' != $response ) {
-            $responseAsDOM = new DOMDocument();
-            $responseAsDOM->loadXML($response);
+        if ($this->hasNoError()) {
 
-            if ( !empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('token')->length != 0 ) {
-                $token = $responseAsDOM->getElementsByTagName('token')->item(0)->nodeValue;
-                $this->token = $token;
-                $this->paymentResponse->token= $token;
+            if ($this->responseAsDom->getElementsByTagName('token')->length != 0) {
+                $this->token = $this->responseAsDom->getElementsByTagName('token')->item(0)->nodeValue;
             }
 
-
-            if ( !empty($responseAsDOM) && is_object($responseAsDOM) && $responseAsDOM->getElementsByTagName('apiKey')->length != 0 ) {
-                $apiKey = $responseAsDOM->getElementsByTagName('apiKey')->item(0)->nodeValue;
-                $this->apiKey = $apiKey;
-                $this->paymentResponse->apiKey= $apiKey;
+            if ($this->responseAsDom->getElementsByTagName('apiKey')->length != 0) {
+                $this->apiKey = $this->responseAsDom->getElementsByTagName('apiKey')->item(0)->nodeValue;
             }
-        } else {
-            $this->paymentResponse->generalResponse->setStatus("ERROR");
-            $this->paymentResponse->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
         }
     }
 
@@ -79,15 +66,5 @@ class PaymentTokenResponse extends PaymentResponse
     public function getApiKey()
     {
         return $this->apiKey;
-    }
-
-    /**
-     * Get the object, that contains the basic payment values from the response from mPAY24: status, return code and location
-     *
-     * @return string
-     */
-    public function getPaymentResponse()
-    {
-        return $this->paymentResponse;
     }
 }

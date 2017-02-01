@@ -1,5 +1,5 @@
 {
-  "name": "mpay24/mpay24-php",
+  "name": "Mpay24/Mpay24-php",
   "description": "Offical PHP SDK for SOAP Bindings",
   "autoload": {
     "psr-4": {

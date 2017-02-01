@@ -1,6 +1,6 @@
 <?php
 
-namespace mPay24;
+namespace Mpay24;
 
 /**
  * The Transaction class allows you to set and get different transaction's properties - see details
@@ -26,9 +26,9 @@ namespace mPay24;
  * * STRING: FILTER_STATUS
  * * STRING: APPR_CODE
  *
- * @author mPAY24 GmbH <support@mpay24.com>
- * @filesource MPAY24.php
- * @license MIT
+ * @author     Mpay24 GmbH <support@Mpay24.com>
+ * @filesource Mpay24.php
+ * @license    MIT
  */
 class Transaction
 {
@@ -37,9 +37,24 @@ class Transaction
      * @const TRANSACTION_PROPERTIES
      */
     const TRANSACTION_PROPERTIES = [
-        'SECRET', 'TID', 'STATUS', 'MPAYTID', 'APPR_CODE', 'P_TYPE', 'BRAND', 'PRICE',
-        'CURRENCY', 'OPERATION', 'LANGUAGE', 'USER_FIELD', 'ORDERDESC', 'CUSTOMER',
-        'CUSTOMER_EMAIL', 'CUSTOMER_ID', 'PROFILE_STATUS', 'FILTER_STATUS,TSTATUS'
+        'SECRET',
+        'TID',
+        'STATUS',
+        'MPAYTID',
+        'APPR_CODE',
+        'P_TYPE',
+        'BRAND',
+        'PRICE',
+        'CURRENCY',
+        'OPERATION',
+        'LANGUAGE',
+        'USER_FIELD',
+        'ORDERDESC',
+        'CUSTOMER',
+        'CUSTOMER_EMAIL',
+        'CUSTOMER_ID',
+        'PROFILE_STATUS',
+        'FILTER_STATUS,TSTATUS'
     ];
 
     /**
@@ -61,25 +76,26 @@ class Transaction
      *
      * @param string $tid The ID of a transaction
      */
-    function __construct( $tid )
+    function __construct($tid)
     {
         $this->allowedProperties = self::TRANSACTION_PROPERTIES;
-        $this->TID = $tid;
+        $this->TID               = $tid;
     }
 
     /**
      * Get the property of the Transaction object
      *
      * @param string $property The name of the property, which is searched
+     *
      * @return string|bool
      */
-    public function __get( $property )
+    public function __get($property)
     {
-        if ( !in_array($property, $this->allowedProperties) ) {
-            die("The transaction's property ".$property.", you want to get is not defined!");
+        if (!in_array($property, $this->allowedProperties)) {
+            die("The transaction's property " . $property . ", you want to get is not defined!");
         }
 
-        if ( isset($this->properties[$property]) ) {
+        if (isset($this->properties[$property])) {
             return $this->properties[$property];
         } else {
             return false;
@@ -90,11 +106,11 @@ class Transaction
      * Set the property of the Transaction object
      *
      * @param string $property The name of the property you want to set, see TRANSACTION_PROPERTIES
-     * @param mixed $value The value of the property you want to set
+     * @param mixed  $value    The value of the property you want to set
      */
-    public function __set( $property, $value )
+    public function __set($property, $value)
     {
-        if ( !in_array($property, $this->allowedProperties) ) {
+        if (!in_array($property, $this->allowedProperties)) {
             die("The transaction's property " . $property . ", you want to set is not defined!");
         }
 
@@ -106,7 +122,7 @@ class Transaction
      *
      * @param array $args An array with the allowed properties
      */
-    protected function setProperties( $args )
+    protected function setProperties($args)
     {
         $this->properties = $args;
     }

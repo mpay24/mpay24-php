@@ -1,52 +1,43 @@
 <?php
 
-namespace mPay24\Responses;
+namespace Mpay24\Responses;
 
 use DOMDocument;
 
 /**
  * The TransactionStatusResponse class contains a generalResponse object and all the parameters, returned with the confirmation from mPAY24
  *
- * @author mPAY24 GmbH <support@mpay24.com>
- * @filesource MPAY24SDK.php
- * @license MIT
+ * Class TransactionStatusResponse
+ * @package    Mpay24\Responses
+ *
+ * @author     mPAY24 GmbH <support@mpay24.com>
+ * @filesource TransactionStatusResponse.php
+ * @license    MIT
  */
 class TransactionStatusResponse extends GeneralResponse
 {
-    /**
-     * An object, that represents the basic values from the response from mPAY24: status and return code
-     *
-     * @var string
-     */
-    var $generalResponse;
-
     /**
      * Sets the values for a transaction from the response from mPAY24: STATUS, PRICE, CURRENCY, LANGUAGE, etc
      *
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
      */
-    function __construct( $response ) {
-        $this->generalResponse = new GeneralResponse($response);
+    public function __construct($response)
+    {
+        parent::__construct($response);
 
-        if( '' != $response ) {
-            $responseAsDOM = new DOMDocument();
-            $responseAsDOM->loadXML($response);
+        if ($this->responseAsDom->getElementsByTagName('name')->length != 0) {
+            $paramCount = $this->responseAsDom->getElementsByTagName('name')->length;
+            // TODO: check where this is coming from => transaction not found
+            //$this->transaction['status'] = $this->getStatus();
 
-            if( $responseAsDOM && $responseAsDOM->getElementsByTagName('name')->length != 0 ) {
-                $paramCount = $responseAsDOM->getElementsByTagName('name')->length;
-                $this->transaction['status'] = $this->generalResponse->getStatus();
-
-                for( $i = 0; $i < $paramCount; $i ++ ) {
-                    $this->transaction[strtolower($responseAsDOM->getElementsByTagName('name')->item($i)->nodeValue)] = $responseAsDOM->getElementsByTagName('value')->item($i)->nodeValue;
-                }
-                unset($this->params);
-                unset($this->status);
-                unset($this->returnCode);
+            for ($i = 0; $i < $paramCount; $i++) {
+                $this->transaction[strtolower($this->responseAsDom->getElementsByTagName('name')->item($i)->nodeValue)] = $this->responseAsDom->getElementsByTagName('value')->item($i)->nodeValue;
             }
-        } else {
-            $this->generalResponse->setStatus("ERROR");
-            $this->generalResponse->setReturnCode("The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!");
+
+            unset($this->params);
+            unset($this->status);
+            unset($this->returnCode);
         }
     }
 
@@ -75,11 +66,12 @@ class TransactionStatusResponse extends GeneralResponse
      *
      * @param string $i
      *          The name of a parameter (for example: STATUS, PRICE, CURRENCY, etc)
+     *
      * @return array|bool
      */
-    public function getParam( $i )
+    public function getParam($i)
     {
-        if(isset($this->transaction[$i])) {
+        if (isset($this->transaction[$i])) {
             return $this->transaction[$i];
         } else {
             return false;
@@ -94,18 +86,8 @@ class TransactionStatusResponse extends GeneralResponse
      * @param string $value
      *          The value of the parameter
      */
-    public function setParam( $name, $value )
+    public function setParam($name, $value)
     {
         $this->transaction[$name] = $value;
-    }
-
-    /**
-     * Get the object, that contains the basic values from the response from mPAY24: status and return code
-     *
-     * @return string
-     */
-    public function getGeneralResponse()
-    {
-        return $this->generalResponse;
     }
 }
