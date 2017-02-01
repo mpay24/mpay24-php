@@ -157,13 +157,13 @@ class Mpay24FlexLink
 
         $params[$languageVar]   = $language;
         $params[$user_fieldVar] = $user_field;
-
+/*
         if ($description == null) {               //TODO: undefined variable $description => check where this is coming from
             $description = "Rechnungsnummer:";
         }
 
         $params[$descriptionVar] = $description;    //TODO: undefined variable $descriptionVar => check where this is coming from
-
+*/
         if ($mode == null) {
             $mode = "ReadWrite";
         }

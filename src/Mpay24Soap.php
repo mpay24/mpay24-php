@@ -119,13 +119,13 @@ class Mpay24Soap
     /**
      * Get the status for a transaction by the unique mPAYTID number
      *
-     * @param string $mpaytid
+     * @param string $mpayTid
      *
      * @return Responses\TransactionStatusResponse
      */
-    public function transactionStatusByMpay24Tid($mpaytid)
+    public function transactionStatusByMpay24Tid($mpayTid)
     {
-        return $this->transactionStatus($mpaytid);
+        return $this->transactionStatus($mpayTid);
     }
 
     /**
@@ -172,8 +172,10 @@ class Mpay24Soap
 
         $response = $this->transactionStatusByTid($tid);
 
+        $mpay24Tid = null;
+
         if ($response->hasStatusOk()) {
-            $mpay24Tid = $response->transaction['mpaytid'];
+            $mpay24Tid = $response->getParam('MPAYTID');
         }
 
         $this->validateTid($tid, $mpay24Tid);
@@ -234,16 +236,19 @@ class Mpay24Soap
 
         $response = $this->transactionStatusByTid($tid);
 
+        $mpayTid  = null;
+        $currency = null;
+
         if ($response->hasStatusOk()) {
-            $mPAYTid  = $response->transaction['mpaytid'];
-            $currency = $response->transaction['currency'];
+            $mpayTid  = $response->getParam('MPAYTID');
+            $currency = $response->getParam('CURRENCY');
         }
 
-        $this->validateTid($tid, $mPAYTid);
+        $this->validateTid($tid, $mpayTid);
         $this->validateAmount($amount);
         $this->validateCurrency($currency);
 
-        $clearAmountResult = $this->mpay24Sdk->manualClear($mPAYTid, $amount, $currency);
+        $clearAmountResult = $this->mpay24Sdk->manualClear($mpayTid, $amount, $currency);
 
         $this->recordedLastMessageExchange('ClearAmount');
 
@@ -267,21 +272,21 @@ class Mpay24Soap
 
         $response = $this->transactionStatusByTid($tid);
 
-        $mPAYTid  = null;
+        $mpayTid  = null;
         $currency = null;
         $customer = null;
 
         if ($response->hasStatusOk()) {
-            $mPAYTid  = $response->transaction['mpaytid'];
-            $currency = $response->transaction['currency'];
-            $customer = $response->transaction['customer'];
+            $mpayTid  = $response->getParam('MPAYTID');
+            $currency = $response->getParam('CURRENCY');
+            $customer = $response->getParam('CUSTOMER');
         }
 
-        $this->validateTid($tid, $mPAYTid);
+        $this->validateTid($tid, $mpayTid);
         $this->validateAmount($amount);
         $this->validateCurrency($currency);
 
-        $creditAmountResult = $this->mpay24Sdk->ManualCredit($mPAYTid, $amount, $currency, $customer);
+        $creditAmountResult = $this->mpay24Sdk->ManualCredit($mpayTid, $amount, $currency, $customer);
 
         $this->recordedLastMessageExchange('CreditAmount');
 
@@ -302,15 +307,15 @@ class Mpay24Soap
 
         $response = $this->transactionStatusByTid($tid);
 
-        $mPAYTid = null;
+        $mpayTid = null;
 
         if ($response->hasStatusOk()) {
-            $mPAYTid = $response->transaction['mpaytid'];
+            $mpayTid  = $response->getParam('MPAYTID');
         }
 
-        $this->validateTid($tid, $mPAYTid);
+        $this->validateTid($tid, $mpayTid);
 
-        $cancelTransactionResult = $this->mpay24Sdk->manualReverse($mPAYTid);
+        $cancelTransactionResult = $this->mpay24Sdk->manualReverse($mpayTid);
 
         $this->recordedLastMessageExchange('CancelTransaction');
 
@@ -360,16 +365,16 @@ class Mpay24Soap
     }
 
     /**
-     * @param null $mpaytid
+     * @param null $mpayTid
      * @param null $tid
      *
      * @return Responses\TransactionStatusResponse
      */
-    protected function transactionStatus($mpaytid = null, $tid = null)
+    protected function transactionStatus($mpayTid = null, $tid = null)
     {
         $this->integrityCheck();
 
-        $result = $this->mpay24Sdk->transactionStatus($mpaytid, $tid);
+        $result = $this->mpay24Sdk->transactionStatus($mpayTid, $tid);
 
         $this->recordedLastMessageExchange('TransactionStatus');
 
@@ -378,12 +383,12 @@ class Mpay24Soap
 
     /**
      * @param $tid
-     * @param $mPAYTid
+     * @param $mpayTid
      */
-    protected function validateTid($tid, $mPAYTid)
+    protected function validateTid($tid, $mpayTid)
     {
-        if (!$mPAYTid) {
-            $this->mpay24Sdk->dieWithMsg("The transaction '$tid' you want to cancel with the mPAYTid '$mPAYTid' does not exist in the Mpay24 data base!");
+        if (!$mpayTid) {
+            $this->mpay24Sdk->dieWithMsg("The transaction '$tid' you send us could not assigned to a unique mPAYTID and may does not exist in the mPAY24 data base!");
         }
     }
 

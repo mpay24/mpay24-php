@@ -320,7 +320,7 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $xmlMerchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $xmlMerchantID = $operation->appendChild($xmlMerchantID);
+        $operation->appendChild($xmlMerchantID);
 
         $this->request = $xml->saveXML();
 
@@ -349,10 +349,10 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $merchantID = $operation->appendChild($merchantID);
+        $operation->appendChild($merchantID);
 
         $xmlMDXI = $xml->createElement('mdxi', htmlspecialchars($mdxi));
-        $xmlMDXI = $operation->appendChild($xmlMDXI);
+        $operation->appendChild($xmlMDXI);
 
         $this->request = $xml->saveXML();
 
@@ -380,14 +380,14 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $merchantID = $operation->appendChild($merchantID);
+        $operation->appendChild($merchantID);
 
         $pType = $xml->createElement('pType', $pType);
-        $pType = $operation->appendChild($pType);
+        $operation->appendChild($pType);
 
         foreach ($additional as $k => $v) {
             $buf = $xml->createElement($k, $v);
-            $buf = $operation->appendChild($buf);
+            $operation->appendChild($buf);
         }
 
         $this->request = $xml->saveXML();
@@ -418,13 +418,13 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $merchantID = $operation->appendChild($merchantID);
+        $operation->appendChild($merchantID);
 
         $xmlTID = $xml->createElement('tid', $tid);
-        $xmlTID = $operation->appendChild($xmlTID);
+        $operation->appendChild($xmlTID);
 
         $xmlPType = $xml->createElement('pType', $type);
-        $xmlPType = $operation->appendChild($xmlPType);
+        $operation->appendChild($xmlPType);
 
         $xmlPayment = $xml->createElement('payment');
         $xmlPayment = $operation->appendChild($xmlPayment);
@@ -432,7 +432,7 @@ class Mpay24Sdk
 
         foreach ($payment as $k => $v) {
             $buf = $xml->createElement($k, $v);
-            $buf = $xmlPayment->appendChild($buf);
+            $xmlPayment->appendChild($buf);
         }
 
         $this->appendArray($operation, $additional, $xml);
@@ -507,16 +507,16 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $merchantID = $operation->appendChild($merchantID);
+        $operation->appendChild($merchantID);
 
         $clearingDetails = $xml->createElement('clearingDetails');
         $clearingDetails = $operation->appendChild($clearingDetails);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $xmlMPayTid = $clearingDetails->appendChild($xmlMPayTid);
+        $clearingDetails->appendChild($xmlMPayTid);
 
         $price = $xml->createElement('amount', $amount);
-        $price = $clearingDetails->appendChild($price);
+        $clearingDetails->appendChild($price);
 
         $this->request = $xml->saveXML();
 
@@ -546,13 +546,13 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $merchantID = $operation->appendChild($merchantID);
+        $operation->appendChild($merchantID);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $xmlMPayTid = $operation->appendChild($xmlMPayTid);
+        $operation->appendChild($xmlMPayTid);
 
         $price = $xml->createElement('amount', $amount);
-        $price = $operation->appendChild($price);
+        $operation->appendChild($price);
 
         $this->request = $xml->saveXML();
 
@@ -579,10 +579,10 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $merchantID = $operation->appendChild($merchantID);
+        $operation->appendChild($merchantID);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $xmlMPayTid = $operation->appendChild($xmlMPayTid);
+        $operation->appendChild($xmlMPayTid);
 
         $this->request = $xml->saveXML();
 
@@ -610,14 +610,14 @@ class Mpay24Sdk
         $operation = $body->appendChild($operation);
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $merchantID = $operation->appendChild($merchantID);
+        $operation->appendChild($merchantID);
 
         if ($mpay24tid) {
             $xmlMPayTid = $xml->createElement('mpayTID', $mpay24tid);
-            $xmlMPayTid = $operation->appendChild($xmlMPayTid);
+            $operation->appendChild($xmlMPayTid);
         } else {
             $xmlTid = $xml->createElement('tid', $tid);
-            $xmlTid = $operation->appendChild($xmlTid);
+            $operation->appendChild($xmlTid);
         }
 
         $this->request = $xml->saveXML();
@@ -669,7 +669,7 @@ class Mpay24Sdk
         $envelope = $soap_xml->appendChild($envelope);
 
         $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
-        $body = $envelope->appendChild($body);
+        $envelope->appendChild($body);
 
         return $soap_xml;
     }
@@ -794,10 +794,10 @@ class Mpay24Sdk
             if (is_array($value)) {
                 $element = $document->createElement($name);
                 $this->appendArray($element, $value, $document);
-                $element = $parent->appendChild($element);
+                $parent->appendChild($element);
             } else {
                 $element = $document->createElement($name, $value);
-                $element = $parent->appendChild($element);
+                $parent->appendChild($element);
             }
         }
     }

@@ -2,8 +2,6 @@
 
 namespace Mpay24\Responses;
 
-use DOMDocument;
-
 /**
  * The TransactionStatusResponse class contains a generalResponse object and all the parameters, returned with the confirmation from mPAY24
  *
@@ -17,6 +15,16 @@ use DOMDocument;
 class TransactionStatusResponse extends GeneralResponse
 {
     /**
+     * @var int
+     */
+    protected $paramCount = 0;
+
+    /**
+     * @var array
+     */
+    protected $transaction = [];
+
+    /**
      * Sets the values for a transaction from the response from mPAY24: STATUS, PRICE, CURRENCY, LANGUAGE, etc
      *
      * @param string $response
@@ -27,17 +35,14 @@ class TransactionStatusResponse extends GeneralResponse
         parent::__construct($response);
 
         if ($this->responseAsDom->getElementsByTagName('name')->length != 0) {
-            $paramCount = $this->responseAsDom->getElementsByTagName('name')->length;
-            // TODO: check where this is coming from => transaction not found
-            //$this->transaction['status'] = $this->getStatus();
+            $this->paramCount = $this->responseAsDom->getElementsByTagName('name')->length;
 
-            for ($i = 0; $i < $paramCount; $i++) {
-                $this->transaction[strtolower($this->responseAsDom->getElementsByTagName('name')->item($i)->nodeValue)] = $this->responseAsDom->getElementsByTagName('value')->item($i)->nodeValue;
+            for ($i = 0; $i < $this->paramCount; $i++) {
+                $name  = $this->responseAsDom->getElementsByTagName('name')->item($i)->nodeValue;
+                $value = $this->responseAsDom->getElementsByTagName('value')->item($i)->nodeValue;
+
+                $this->transaction[$name] = $value;
             }
-
-            unset($this->params);
-            unset($this->status);
-            unset($this->returnCode);
         }
     }
 
@@ -64,30 +69,17 @@ class TransactionStatusResponse extends GeneralResponse
     /**
      * Get the parameter's value, returned from mPAY24
      *
-     * @param string $i
+     * @param string $name
      *          The name of a parameter (for example: STATUS, PRICE, CURRENCY, etc)
      *
-     * @return array|bool
+     * @return string|bool
      */
-    public function getParam($i)
+    public function getParam($name)
     {
-        if (isset($this->transaction[$i])) {
-            return $this->transaction[$i];
+        if (isset($this->transaction[$name])) {
+            return $this->transaction[$name];
         } else {
             return false;
         }
-    }
-
-    /**
-     * Set a value for a parameter
-     *
-     * @param string $name
-     *          The name of a parameter (for example: STATUS, PRICE, CURRENCY, etc)
-     * @param string $value
-     *          The value of the parameter
-     */
-    public function setParam($name, $value)
-    {
-        $this->transaction[$name] = $value;
     }
 }

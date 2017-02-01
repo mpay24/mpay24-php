@@ -191,7 +191,7 @@ class MPay24Order
         }
 
         if (strpos($value, "<") || strpos($value, ">")) {
-            $value = "<![CDATA[" . $this->xmlencode($value) . "]]>";
+            $value = "<![CDATA[" . $this->xmlEncode($value) . "]]>";
         }
 
         if ($qry->length > 0) {
@@ -230,7 +230,7 @@ class MPay24Order
      *
      * @return string
      */
-    private function xmlencode($txt)
+    protected function xmlEncode($txt)
     {
         $txt = str_replace('<', '&lt;', $txt);
         $txt = str_replace('>', '&gt;', $txt);
