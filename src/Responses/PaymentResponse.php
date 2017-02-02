@@ -26,7 +26,7 @@ class PaymentResponse extends GeneralResponse
      *
      * @var string
      */
-    protected $mpay24Tid;
+    protected $mpayTid;
 
     /**
      * Sets the values for a payment from the response from mPAY24: mPAY transaction ID, error number and location (URL)
@@ -44,7 +44,7 @@ class PaymentResponse extends GeneralResponse
             }
 
             if ($this->responseAsDom->getElementsByTagName('mpayTID')->length != 0) {
-                $this->mpay24Tid = $this->responseAsDom->getElementsByTagName('mpayTID')->item(0)->nodeValue;
+                $this->mpayTid = $this->responseAsDom->getElementsByTagName('mpayTID')->item(0)->nodeValue;
             }
         }
     }
@@ -64,8 +64,8 @@ class PaymentResponse extends GeneralResponse
      *
      * @return string
      */
-    public function getMpay24Tid()
+    public function getMpayTid()
     {
-        return $this->mpay24Tid;
+        return $this->mpayTid;
     }
 }

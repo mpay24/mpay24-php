@@ -89,7 +89,7 @@ $mdxi->Order->URL->Success      = 'http://yourpage.com/success';
 $mdxi->Order->URL->Error        = 'http://yourpage.com/error';
 $mdxi->Order->URL->Confirmation = 'http://yourpage.com/confirmation';
 
-$paymentPageURL = $mpay24->paymentPage($mdxi)->location; // redirect location to the payment page
+$paymentPageURL = $mpay24->paymentPage($mdxi)->getLocation(); // redirect location to the payment page
 
 header('Location: '.$paymentPageURL);
 ```

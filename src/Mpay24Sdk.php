@@ -494,11 +494,10 @@ class Mpay24Sdk
      *
      * @param int    $mPAYTid  The mPAY24 transaction ID
      * @param int    $amount   The amount to be cleared multiplay by 100
-     * @param string $currency 3-digit ISO currency code: EUR, USD, etc
      *
      * @return ManagePaymentResponse
      */
-    public function manualClear($mPAYTid, $amount, $currency)
+    public function manualClear($mPAYTid, $amount)
     {
         $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
@@ -532,7 +531,6 @@ class Mpay24Sdk
      *
      * @param int    $mPAYTid  The mPAY24 transaction ID
      * @param int    $amount   The amount to be credited multiplay by 100
-     * @param string $currency 3-digit ISO currency code: EUR, USD, etc
      *
      * @return ManagePaymentResponse
      */
@@ -658,13 +656,13 @@ class Mpay24Sdk
         $soap_xml               = new DOMDocument("1.0", "UTF-8");
         $soap_xml->formatOutput = true;
 
-        $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
+        $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV:Envelope');
         $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp', 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
+        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
         $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $envelope = $soap_xml->appendChild($envelope);
 
-        $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
+        $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV:Body');
         $envelope->appendChild($body);
 
         return $soap_xml;
@@ -712,9 +710,6 @@ class Mpay24Sdk
             $this->response = curl_exec($ch);
             curl_close($ch);
 
-            if ($this->config->isEnableCurlLog()) {
-                fclose($fh);
-            }
         } catch (\Exception $e) {
             if ($this->config->isTestSystem()) {
                 $dieMSG = "Your request couldn't be sent because of the following error:" . "\n" . curl_error(
@@ -725,6 +720,10 @@ class Mpay24Sdk
             }
 
             echo $dieMSG;
+        }
+
+        if ($this->config->isEnableCurlLog()) {
+            fclose($fh);
         }
     }
 

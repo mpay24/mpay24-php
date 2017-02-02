@@ -3,6 +3,7 @@
 namespace Mpay24\Responses;
 
 use DOMDocument;
+use ErrorException;
 
 /**
  * The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request
@@ -47,7 +48,19 @@ class GeneralResponse
     {
         if ('' != $response) {
             $this->responseAsDom = new DOMDocument();
-            $this->responseAsDom->loadXML($response);
+
+            try {
+                $this->responseAsDom->loadXML($response);
+            } catch (ErrorException $e) {
+                $this->status = 'ERROR';
+                $this->returnCode = 'Unknown Error';
+
+                if (preg_match('<title>401 Unauthorized</title>',$response)) {
+                    $this->returnCode = "401 Unauthorized: check your merchant ID and password";
+                }
+
+                return;
+            }
 
             if (!empty($this->responseAsDom) && is_object($this->responseAsDom)) {
                 if ($this->responseAsDom->getElementsByTagName('status')->length == 0

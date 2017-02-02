@@ -15,11 +15,11 @@ namespace Mpay24\Responses;
 class ManagePaymentResponse extends GeneralResponse
 {
     /**
-     * The mPAY transaction ID
+     * The mPAY24 transaction ID
      *
      * @var string
      */
-    protected $mpay24Tid;
+    protected $mpayTid;
 
     /**
      * The transaction ID of the shop
@@ -29,7 +29,7 @@ class ManagePaymentResponse extends GeneralResponse
     protected $tid;
 
     /**
-     * Sets the values for a payment from the response from mPAY24: mPAY transaction IDand transaction ID from the shop
+     * Sets the values for a payment from the response from mPAY24: mPAY transaction ID and transaction ID from the shop
      *
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
@@ -42,7 +42,7 @@ class ManagePaymentResponse extends GeneralResponse
             if ($this->responseAsDom->getElementsByTagName('mpayTID')->length != 0
                 && $this->responseAsDom->getElementsByTagName('tid')->length != 0
             ) {
-                $this->mpay24Tid = $this->responseAsDom->getElementsByTagName('mpayTID')->item(0)->nodeValue;
+                $this->mpayTid = $this->responseAsDom->getElementsByTagName('mpayTID')->item(0)->nodeValue;
                 $this->tid       = $this->responseAsDom->getElementsByTagName('tid')->item(0)->nodeValue;
             }
         }
@@ -53,9 +53,9 @@ class ManagePaymentResponse extends GeneralResponse
      *
      * @return string
      */
-    public function getMpay24Tid()
+    public function getMpayTid()
     {
-        return $this->mpay24Tid;
+        return $this->mpayTid;
     }
 
     /**
