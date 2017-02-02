@@ -8,6 +8,7 @@ use Mpay24\Responses\ListPaymentMethodsResponse;
 use Mpay24\Responses\ManagePaymentResponse;
 use Mpay24\Responses\PaymentResponse;
 use Mpay24\Responses\PaymentTokenResponse;
+use Mpay24\Responses\TransactionHistoryResponse;
 use Mpay24\Responses\TransactionStatusResponse;
 
 /**
@@ -492,8 +493,8 @@ class Mpay24Sdk
     /**
      * Clear a transaction with an amount
      *
-     * @param int    $mPAYTid  The mPAY24 transaction ID
-     * @param int    $amount   The amount to be cleared multiplay by 100
+     * @param int $mPAYTid The mPAY24 transaction ID
+     * @param int $amount  The amount to be cleared multiplay by 100
      *
      * @return ManagePaymentResponse
      */
@@ -529,8 +530,8 @@ class Mpay24Sdk
     /**
      * Credit a transaction with an amount
      *
-     * @param int    $mPAYTid  The mPAY24 transaction ID
-     * @param int    $amount   The amount to be credited multiplay by 100
+     * @param int $mPAYTid The mPAY24 transaction ID
+     * @param int $amount  The amount to be credited multiplay by 100
      *
      * @return ManagePaymentResponse
      */
@@ -622,6 +623,36 @@ class Mpay24Sdk
         $this->send();
 
         $result = new TransactionStatusResponse($this->response);
+
+        return $result;
+    }
+
+    /**
+     * Get all the information for a transaction, supported by mPAY24
+     *
+     * @param int $mpay24tid The mPAY24 transaction ID
+     *
+     * @return TransactionHistoryResponse
+     */
+    public function transactionHistory($mpay24tid = null)
+    {
+        $xml  = $this->buildEnvelope();
+        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
+
+        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:TransactionHistory');
+        $operation = $body->appendChild($operation);
+
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
+
+        $xmlMPayTid = $xml->createElement('mpayTID', $mpay24tid);
+        $operation->appendChild($xmlMPayTid);
+
+        $this->request = $xml->saveXML();
+
+        $this->send();
+
+        $result = new TransactionHistoryResponse($this->response);
 
         return $result;
     }

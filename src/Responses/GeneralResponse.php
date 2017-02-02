@@ -52,10 +52,10 @@ class GeneralResponse
             try {
                 $this->responseAsDom->loadXML($response);
             } catch (ErrorException $e) {
-                $this->status = 'ERROR';
+                $this->status     = 'ERROR';
                 $this->returnCode = 'Unknown Error';
 
-                if (preg_match('/<title>401 Unauthorized<\/title>/',$response) == 1) {
+                if (preg_match('/<title>401 Unauthorized<\/title>/', $response) == 1) {
                     $this->returnCode = "401 Unauthorized: check your merchant ID and password";
                 }
 
@@ -68,6 +68,14 @@ class GeneralResponse
                 ) {
                     $this->status     = "ERROR";
                     $this->returnCode = urldecode($response);
+
+                    if ($this->responseAsDom->getElementsByTagName('faultcode')->length > 0
+                        && $this->responseAsDom->getElementsByTagName('faultstring')->length > 0
+                    ) {
+                        $this->returnCode = $this->responseAsDom->getElementsByTagName('faultcode')->item(0)->nodeValue;
+                        $this->returnCode .= ' - ';
+                        $this->returnCode .= $this->responseAsDom->getElementsByTagName('faultstring')->item(0)->nodeValue;
+                    }
                 } else {
                     $this->status     = $this->responseAsDom->getElementsByTagName('status')->item(0)->nodeValue;
                     $this->returnCode = $this->responseAsDom->getElementsByTagName('returnCode')->item(0)->nodeValue;
