@@ -148,11 +148,34 @@ class Mpay24
     {
         $this->integrityCheck();
 
-        $tokenResult = $this->mpay24Sdk->transactionHistory($mpayTid);
+        $response = $this->mpay24Sdk->transactionHistory($mpayTid);
 
         $this->recordedLastMessageExchange('TransactionHistory');
 
-        return $tokenResult;
+        return $response;
+    }
+
+    /**
+     * Get all profile according to the given parameters
+     *
+     * @param string $customerId
+     * @param string $expiredBy
+     * @param int    $begin
+     * @param int    $size
+     *
+     * @return Responses\ListProfilesResponse
+     * @internal param string $mpayTid
+     *
+     */
+    public function listCustomers($customerId = null, $expiredBy = null, $begin = null, $size = null)
+    {
+        $this->integrityCheck();
+
+        $response = $this->mpay24Sdk->listProfiles($customerId, $expiredBy, $begin, $size);
+
+        $this->recordedLastMessageExchange('ListProfiles');
+
+        return $response;
     }
 
     /**

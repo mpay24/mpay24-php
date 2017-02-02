@@ -5,6 +5,7 @@ namespace Mpay24;
 use DOMDocument;
 use DOMNode;
 use Mpay24\Responses\ListPaymentMethodsResponse;
+use Mpay24\Responses\ListProfilesResponse;
 use Mpay24\Responses\ManagePaymentResponse;
 use Mpay24\Responses\PaymentResponse;
 use Mpay24\Responses\PaymentTokenResponse;
@@ -314,11 +315,8 @@ class Mpay24Sdk
      */
     public function listPaymentMethods()
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ListPaymentMethods');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'ListPaymentMethods');
 
         $xmlMerchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($xmlMerchantID);
@@ -343,11 +341,8 @@ class Mpay24Sdk
      */
     public function selectPayment($mdxi)
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:SelectPayment');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'SelectPayment');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -374,11 +369,8 @@ class Mpay24Sdk
      */
     public function createTokenPayment($pType, array $additional = [])
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:CreatePaymentToken');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'CreatePaymentToken');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -412,11 +404,8 @@ class Mpay24Sdk
      */
     public function acceptPayment($type, $tid, $payment = [], $additional = [])
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElement('etp:AcceptPayment');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'AcceptPayment');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -456,11 +445,8 @@ class Mpay24Sdk
      */
     public function manualCallback($requestString, $paymentType)
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElement('etp:ManualCallback');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'ManualCallback');
 
         $requestXML               = new DOMDocument("1.0", "UTF-8");
         $requestXML->formatOutput = true;
@@ -500,11 +486,8 @@ class Mpay24Sdk
      */
     public function manualClear($mPAYTid, $amount)
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualClear');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'ManualClear');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -537,11 +520,8 @@ class Mpay24Sdk
      */
     public function ManualCredit($mPAYTid, $amount)
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualCredit');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'ManualCredit');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -570,11 +550,8 @@ class Mpay24Sdk
      */
     public function manualReverse($mPAYTid)
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualReverse');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'ManualReverse');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -601,11 +578,8 @@ class Mpay24Sdk
      */
     public function transactionStatus($mpay24tid = null, $tid = null)
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:TransactionStatus');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'TransactionStatus');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -636,11 +610,8 @@ class Mpay24Sdk
      */
     public function transactionHistory($mpay24tid = null)
     {
-        $xml  = $this->buildEnvelope();
-        $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:TransactionHistory');
-        $operation = $body->appendChild($operation);
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'TransactionHistory');
 
         $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
         $operation->appendChild($merchantID);
@@ -653,6 +624,55 @@ class Mpay24Sdk
         $this->send();
 
         $result = new TransactionHistoryResponse($this->response);
+
+        return $result;
+    }
+
+    /**
+     * Get all the information for a transaction, supported by mPAY24
+     *
+     * @param string $customerId
+     * @param string $expiredBy
+     * @param int    $begin
+     * @param int    $size
+     *
+     * @return ListProfilesResponse
+     * @internal param int $mpay24tid The mPAY24 transaction ID
+     *
+     */
+    public function listProfiles($customerId = null, $expiredBy = null, $begin = null, $size = null)
+    {
+        $xml       = $this->buildEnvelope();
+        $operation = $this->buildOperation($xml, 'ListProfiles');
+
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
+        // TODO: check if you want check the value of $customerId
+        if ($customerId) {
+            $xmlMPayTid = $xml->createElement('customerID', $customerId);
+            $operation->appendChild($xmlMPayTid);
+        }
+        // TODO: check if you want check the value of $customerId
+        if ($expiredBy) {
+            $xmlMPayTid = $xml->createElement('expiredBy', $expiredBy);
+            $operation->appendChild($xmlMPayTid);
+        }
+        // TODO: check if you want check the value of $customerId
+        if ($begin) {
+            $xmlMPayTid = $xml->createElement('begin', $begin);
+            $operation->appendChild($xmlMPayTid);
+        }
+        // TODO: check if you want check the value of $size
+        if ($size) {
+            $xmlMPayTid = $xml->createElement('size', $size);
+            $operation->appendChild($xmlMPayTid);
+        }
+
+        $this->request = $xml->saveXML();
+
+        $this->send();
+
+        $result = new ListProfilesResponse($this->response);
 
         return $result;
     }
@@ -682,15 +702,17 @@ class Mpay24Sdk
      *
      * @return DOMDocument
      */
-    private function buildEnvelope()
+    protected function buildEnvelope()
     {
         $soap_xml               = new DOMDocument("1.0", "UTF-8");
         $soap_xml->formatOutput = true;
 
         $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV:Envelope');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp', 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
+        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp',
+            'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
         $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi',
+            'http://www.w3.org/2001/XMLSchema-instance');
         $envelope = $soap_xml->appendChild($envelope);
 
         $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV:Body');
@@ -700,9 +722,24 @@ class Mpay24Sdk
     }
 
     /**
+     * @param $xml
+     *
+     * @param $operation
+     *
+     * @return mixed
+     */
+    protected function buildOperation($xml, $operation)
+    {
+        $body      = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
+        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:' . $operation);
+
+        return $body->appendChild($operation);
+    }
+
+    /**
      * Create a curl request and send the created SOAP XML
      */
-    private function send()
+    protected function send()
     {
         $userAgent = 'mpay24-php/' . self::VERSION;
 
@@ -768,7 +805,7 @@ class Mpay24Sdk
      *
      * @return string
      */
-    private function ssl_encrypt($pass, $data)
+    protected function ssl_encrypt($pass, $data)
     {
         // Set a random salt
         $salt = substr(md5(mt_rand(), true), 8);
@@ -827,4 +864,5 @@ class Mpay24Sdk
             }
         }
     }
+
 }
