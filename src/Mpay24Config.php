@@ -1,6 +1,6 @@
 <?php
 
-namespace mPay24;
+namespace Mpay24;
 
 use Exception;
 use InvalidArgumentException;
@@ -8,18 +8,18 @@ use InvalidArgumentException;
 include_once(dirname(__FILE__) . '/../config.php');
 
 /**
- * Class MPay24Config
- * @package    mPay24
+ * Class Mpay24Config
+ * @package    Mpay24
  *
- * @author Stefan Polzer <develop@posit.at>
- * @filesource MPay24Config.php
- * @license MIT
+ * @author     Stefan Polzer <develop@posit.at>
+ * @filesource Mpay24Config.php
+ * @license    MIT
  */
-class MPay24Config
+class Mpay24Config
 {
     /**
      * @var int $merchantID
-     *          5-digit account number, supported by mPAY24
+     *          5-digit account number, supported by Mpay24
      *
      *          TEST accounts - starting with 9
      *
@@ -35,9 +35,9 @@ class MPay24Config
 
     /**
      * @var bool $testSystem
-     *          TRUE - when you want to use the TEST system
+     *          true - when you want to use the TEST system
      *
-     *          FALSE - when you want to use the LIVE system
+     *          false - when you want to use the LIVE system
      */
     protected $testSystem;
 
@@ -47,27 +47,27 @@ class MPay24Config
     protected $debug;
 
     /**
-     * @var string $proxyHost The host name in case you are behind a proxy server ("" when not)
+     * @var string $proxyHost The host name in case you are behind a proxy server ('' when not)
      */
     protected $proxyHost;
 
     /**
-     * @var int $proxyPort 4-digit port number in case you are behind a proxy server ("" when not)
+     * @var int $proxyPort 4-digit port number in case you are behind a proxy server ('' when not)
      */
     protected $proxyPort;
 
     /**
-     * @var string $proxyUser The proxy user in case you are behind a proxy server ("" when not)
+     * @var string $proxyUser The proxy user in case you are behind a proxy server ('' when not)
      */
     protected $proxyUser;
 
     /**
-     * @var string $proxyPass The proxy password in case you are behind a proxy server ("" when not)
+     * @var string $proxyPass The proxy password in case you are behind a proxy server ('' when not)
      */
     protected $proxyPass;
 
     /**
-     * @var bool $verifyPeer Set as FALSE to stop cURL from verifying the peer's certificate
+     * @var bool $verifyPeer Set as false to stop cURL from verifying the peer's certificate
      */
     protected $verifyPeer;
 
@@ -84,7 +84,7 @@ class MPay24Config
     protected $spid;
 
     /**
-     * The flexLINK password (supproted from mPAY24)
+     * The flexLink password (supproted from mPAY24)
      *
      * @var string
      */
@@ -92,9 +92,9 @@ class MPay24Config
 
     /**
      * @var bool $testSystem
-     *          TRUE - when you want to use the TEST system
+     *          true - when you want to use the TEST system
      *
-     *          FALSE - when you want to use the LIVE system
+     *          false - when you want to use the LIVE system
      */
     protected $flexLinkTestSystem;
 
@@ -117,27 +117,26 @@ class MPay24Config
     {
         $args = func_get_args();
 
-        if (isset($args[0]) && is_array($args[0]))
-        {
+        if (isset($args[0]) && is_array($args[0])) {
             $args = $args[0];
         }
 
-        $merchantID =         (isset($args[0]) ? $args[0] : MPAY24_MERCHANT_ID);
-        $soapPassword =       (isset($args[1]) ? $args[1] : MPAY24_SOAP_PASS);
-        $testSystem =         (isset($args[2]) ? $args[2] : MPAY24_TEST_SYSTEM);
-        $debug =              (isset($args[3]) ? $args[3] : MPAY24_DEBUG);
-        $proxyHost =          (isset($args[4]) ? $args[4] : MPAY24_PROXY_HOST);
-        $proxyPort =          (isset($args[5]) ? $args[5] : MPAY24_PROXY_PORT);
-        $proxyUser =          (isset($args[6]) ? $args[6] : MPAY24_PROXY_USER);
-        $proxyPass =          (isset($args[7]) ? $args[7] : MPAY24_PROXY_PASS);
-        $verifyPeer =         (isset($args[8]) ? $args[8] : MPAY24_VERIFY_PEER);
-        $enableCurlLog =      (isset($args[9]) ? $args[9] : MPAY24_ENABLE_CURL_LOG);
-        $sPid =               (isset($args[10]) ? $args[10] : MPAY24_SPID);
-        $flexLinkPassword =   (isset($args[11]) ? $args[11] : MPAY24_FLEX_LINK_PASS);
+        $merchantID         = (isset($args[0]) ? $args[0] : MPAY24_MERCHANT_ID);
+        $soapPassword       = (isset($args[1]) ? $args[1] : MPAY24_SOAP_PASS);
+        $testSystem         = (isset($args[2]) ? $args[2] : MPAY24_TEST_SYSTEM);
+        $debug              = (isset($args[3]) ? $args[3] : MPAY24_DEBUG);
+        $proxyHost          = (isset($args[4]) ? $args[4] : MPAY24_PROXY_HOST);
+        $proxyPort          = (isset($args[5]) ? $args[5] : MPAY24_PROXY_PORT);
+        $proxyUser          = (isset($args[6]) ? $args[6] : MPAY24_PROXY_USER);
+        $proxyPass          = (isset($args[7]) ? $args[7] : MPAY24_PROXY_PASS);
+        $verifyPeer         = (isset($args[8]) ? $args[8] : MPAY24_VERIFY_PEER);
+        $enableCurlLog      = (isset($args[9]) ? $args[9] : MPAY24_ENABLE_CURL_LOG);
+        $spid               = (isset($args[10]) ? $args[10] : MPAY24_SPID);
+        $flexLinkPassword   = (isset($args[11]) ? $args[11] : MPAY24_FLEX_LINK_PASS);
         $flexLinkTestSystem = (isset($args[12]) ? $args[12] : MPAY24_FLEX_LINK_TEST_SYSTEM);
-        $log_file =           (isset($args[13]) ? $args[13] : MPAY24_LOG_FILE);
-        $log_path =           (isset($args[14]) ? $args[14] : MPAY24_LOG_PATH);
-        $curl_log_file =      (isset($args[15]) ? $args[15] : MPAY24_CURL_LOG_FILE);
+        $log_file           = (isset($args[13]) ? $args[13] : MPAY24_LOG_FILE);
+        $log_path           = (isset($args[14]) ? $args[14] : MPAY24_LOG_PATH);
+        $curl_log_file      = (isset($args[15]) ? $args[15] : MPAY24_CURL_LOG_FILE);
 
         $this->setMerchantID($merchantID);
         $this->setSoapPassword($soapPassword);
@@ -149,7 +148,7 @@ class MPay24Config
         $this->setProxyPass($proxyPass);
         $this->setVerifyPeer($verifyPeer);
         $this->setEnableCurlLog($enableCurlLog);
-        $this->setSPID($sPid);
+        $this->setSpid($spid);
         $this->setFlexLinkPassword($flexLinkPassword);
         $this->useFlexLinkTestSystem($flexLinkTestSystem);
         $this->setLogFile($log_file);
@@ -160,13 +159,15 @@ class MPay24Config
     /**
      * @return string
      */
-    public function getMerchantID()
+    public function getMerchantId()
     {
         return $this->merchantID;
     }
 
     /**
      * @param string $merchantID
+     *
+     * @throws InvalidArgumentException
      * @throws Exception
      */
     public function setMerchantID($merchantID)
@@ -211,7 +212,7 @@ class MPay24Config
      */
     public function useTestSystem($testSystem)
     {
-        $this->testSystem = (bool) $testSystem;
+        $this->testSystem = (bool)$testSystem;
     }
 
     /**
@@ -227,11 +228,11 @@ class MPay24Config
      */
     public function setDebug($debug)
     {
-        $this->debug = (bool) $debug;
+        $this->debug = (bool)$debug;
     }
 
     /**
-     * @return null
+     * @return string
      */
     public function getProxyHost()
     {
@@ -239,7 +240,7 @@ class MPay24Config
     }
 
     /**
-     * @param null $proxyHost
+     * @param string $proxyHost
      */
     public function setProxyHost($proxyHost)
     {
@@ -247,7 +248,7 @@ class MPay24Config
     }
 
     /**
-     * @return null
+     * @return int|string
      */
     public function getProxyPort()
     {
@@ -255,7 +256,9 @@ class MPay24Config
     }
 
     /**
-     * @param null $proxyPort
+     * @param int $proxyPort
+     *
+     * @throws InvalidArgumentException
      * @throws Exception
      */
     public function setProxyPort($proxyPort)
@@ -272,7 +275,7 @@ class MPay24Config
     }
 
     /**
-     * @return null
+     * @return string
      */
     public function getProxyUser()
     {
@@ -280,7 +283,7 @@ class MPay24Config
     }
 
     /**
-     * @param null $proxyUser
+     * @param string $proxyUser
      */
     public function setProxyUser($proxyUser)
     {
@@ -288,7 +291,7 @@ class MPay24Config
     }
 
     /**
-     * @return null
+     * @return string
      */
     public function getProxyPass()
     {
@@ -296,7 +299,7 @@ class MPay24Config
     }
 
     /**
-     * @param null $proxyPass
+     * @param string $proxyPass
      */
     public function setProxyPass($proxyPass)
     {
@@ -316,7 +319,7 @@ class MPay24Config
      */
     public function setVerifyPeer($verifyPeer)
     {
-        $this->verifyPeer = (bool) $verifyPeer;
+        $this->verifyPeer = (bool)$verifyPeer;
     }
 
     /**
@@ -332,7 +335,7 @@ class MPay24Config
      */
     public function setEnableCurlLog($enableCurlLog)
     {
-        $this->enableCurlLog = (bool) $enableCurlLog;
+        $this->enableCurlLog = (bool)$enableCurlLog;
     }
 
     /**
@@ -346,7 +349,7 @@ class MPay24Config
     /**
      * @param string $spid
      */
-    public function setSPID($spid)
+    public function setSpid($spid)
     {
         $this->spid = $spid;
     }
@@ -380,7 +383,7 @@ class MPay24Config
      */
     public function useFlexLinkTestSystem($flexLinkTestSystem)
     {
-        $this->flexLinkTestSystem = (bool) $flexLinkTestSystem;
+        $this->flexLinkTestSystem = (bool)$flexLinkTestSystem;
     }
 
     /**

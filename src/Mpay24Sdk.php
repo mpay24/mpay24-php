@@ -1,27 +1,29 @@
 <?php
 
-namespace mPay24;
+namespace Mpay24;
 
 use DOMDocument;
 use DOMNode;
-
-use mPay24\Responses\PaymentResponse;
-use mPay24\Responses\PaymentTokenResponse;
-use mPay24\Responses\ManagePaymentResponse;
-use mPay24\Responses\TransactionStatusResponse;
-use mPay24\Responses\ListPaymentMethodsResponse;
+use Mpay24\Responses\ListPaymentMethodsResponse;
+use Mpay24\Responses\ManagePaymentResponse;
+use Mpay24\Responses\PaymentResponse;
+use Mpay24\Responses\PaymentTokenResponse;
+use Mpay24\Responses\TransactionStatusResponse;
 
 /**
- * Main mPAY24 PHP APIs Class.
+ * Main Mpay24 PHP APIs Class.
  *
- * The MPAY24SDK class provides the communication functioanallity. It hold's all the sensitive data (merchant ID, SOAP password, etc) and
- * build the SOAP request, sent to mPAY24.
+ * The Mpay24Sdk class provides the communication functioanallity.
+ * It hold's all the sensitive data (merchant ID, SOAP password, etc) and build the SOAP request, sent to mPAY24.
  *
- * @author              mPAY24 GmbH <support@mpay24.com>
- * @filesource          MPAY24SDK.php
- * @license MIT
+ * Class Mpay24Sdk
+ * @package    Mpay24
+ *
+ * @author     mPAY24 GmbH <support@mpay24.com>
+ * @filesource Mpay24SDK.php
+ * @license    MIT
  */
-class MPAY24SDK
+class Mpay24Sdk
 {
     /**
      * An error message, that will be displayed to the user in case you are using the LIVE system
@@ -57,10 +59,10 @@ class MPAY24SDK
     const VERSION = "4.0.0";
 
     /**
-    * Minimum PHP version Required
-    *
-    * @const string
-    */
+     * Minimum PHP version Required
+     *
+     * @const string
+     */
     const MIN_PHP_VERSION = "5.3.3";
 
     /**
@@ -78,56 +80,55 @@ class MPAY24SDK
     private $response = "";
 
     /**
-     * @var MPay24Config
+     * @var Mpay24Config
      */
     protected $config;
 
-    public function __construct( MPay24Config &$config = null )
+    public function __construct(Mpay24Config &$config = null)
     {
-        if ( is_null($config) ){
-            $config = new MPay24Config();
+        if (is_null($config)) {
+            $config = new Mpay24Config();
         }
 
         $this->config = $config;
     }
 
-	/**
-	 * @param bool $checkDomExtension
-	 * @param bool $checkCurlExtension
-	 * @param bool $checkMCryptExtension
-	 */
-	public function checkRequirements( $checkDomExtension = true, $checkCurlExtension = true, $checkMCryptExtension = true )
-	{
-		if ( version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true
-		|| ( $checkCurlExtension   && !in_array('curl',   get_loaded_extensions()) )
-		|| ( $checkDomExtension    && !in_array('dom',    get_loaded_extensions()) )
-		|| ( $checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()) )
-		){
-			$this->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
+    /**
+     * @param bool $checkDomExtension
+     * @param bool $checkCurlExtension
+     * @param bool $checkMCryptExtension
+     */
+    public function checkRequirements(
+        $checkDomExtension = true,
+        $checkCurlExtension = true,
+        $checkMCryptExtension = true
+    ) {
+        if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true
+            || ($checkCurlExtension && !in_array('curl', get_loaded_extensions()))
+            || ($checkDomExtension && !in_array('dom', get_loaded_extensions()))
+            || ($checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()))
+        ) {
+            $this->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
-			if ( version_compare(phpversion(),  self::MIN_PHP_VERSION, '<') === true )
-			{
-				$this->printMsg('You need PHP version ' . self::MIN_PHP_VERSION . ' or newer!<br>');
-			}
+            if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true) {
+                $this->printMsg('You need PHP version ' . self::MIN_PHP_VERSION . ' or newer!<br>');
+            }
 
-			if ( $checkCurlExtension && !in_array('curl', get_loaded_extensions()) )
-			{
-				$this->printMsg("You need cURL extension!<br>");
-			}
+            if ($checkCurlExtension && !in_array('curl', get_loaded_extensions())) {
+                $this->printMsg("You need cURL extension!<br>");
+            }
 
-			if ( $checkDomExtension && !in_array('dom', get_loaded_extensions()) )
-			{
-				$this->printMsg("You need DOM extension!<br>");
-			}
+            if ($checkDomExtension && !in_array('dom', get_loaded_extensions())) {
+                $this->printMsg("You need DOM extension!<br>");
+            }
 
-			if ( $checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()) )
-			{
-				$this->printMsg("You need mcrypt extension!<br>");
-			}
+            if ($checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions())) {
+                $this->printMsg("You need mcrypt extension!<br>");
+            }
 
-			$this->dieWithMsg("Please load the required extensions!");
-		}
-	}
+            $this->dieWithMsg("Please load the required extensions!");
+        }
+    }
 
     /**
      * Set the basic (mandatory) settings for the requests
@@ -136,15 +137,16 @@ class MPAY24SDK
      *          The SPID of your account, supported by mPAY24
      * @param string $password
      *          The flexLINK password, supported by mPAY24
-     * @param bool $test
+     * @param bool   $test
      *          TRUE - when you want to use the TEST system
      *
      *          FALSE - when you want to use the LIVE system
+     *
      * @deprecated Use Configuration Object instated
      */
-    public function configureFlexLINK( $spid, $password, $test)
+    public function configureFlexLINK($spid, $password, $test)
     {
-        $this->config->setSPID($spid);
+        $this->config->setSpid($spid);
         $this->config->setFlexLinkPassword($password);
         $this->config->useFlexLinkTestSystem($test);
     }
@@ -156,7 +158,7 @@ class MPAY24SDK
      */
     public function getMerchantID()
     {
-        return $this->config->getMerchantID();
+        return $this->config->getMerchantId();
     }
 
     /**
@@ -164,7 +166,7 @@ class MPAY24SDK
      *
      * @return string
      */
-    public function getSPID()
+    public function getSpid()
     {
         return $this->config->getSPID();
     }
@@ -174,7 +176,7 @@ class MPAY24SDK
      *
      * @return string
      */
-    public function getFlexLINKSystem()
+    public function getFlexLinkSystem()
     {
         return $this->config->isFlexLinkTestSystem() ? 'test' : 'www';
     }
@@ -224,9 +226,9 @@ class MPAY24SDK
      *
      * @param bool $debug TRUE if is turned on, otherwise FALSE
      */
-    public function setDebug( $debug )
+    public function setDebug($debug)
     {
-        $this->config->setDebug( (bool) $debug);
+        $this->config->setDebug((bool)$debug);
     }
 
     /**
@@ -240,21 +242,21 @@ class MPAY24SDK
     }
 
     /**
-     * Return MPay24 Log Path
+     * Return mPAY24 Log Path
      *
      * @return string
      */
-    public function getMPay24LogPath()
+    public function getMpay24LogPath()
     {
         return $this->config->getLogPath() . '/' . $this->config->getLogFile();
     }
 
     /**
-     * Return MPay24 Curl Log Path
+     * Return mPAY24 Curl Log Path
      *
      * @return string
      */
-    public function getMPay24CurlLogPath()
+    public function getMpay24CurlLogPath()
     {
         return $this->config->getLogPath() . '/' . $this->config->getCurlLogFile();
     }
@@ -263,11 +265,12 @@ class MPAY24SDK
      * In case the test system is used, show die with the real error message, otherwise, show the defined constant error LIVE_ERROR_MSG
      *
      * @param string $msg The message, which is shown to the user
+     *
      * @throws \Exception
      */
-    public function dieWithMsg( $msg )
+    public function dieWithMsg($msg)
     {
-        if ( $this->config->isTestSystem() ) {
+        if ($this->config->isTestSystem()) {
             throw new \Exception($msg);
         } else {
             throw new \Exception();
@@ -279,9 +282,9 @@ class MPAY24SDK
      *
      * @param string $msg The message, which is shown to the user
      */
-    public function printMsg( $msg )
+    public function printMsg($msg)
     {
-        if ( $this->config->isTestSystem() ) {
+        if ($this->config->isTestSystem()) {
             print($msg);
         } else {
             print(self::LIVE_ERROR_MSG);
@@ -293,9 +296,9 @@ class MPAY24SDK
      */
     public function permissionError()
     {
-        $errors = error_get_last();
+        $errors  = error_get_last();
         $message = $errors['message'];
-        $path = substr(
+        $path    = substr(
             $message,
             strpos($message, 'fopen(') + 6,
             strpos($message, ')') - (strpos($message, 'fopen(') + 6)
@@ -308,16 +311,16 @@ class MPAY24SDK
      *
      * @return ListPaymentMethodsResponse
      */
-    public function ListPaymentMethods()
+    public function listPaymentMethods()
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ListPaymentMethods');
         $operation = $body->appendChild($operation);
 
-        $xmlMerchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $xmlMerchantID = $operation->appendChild($xmlMerchantID);
+        $xmlMerchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($xmlMerchantID);
 
         $this->request = $xml->saveXML();
 
@@ -334,21 +337,22 @@ class MPAY24SDK
      * is (will be) not saved in the shop
      *
      * @param string $mdxi The mdxi xml, which contains the shopping cart
+     *
      * @return PaymentResponse
      */
-    public function SelectPayment( $mdxi )
+    public function selectPayment($mdxi)
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:SelectPayment');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $merchantID = $operation->appendChild($merchantID);
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
 
         $xmlMDXI = $xml->createElement('mdxi', htmlspecialchars($mdxi));
-        $xmlMDXI = $operation->appendChild($xmlMDXI);
+        $operation->appendChild($xmlMDXI);
 
         $this->request = $xml->saveXML();
 
@@ -362,27 +366,28 @@ class MPAY24SDK
     /**
      * Start a secure payment using the mPAY24 Tokenizer.
      *
-     * @param string    $pType The payment type used for the tokenization (currently supported 'CC')
-     * @param array     $additional
+     * @param string $pType The payment type used for the tokenization (currently supported 'CC')
+     * @param array  $additional
+     *
      * @return PaymentTokenResponse
      */
-    public function CreateTokenPayment( $pType, array $additional = [] )
+    public function createTokenPayment($pType, array $additional = [])
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:CreatePaymentToken');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $merchantID = $operation->appendChild($merchantID);
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
 
         $pType = $xml->createElement('pType', $pType);
-        $pType = $operation->appendChild($pType);
+        $operation->appendChild($pType);
 
-        foreach ( $additional as $k => $v ) {
+        foreach ($additional as $k => $v) {
             $buf = $xml->createElement($k, $v);
-            $buf = $operation->appendChild($buf);
+            $operation->appendChild($buf);
         }
 
         $this->request = $xml->saveXML();
@@ -397,39 +402,40 @@ class MPAY24SDK
     /**
      * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
      *
-     * @param $type
+     * @param        $type
      * @param string $tid The TID used for the transaction
-     * @param array $payment
-     * @param array $additional
+     * @param array  $payment
+     * @param array  $additional
+     *
      * @return PaymentResponse
      */
-    public function AcceptPayment( $type, $tid, $payment = [], $additional = [] )
+    public function acceptPayment($type, $tid, $payment = [], $additional = [])
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElement('etp:AcceptPayment');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $merchantID = $operation->appendChild($merchantID);
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
 
         $xmlTID = $xml->createElement('tid', $tid);
-        $xmlTID = $operation->appendChild($xmlTID);
+        $operation->appendChild($xmlTID);
 
         $xmlPType = $xml->createElement('pType', $type);
-        $xmlPType = $operation->appendChild($xmlPType);
+        $operation->appendChild($xmlPType);
 
         $xmlPayment = $xml->createElement('payment');
         $xmlPayment = $operation->appendChild($xmlPayment);
-        $xmlPayment->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:Payment'.$type);
+        $xmlPayment->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:Payment' . $type);
 
-        foreach ( $payment as $k => $v ) {
+        foreach ($payment as $k => $v) {
             $buf = $xml->createElement($k, $v);
-            $buf = $xmlPayment->appendChild($buf);
+            $xmlPayment->appendChild($buf);
         }
 
-	    $this->appendArray($operation, $additional, $xml);
+        $this->appendArray($operation, $additional, $xml);
 
         $this->request = $xml->saveXML();
 
@@ -443,18 +449,19 @@ class MPAY24SDK
      * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
      *
      * @param string $requestString The callback request to mPAY24
-     * @param string $paymentType The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+     * @param string $paymentType   The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+     *
      * @return PaymentResponse
      */
-    public function ManualCallback( $requestString, $paymentType )
+    public function manualCallback($requestString, $paymentType)
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElement('etp:ManualCallback');
         $operation = $body->appendChild($operation);
 
-        $requestXML = new DOMDocument("1.0", "UTF-8");
+        $requestXML               = new DOMDocument("1.0", "UTF-8");
         $requestXML->formatOutput = true;
         $requestXML->loadXML($requestString);
 
@@ -485,30 +492,31 @@ class MPAY24SDK
     /**
      * Clear a transaction with an amount
      *
-     * @param int $mPAYTid The mPAY24 transaction ID
-     * @param int $amount The amount to be cleared multiplay by 100
+     * @param int    $mPAYTid  The mPAY24 transaction ID
+     * @param int    $amount   The amount to be cleared multiplay by 100
      * @param string $currency 3-digit ISO currency code: EUR, USD, etc
+     *
      * @return ManagePaymentResponse
      */
-    public function ManualClear( $mPAYTid, $amount, $currency )
+    public function manualClear($mPAYTid, $amount, $currency)
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualClear');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $merchantID = $operation->appendChild($merchantID);
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
 
         $clearingDetails = $xml->createElement('clearingDetails');
         $clearingDetails = $operation->appendChild($clearingDetails);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $xmlMPayTid = $clearingDetails->appendChild($xmlMPayTid);
+        $clearingDetails->appendChild($xmlMPayTid);
 
         $price = $xml->createElement('amount', $amount);
-        $price = $clearingDetails->appendChild($price);
+        $clearingDetails->appendChild($price);
 
         $this->request = $xml->saveXML();
 
@@ -522,28 +530,29 @@ class MPAY24SDK
     /**
      * Credit a transaction with an amount
      *
-     * @param int $mPAYTid The mPAY24 transaction ID
-     * @param int $amount The amount to be credited multiplay by 100
+     * @param int    $mPAYTid  The mPAY24 transaction ID
+     * @param int    $amount   The amount to be credited multiplay by 100
      * @param string $currency 3-digit ISO currency code: EUR, USD, etc
      * @param string $customer The name of the customer, who has paid
+     *
      * @return ManagePaymentResponse
      */
-    public function ManualCredit( $mPAYTid, $amount, $currency, $customer )
+    public function ManualCredit($mPAYTid, $amount, $currency, $customer)
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualCredit');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $merchantID = $operation->appendChild($merchantID);
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $xmlMPayTid = $operation->appendChild($xmlMPayTid);
+        $operation->appendChild($xmlMPayTid);
 
         $price = $xml->createElement('amount', $amount);
-        $price = $operation->appendChild($price);
+        $operation->appendChild($price);
 
         $this->request = $xml->saveXML();
 
@@ -558,21 +567,22 @@ class MPAY24SDK
      * Cancel a transaction
      *
      * @param int $mPAYTid The mPAY24 transaction ID for the transaction you want to cancel
+     *
      * @return ManagePaymentResponse
      */
-    public function ManualReverse($mPAYTid)
+    public function manualReverse($mPAYTid)
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:ManualReverse');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $merchantID = $operation->appendChild($merchantID);
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
 
         $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $xmlMPayTid = $operation->appendChild($xmlMPayTid);
+        $operation->appendChild($xmlMPayTid);
 
         $this->request = $xml->saveXML();
 
@@ -586,27 +596,28 @@ class MPAY24SDK
     /**
      * Get all the information for a transaction, supported by mPAY24
      *
-     * @param int $mPAYTid The mPAY24 transaction ID
-     * @param string $tid The transaction ID from your shop
+     * @param int    $mpay24tid The mPAY24 transaction ID
+     * @param string $tid       The transaction ID from your shop
+     *
      * @return TransactionStatusResponse
      */
-    public function TransactionStatus( $mPAYTid = null, $tid = null )
+    public function transactionStatus($mpay24tid = null, $tid = null)
     {
-        $xml = $this->buildEnvelope();
+        $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
 
         $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:TransactionStatus');
         $operation = $body->appendChild($operation);
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantID());
-        $merchantID = $operation->appendChild($merchantID);
+        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
+        $operation->appendChild($merchantID);
 
-        if ($mPAYTid) {
-            $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-            $xmlMPayTid = $operation->appendChild($xmlMPayTid);
+        if ($mpay24tid) {
+            $xmlMPayTid = $xml->createElement('mpayTID', $mpay24tid);
+            $operation->appendChild($xmlMPayTid);
         } else {
             $xmlTid = $xml->createElement('tid', $tid);
-            $xmlTid = $operation->appendChild($xmlTid);
+            $operation->appendChild($xmlTid);
         }
 
         $this->request = $xml->saveXML();
@@ -622,13 +633,14 @@ class MPAY24SDK
      * Encoded the parameters (AES256-CBC) for the pay link and return them
      *
      * @param array $params The parameters, which are going to be posted to mPAY24
+     *
      * @return string
      */
-    public function flexLINK( $params )
+    public function flexLink($params)
     {
         $paramsString = "";
 
-        foreach ( $params as $key => $value ) {
+        foreach ($params as $key => $value) {
             $paramsString .= "$key=$value&";
         }
 
@@ -644,31 +656,23 @@ class MPAY24SDK
      */
     private function buildEnvelope()
     {
-        $soap_xml = new DOMDocument("1.0", "UTF-8");
+        $soap_xml               = new DOMDocument("1.0", "UTF-8");
         $soap_xml->formatOutput = true;
 
         $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Envelope');
         $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
-        $envelope->setAttributeNS(
-            'http://www.w3.org/2000/xmlns/',
-            'xmlns:etp',
-            'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl'
-        );
-        $envelope->setAttributeNS(
-            'http://www.w3.org/2000/xmlns/',
-            'xmlns:xsi',
-            'http://www.w3.org/2001/XMLSchema-instance'
-        );
+        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp', 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
+        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $envelope = $soap_xml->appendChild($envelope);
 
         $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'soapenv:Body');
-        $body = $envelope->appendChild($body);
+        $envelope->appendChild($body);
 
         return $soap_xml;
     }
 
     /**
-     * Create a curl request and send the cretaed SOAP XML
+     * Create a curl request and send the created SOAP XML
      */
     private function send()
     {
@@ -677,13 +681,14 @@ class MPAY24SDK
         $ch = curl_init($this->getEtpURL());
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_USERPWD, 'u' . $this->config->getMerchantID() . ':' . $this->config->getSoapPassword());
+        curl_setopt($ch, CURLOPT_USERPWD,
+            'u' . $this->config->getMerchantId() . ':' . $this->config->getSoapPassword());
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->request);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-        if ( $this->config->isEnableCurlLog() ) {
-            $fh = fopen($this->getMPay24CurlLogPath(), 'a+') or $this->permissionError();
+        if ($this->config->isEnableCurlLog()) {
+            $fh = fopen($this->getMpay24CurlLogPath(), 'a+') or $this->permissionError();
 
             curl_setopt($ch, CURLOPT_VERBOSE, 1);
             curl_setopt($ch, CURLOPT_STDERR, $fh);
@@ -692,17 +697,15 @@ class MPAY24SDK
         try {
             curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/bin/cacert.pem');
 
-            if ($this->config->getProxyHost())
-            {
+            if ($this->config->getProxyHost()) {
                 curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());
 
-                if ($this->config->getProxyUser())
-                {
-                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
+                if ($this->config->getProxyUser()) {
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD,
+                        $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
                 }
 
-                if ($this->config->isVerifyPeer() !== true)
-                {
+                if ($this->config->isVerifyPeer() !== true) {
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->config->isVerifyPeer());
                 }
             }
@@ -713,15 +716,12 @@ class MPAY24SDK
             if ($this->config->isEnableCurlLog()) {
                 fclose($fh);
             }
-        } catch ( \Exception $e ) {
-            if ( $this->config->isTestSystem() )
-            {
-                $dieMSG = "Your request couldn't be sent because of the following error:"."\n".curl_error(
+        } catch (\Exception $e) {
+            if ($this->config->isTestSystem()) {
+                $dieMSG = "Your request couldn't be sent because of the following error:" . "\n" . curl_error(
                         $ch
-                    )."\n".$e->getMessage().' in '.$e->getFile().', line: '.$e->getLine().'.';
-            }
-            else
-            {
+                    ) . "\n" . $e->getMessage() . ' in ' . $e->getFile() . ', line: ' . $e->getLine() . '.';
+            } else {
                 $dieMSG = self::LIVE_ERROR_MSG;
             }
 
@@ -736,70 +736,66 @@ class MPAY24SDK
      *
      * @param string $pass The password, used for the encoding
      * @param string $data The data, that should be encoded
+     *
      * @return string
      */
-    private function ssl_encrypt( $pass, $data )
+    private function ssl_encrypt($pass, $data)
     {
         // Set a random salt
         $salt = substr(md5(mt_rand(), true), 8);
 
         $block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-        $pad = $block - (strlen($data) % $block);
+        $pad   = $block - (strlen($data) % $block);
 
-        $data = $data.str_repeat(chr($pad), $pad);
+        $data = $data . str_repeat(chr($pad), $pad);
 
         // Setup encryption parameters
         $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, "", MCRYPT_MODE_CBC, "");
 
         $key_len = mcrypt_enc_get_key_size($td);
-        $iv_len = mcrypt_enc_get_iv_size($td);
+        $iv_len  = mcrypt_enc_get_iv_size($td);
 
         $total_len = $key_len + $iv_len;
-        $salted = '';
-        $dx = '';
+        $salted    = '';
+        $dx        = '';
 
         // Salt the key and iv
-        while ( strlen($salted) < $total_len ) {
-            $dx = md5($dx.$pass.$salt, true);
+        while (strlen($salted) < $total_len) {
+            $dx = md5($dx . $pass . $salt, true);
             $salted .= $dx;
         }
 
         $key = substr($salted, 0, $key_len);
-        $iv = substr($salted, $key_len, $iv_len);
+        $iv  = substr($salted, $key_len, $iv_len);
 
         mcrypt_generic_init($td, $key, $iv);
         $encrypted_data = mcrypt_generic($td, $data);
         mcrypt_generic_deinit($td);
         mcrypt_module_close($td);
 
-        return chunk_split(array_shift(unpack('H*', 'Salted__'.$salt.$encrypted_data)), 32, "\r\n");
+        return chunk_split(array_shift(unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
     }
 
-	/**
-	 * @param DOMNode     $parent
-	 * @param array       $list
-	 * @param DOMDocument $document
-	 */
-	protected function appendArray( DOMNode &$parent, array &$list, &$document = null )
-	{
-		if (is_null($document))
-		{
-			$document = new DOMDocument();
-		}
+    /**
+     * @param DOMNode     $parent
+     * @param array       $list
+     * @param DOMDocument $document
+     */
+    protected function appendArray(DOMNode &$parent, array &$list, &$document = null)
+    {
+        if (is_null($document)) {
+            $document = new DOMDocument();
+        }
 
-		foreach ($list as $name => $value)
-		{
-			if (is_array($value))
-			{
-				$element = $document->createElement($name);
-				$this->appendArray($element, $value, $document);
-				$element = $parent->appendChild($element);
-			}
-			else
-			{
-				$element = $document->createElement($name, $value);
-				$element = $parent->appendChild($element);
-			}
-		}
-	}
+        foreach ($list as $name => $value) {
+            if (is_array($value)) {
+                $element = $document->createElement($name);
+                $this->appendArray($element, $value, $document);
+                $parent->appendChild($element);
+            } else {
+                $element = $document->createElement($name, $value);
+                $parent->appendChild($element);
+            }
+        }
+    }
 }
