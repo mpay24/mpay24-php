@@ -24,4 +24,4 @@ echo "Status: " . $result->getStatus();
 echo "<br>";
 echo "ReturnCode: " . $result->getReturnCode();
 echo "<br>";
-echo "mPAYTID: " . $result->getMpay24Tid();
+echo "mPAYTID: " . $result->getMpayTid();
