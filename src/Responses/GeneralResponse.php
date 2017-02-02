@@ -53,8 +53,11 @@ class GeneralResponse
                 $this->responseAsDom->loadXML($response);
             } catch (ErrorException $e) {
                 $this->status = 'ERROR';
-                // TODO: handel the ErrorException e.g. if user authentication failed, and put the into returnCode
-                $this->returnCode = 'ERROR';
+                $this->returnCode = 'Unknown Error';
+
+                if (preg_match('<title>401 Unauthorized</title>',$response)) {
+                    $this->returnCode = "401 Unauthorized: check your merchant ID and password";
+                }
 
                 return;
             }
