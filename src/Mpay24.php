@@ -167,8 +167,8 @@ class Mpay24
     /**
      * Capture an amount of an authorized transaction
      *
-     * @param string $tid    The transaction ID, for the transaction you want to clear
-     * @param int    $amount The amount you want to clear multiply by 100
+     * @param string $mpayTid The transaction ID, for the transaction you want to clear
+     * @param int    $amount  The amount you want to clear multiply by 100
      *
      * @return Responses\ManagePaymentResponse
      */
@@ -188,8 +188,8 @@ class Mpay24
     /**
      * Refund an amount of a captured transaction
      *
-     * @param string $mpaytid    The transaction ID, for the transaction you want to credit
-     * @param int    $amount The amount you want to credit multiply by 100
+     * @param string $mpayTid The transaction ID, for the transaction you want to credit
+     * @param int    $amount  The amount you want to credit multiply by 100
      *
      * @return Responses\ManagePaymentResponse
      */
@@ -199,7 +199,7 @@ class Mpay24
 
         $this->validateAmount($amount);
 
-        $creditAmountResult = $this->mpay24Sdk->ManualCredit($mpayTid, $amount, $currency, $customer);
+        $creditAmountResult = $this->mpay24Sdk->ManualCredit($mpayTid, $amount);
 
         $this->recordedLastMessageExchange('RefundAmount');
 
@@ -209,7 +209,7 @@ class Mpay24
     /**
      * Cancel a authorized transaction
      *
-     * @param string $tid The transaction ID, for the transaction you want to cancel
+     * @param string $mpayTid The transaction ID, for the transaction you want to cancel
      *
      * @return Responses\ManagePaymentResponse
      */
@@ -290,7 +290,7 @@ class Mpay24
     protected function validateTid($tid, $mpayTid)
     {
         if (!$mpayTid) {
-            $this->mpay24Sdk->dieWithMsg("The transaction '$tid' you send us could not assigned to a unique mPAYTID and may does not exist in the mPAY24 data base!");
+            $this->mpay24Sdk->dieWithMsg("The transaction '$tid' you send us could not assigned to a unique mPAYTID and maybe does not exist in the mPAY24 data base!");
         }
     }
 
