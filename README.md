@@ -95,16 +95,15 @@ header('Location: '.$paymentPageURL);
 ```
 
 #### Get current transaction status
-With the TID number that we received by the merchant request
+With the unique mPAYTID number that we send back in the response messages
+```php
+$mpay24->paymentStatus("12345");
+```
 
+With the TID that we received by the merchant request
 *If you don't have unique TID you will only get the last transaction with this number*
 ```php
 $mpay24->transactionStatusByTID("123 TID");
-```
-
-With the unique mPAYTID number that we send back in the response messages
-```php
-$mpay24->transactionStatusByMpayTid("12345");
 ```
 
 ### Prerequisites

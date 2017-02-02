@@ -118,7 +118,7 @@ class Mpay24
     }
 
     /**
-     * Get the status for a transaction by the unique mPAYTID number
+     * Get the status for a transaction by the unique mPAYTID
      *
      * @param string $mpayTid
      *
@@ -130,7 +130,7 @@ class Mpay24
     }
 
     /**
-     * Get the status for the last transaction with the given merchant TID number
+     * Get the status for the last transaction with the given merchant TID
      *
      * @param string $tid
      *
