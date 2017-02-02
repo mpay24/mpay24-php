@@ -55,7 +55,7 @@ class GeneralResponse
                 $this->status = 'ERROR';
                 $this->returnCode = 'Unknown Error';
 
-                if (preg_match('<title>401 Unauthorized</title>',$response)) {
+                if (preg_match('/<title>401 Unauthorized<\/title>/',$response) == 1) {
                     $this->returnCode = "401 Unauthorized: check your merchant ID and password";
                 }
 
