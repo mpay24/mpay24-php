@@ -533,11 +533,10 @@ class Mpay24Sdk
      * @param int    $mPAYTid  The mPAY24 transaction ID
      * @param int    $amount   The amount to be credited multiplay by 100
      * @param string $currency 3-digit ISO currency code: EUR, USD, etc
-     * @param string $customer The name of the customer, who has paid
      *
      * @return ManagePaymentResponse
      */
-    public function ManualCredit($mPAYTid, $amount, $currency, $customer)
+    public function ManualCredit($mPAYTid, $amount)
     {
         $xml  = $this->buildEnvelope();
         $body = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);

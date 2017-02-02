@@ -1,9 +1,9 @@
 <?php
 require("../bootstrap.php");
 
-use Mpay24\Mpay24Soap;
+use Mpay24\Mpay24;
 
-$mpay24 = new Mpay24Soap();
+$mpay24 = new Mpay24();
 
 $payment = array(
     "amount"   => "100",
@@ -19,7 +19,7 @@ $additional = array(
 
 $type = "PROFILE";
 
-$result = $mpay24->acceptPayment($type, "123 TID", $payment, $additional);
+$result = $mpay24->payment($type, "123 TID", $payment, $additional);
 echo "Status: " . $result->getStatus();
 echo "<br>";
 echo "ReturnCode: " . $result->getReturnCode();

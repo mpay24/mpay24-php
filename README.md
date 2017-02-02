@@ -37,13 +37,14 @@ require_once('bootstrap.php');
 
 You can use the config.php file in the root directory
 
-You also can handover the parameters while crating the Mpay24Soap Object
+You also can handover the parameters while crating the Mpay24 Object
 
 ```php
 require_once("../bootstrap.php");
-use Mpay24\Mpay24Soap;
+use Mpay24\Mpay24;
+use Mpay24\Mpay24Order; //if you are using paymentPage
 
-$mpay24 = new Mpay24Soap('9****', '*********');
+$mpay24 = new Mpay24('9****', '*********');
 
 ```
 
@@ -52,7 +53,7 @@ If you want to have a more flexible approach you can create a [configuration obj
 #### Create a token for seamless creditcard payments
 
 ```php
-$tokenizer = $mpay24->createPaymentToken("CC")->getPaymentResponse();
+$tokenizer = $mpay24->token("CC")->getPaymentResponse();
 ```
 
 #### Create a payment
@@ -64,7 +65,7 @@ $payment = array(
   "currency" => "EUR",
   "token" => $_POST['token']
 );
-$result = $mpay24->acceptPayment("TOKEN", "123 TID", $payment);
+$result = $mpay24->payment("TOKEN", "123 TID", $payment);
 ```
 Paypal payment
 ```php
@@ -72,23 +73,25 @@ $payment = array(
   "amount" => "100",
   "currency" => "EUR"
 );
-$result = $mpay24->acceptPayment("PAYPAL", "123 TID", $payment);
+$result = $mpay24->payment("PAYPAL", "123 TID", $payment);
 ```
 
-#### Create a checkout
+#### Create a payment page
 
-Initialize a minimum paypage
+Initialize a minimum payment page
 ```php
-$mdxi = new ORDER();
+use Mpay24\Mpay24Order;
+
+$mdxi = new Mpay24Order();
 $mdxi->Order->Tid = "123";
 $mdxi->Order->Price = "1.00";
 $mdxi->Order->URL->Success      = 'http://yourpage.com/success';
 $mdxi->Order->URL->Error        = 'http://yourpage.com/error';
 $mdxi->Order->URL->Confirmation = 'http://yourpage.com/confirmation';
 
-$checkoutURL = $mpay24->selectPayment($mdxi)->location; // redirect location to the payment page
+$paymentPageURL = $mpay24->paymentPage($mdxi)->location; // redirect location to the payment page
 
-header('Location: '.$checkoutURL);
+header('Location: '.$paymentPageURL);
 ```
 
 #### Get current transaction status
@@ -101,7 +104,7 @@ $mpay24->transactionStatusByTID("123 TID");
 
 With the unique mPAYTID number that we send back in the response messages
 ```php
-$mpay24->transactionStatusByMpay24Tid("12345");
+$mpay24->transactionStatusByMpayTid("12345");
 ```
 
 ### Prerequisites
