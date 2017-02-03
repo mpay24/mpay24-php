@@ -103,7 +103,7 @@ $mpay24->paymentStatus("12345");
 With the TID that we received by the merchant request
 *If you don't have unique TID you will only get the last transaction with this number*
 ```php
-$mpay24->transactionStatusByTID("123 TID");
+$mpay24->paymentStatusByTID("123 TID");
 ```
 
 ### Prerequisites
