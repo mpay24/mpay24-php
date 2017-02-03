@@ -3,7 +3,7 @@
 namespace Mpay24\Responses;
 
 /**
- * The ListPaymentMethodsResponse class contains a generalResponse object and all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)
+ * The ListPaymentMethodsResponse class contains all the needed informarion for the active payment mothods (payment methods count, payment types, brands and descriptions)
  *
  * Class ListPaymentMethodsResponse
  * @package    Mpay24\Responses
@@ -12,7 +12,7 @@ namespace Mpay24\Responses;
  * @filesource ListPaymentMethodsResponse.php
  * @license    MIT
  */
-class ListPaymentMethodsResponse extends GeneralResponse
+class ListPaymentMethodsResponse extends AbstractResponse
 {
     /**
      * The count of the payment methods, which are activated by mPAY24
@@ -61,17 +61,7 @@ class ListPaymentMethodsResponse extends GeneralResponse
 
         if ($this->hasNoError()) {
 
-            if ($this->responseAsDom->getElementsByTagName('all')->length != 0) {
-
-                $this->all = $this->responseAsDom->getElementsByTagName('all')->item(0)->nodeValue;
-
-                for ($i = 0; $i < $this->all; $i++) {
-                    $this->pTypes[$i]       = $this->responseAsDom->getElementsByTagName('pType')->item($i)->nodeValue;
-                    $this->brands[$i]       = $this->responseAsDom->getElementsByTagName('brand')->item($i)->nodeValue;
-                    $this->descriptions[$i] = $this->responseAsDom->getElementsByTagName('description')->item($i)->nodeValue;
-                    $this->pMethIds[$i]     = $this->responseAsDom->getElementsByTagName('paymentMethod')->item($i)->getAttribute("id");
-                }
-            }
+            $this->parseResponse($this->getBody('ListPaymentMethodsResponse'));
         }
     }
 
@@ -175,5 +165,28 @@ class ListPaymentMethodsResponse extends GeneralResponse
     public function getPMethID($i)
     {
         return $this->pMethIds[$i];
+    }
+
+    /**
+     * Parse the ListPaymentMethodsResponse message and save the data to the corresponding attributes
+     *
+     * @param \DOMElement $body
+     */
+    protected function parseResponse($body)
+    {
+        $this->all = (int)$body->getElementsByTagName('paymentMethod')->length;
+
+        if ($this->all > 0) {
+
+            for ($i = 0; $i < $this->all; $i++) {
+
+                $paymentMethod = $body->getElementsByTagName('paymentMethod')->item($i);
+
+                $this->pMethIds[$i]     = $paymentMethod->getAttribute("id");
+                $this->pTypes[$i]       = $paymentMethod->getElementsByTagName('pType')->item(0)->nodeValue;
+                $this->brands[$i]       = $paymentMethod->getElementsByTagName('brand')->item(0)->nodeValue;
+                $this->descriptions[$i] = $paymentMethod->getElementsByTagName('description')->item(0)->nodeValue;
+            }
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace Mpay24\Responses;
  * @filesource TransactionStatusResponse.php
  * @license    MIT
  */
-class TransactionStatusResponse extends GeneralResponse
+class TransactionStatusResponse extends AbstractResponse
 {
     /**
      * @var int
@@ -34,15 +34,9 @@ class TransactionStatusResponse extends GeneralResponse
     {
         parent::__construct($response);
 
-        if ($this->responseAsDom->getElementsByTagName('name')->length != 0) {
-            $this->paramCount = $this->responseAsDom->getElementsByTagName('name')->length;
+        if ($this->hasNoError()) {
 
-            for ($i = 0; $i < $this->paramCount; $i++) {
-                $name  = $this->responseAsDom->getElementsByTagName('name')->item($i)->nodeValue;
-                $value = $this->responseAsDom->getElementsByTagName('value')->item($i)->nodeValue;
-
-                $this->transaction[$name] = $value;
-            }
+            $this->parseResponse($this->getBody('TransactionStatusResponse'));
         }
     }
 
@@ -80,6 +74,28 @@ class TransactionStatusResponse extends GeneralResponse
             return $this->transaction[$name];
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Parse the TransactionStatusResponse message and save the data to the corresponding attributes
+     *
+     * @param \DOMElement $body
+     */
+    protected function parseResponse($body)
+    {
+        $this->paramCount = $body->getElementsByTagName('parameter')->length;
+
+        if ($this->paramCount > 0) {
+            for ($i = 0; $i < $this->paramCount; $i++) {
+
+                $parameter = $body->getElementsByTagName('parameter')->item($i);
+
+                $name  = $parameter->getElementsByTagName('name')->item(0)->nodeValue;
+                $value = $parameter->getElementsByTagName('value')->item(0)->nodeValue;
+
+                $this->transaction[$name] = $value;
+            }
         }
     }
 }

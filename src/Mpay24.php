@@ -2,10 +2,6 @@
 
 namespace Mpay24;
 
-use Mpay24\Responses\ListPaymentMethodsResponse;
-use Mpay24\Responses\PaymentResponse;
-use Mpay24\Responses\PaymentTokenResponse;
-
 /**
  * The Mpay24 class provides functions, which are used to make a payment or a request to mPAY24
  *
@@ -45,7 +41,7 @@ class Mpay24
     /**
      * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
      *
-     * @return ListPaymentMethodsResponse
+     * @return Responses\ListPaymentMethodsResponse
      */
     public function paymentMethods()
     {
@@ -63,7 +59,7 @@ class Mpay24
      *
      * @param $mdxi
      *
-     * @return PaymentResponse
+     * @return Responses\PaymentResponse
      */
     public function paymentPage($mdxi)
     {
@@ -106,7 +102,7 @@ class Mpay24
      * @param        $payment
      * @param        $additional
      *
-     * @return PaymentResponse
+     * @return Responses\PaymentResponse
      */
     public function payment($paymentType, $tid, $payment, $additional)
     {
@@ -142,12 +138,53 @@ class Mpay24
     }
 
     /**
+     * Get all transaction's states for specified mPAYTID
+     *
+     * @param string $mpayTid
+     *
+     * @return Responses\TransactionHistoryResponse
+     */
+    public function paymentHistory($mpayTid)
+    {
+        $this->integrityCheck();
+
+        $response = $this->mpay24Sdk->transactionHistory($mpayTid);
+
+        $this->recordedLastMessageExchange('TransactionHistory');
+
+        return $response;
+    }
+
+    /**
+     * Get all profile according to the given parameters
+     *
+     * @param string $customerId
+     * @param string $expiredBy
+     * @param int    $begin
+     * @param int    $size
+     *
+     * @return Responses\ListProfilesResponse
+     * @internal param string $mpayTid
+     *
+     */
+    public function listCustomers($customerId = null, $expiredBy = null, $begin = null, $size = null)
+    {
+        $this->integrityCheck();
+
+        $response = $this->mpay24Sdk->listProfiles($customerId, $expiredBy, $begin, $size);
+
+        $this->recordedLastMessageExchange('ListProfiles');
+
+        return $response;
+    }
+
+    /**
      * Return a redirect URL to include in your web page
      *
      * @param string $paymentType The payment type which will be used for the express checkout (CC)
      * @param array  $additional  Additional parameters
      *
-     * @return PaymentTokenResponse
+     * @return Responses\PaymentTokenResponse
      */
     public function token($paymentType, array $additional = [])
     {
@@ -170,7 +207,7 @@ class Mpay24
      * @param string $mpayTid The transaction ID, for the transaction you want to clear
      * @param int    $amount  The amount you want to clear multiply by 100
      *
-     * @return Responses\ManagePaymentResponse
+     * @return Responses\ManualClearResponse
      */
     public function capture($mpayTid, $amount)
     {
@@ -191,7 +228,7 @@ class Mpay24
      * @param string $mpayTid The transaction ID, for the transaction you want to credit
      * @param int    $amount  The amount you want to credit multiply by 100
      *
-     * @return Responses\ManagePaymentResponse
+     * @return Responses\ManualCreditResponse
      */
     public function refund($mpayTid, $amount)
     {
@@ -199,7 +236,7 @@ class Mpay24
 
         $this->validateAmount($amount);
 
-        $creditAmountResult = $this->mpay24Sdk->ManualCredit($mpayTid, $amount);
+        $creditAmountResult = $this->mpay24Sdk->manualCredit($mpayTid, $amount);
 
         $this->recordedLastMessageExchange('RefundAmount');
 
@@ -211,7 +248,7 @@ class Mpay24
      *
      * @param string $mpayTid The transaction ID, for the transaction you want to cancel
      *
-     * @return Responses\ManagePaymentResponse
+     * @return Responses\AbstractTransactionResponse
      */
     public function cancel($mpayTid)
     {
