@@ -41,6 +41,11 @@ abstract class AbstractResponse
     protected $returnCode;
 
     /**
+     * @var \DateTime
+     */
+    protected $createdAt;
+
+    /**
      * Sets the basic values from the response from mPAY24: status and return code
      *
      * @param string $response
@@ -87,6 +92,8 @@ abstract class AbstractResponse
             $this->status     = "ERROR";
             $this->returnCode = "The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!";
         }
+
+        $this->createdAt = new \DateTime('now');
     }
 
     /**
@@ -156,5 +163,13 @@ abstract class AbstractResponse
     protected function setReturnCode($returnCode)
     {
         return $this->returnCode = $returnCode;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

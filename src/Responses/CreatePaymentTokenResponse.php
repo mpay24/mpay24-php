@@ -45,11 +45,6 @@ class CreatePaymentTokenResponse extends AbstractResponse
     protected $location;
 
     /**
-     * @var \DateTime
-     */
-    protected $createdAt;
-
-    /**
      * CreatePaymentTokenResponse constructor.
      *
      * @param string $response
@@ -61,8 +56,6 @@ class CreatePaymentTokenResponse extends AbstractResponse
         if ($this->hasNoError()) {
 
             $this->parseResponse($this->getBody('CreatePaymentTokenResponse'));
-
-            $this->createdAt = new \DateTime('now');
         }
     }
 
@@ -106,22 +99,6 @@ class CreatePaymentTokenResponse extends AbstractResponse
     public function getLocation()
     {
         return $this->location;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param \DateTime $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
     }
 
     /**
