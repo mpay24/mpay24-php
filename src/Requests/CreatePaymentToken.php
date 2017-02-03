@@ -57,9 +57,6 @@ class CreatePaymentToken extends AbstractRequest
      */
     public function setPType($pType)
     {
-        if (preg_match('/^' . self::PAYMENT_TYPES . '$/', $pType) != 1) {
-            throw new InvalidArgumentException();
-        }
         $this->pType = $pType;
     }
 

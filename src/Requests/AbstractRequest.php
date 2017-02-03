@@ -22,8 +22,6 @@ abstract class AbstractRequest
     const SOAP_ENVELOPE = 'http://schemas.xmlsoap.org/soap/envelope/';
     const ETP_NAME_SPACE = 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl';
 
-    const PAYMENT_TYPES = '(CC|MAESTRO|EPS|PB|PSC|CASH-TICKET|ELV|QUICK|GIROPAY|PAYPAL|MPASS|BILLPAY|INVOICE|HP|KLARNA|SOFORT|MASTERPASS|TOKEN|PROFILE)';
-
     /**
      * @var DOMDocument
      */
