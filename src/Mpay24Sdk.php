@@ -2,11 +2,22 @@
 
 namespace Mpay24;
 
-use DOMDocument;
-use DOMNode;
+use Mpay24\Requests\AcceptPayment;
+use Mpay24\Requests\CreatePaymentToken;
+use Mpay24\Requests\ListPaymentMethods;
+use Mpay24\Requests\ListProfiles;
+use Mpay24\Requests\ManualCallback;
+use Mpay24\Requests\ManualClear;
+use Mpay24\Requests\ManualCredit;
+use Mpay24\Requests\ManualReverse;
+use Mpay24\Requests\SelectPayment;
+use Mpay24\Requests\TransactionHistory;
+use Mpay24\Requests\TransactionStatus;
 use Mpay24\Responses\ListPaymentMethodsResponse;
 use Mpay24\Responses\ListProfilesResponse;
-use Mpay24\Responses\ManagePaymentResponse;
+use Mpay24\Responses\ManualClearResponse;
+use Mpay24\Responses\ManualCreditResponse;
+use Mpay24\Responses\ManualReverseResponse;
 use Mpay24\Responses\PaymentResponse;
 use Mpay24\Responses\PaymentTokenResponse;
 use Mpay24\Responses\TransactionHistoryResponse;
@@ -315,13 +326,9 @@ class Mpay24Sdk
      */
     public function listPaymentMethods()
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'ListPaymentMethods');
+        $request = new ListPaymentMethods($this->config->getMerchantId());
 
-        $xmlMerchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($xmlMerchantID);
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
@@ -341,16 +348,11 @@ class Mpay24Sdk
      */
     public function selectPayment($mdxi)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'SelectPayment');
+        $request = new SelectPayment($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setMdxi($mdxi);
 
-        $xmlMDXI = $xml->createElement('mdxi', htmlspecialchars($mdxi));
-        $operation->appendChild($xmlMDXI);
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
@@ -369,21 +371,12 @@ class Mpay24Sdk
      */
     public function createTokenPayment($pType, array $additional = [])
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'CreatePaymentToken');
+        $request = new CreatePaymentToken($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setPType($pType);
+        $request->setAdditional($additional);
 
-        $pType = $xml->createElement('pType', $pType);
-        $operation->appendChild($pType);
-
-        foreach ($additional as $k => $v) {
-            $buf = $xml->createElement($k, $v);
-            $operation->appendChild($buf);
-        }
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
@@ -404,32 +397,17 @@ class Mpay24Sdk
      */
     public function acceptPayment($type, $tid, $payment = [], $additional = [])
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'AcceptPayment');
+        $request = new AcceptPayment($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setPType($type);
+        $request->setTid($tid);
+        $request->setPayment($payment);
+        $request->setAdditional($additional);
 
-        $xmlTID = $xml->createElement('tid', $tid);
-        $operation->appendChild($xmlTID);
-
-        $xmlPType = $xml->createElement('pType', $type);
-        $operation->appendChild($xmlPType);
-
-        $xmlPayment = $xml->createElement('payment');
-        $xmlPayment = $operation->appendChild($xmlPayment);
-        $xmlPayment->setAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'xsi:type', 'etp:Payment' . $type);
-
-        foreach ($payment as $k => $v) {
-            $buf = $xml->createElement($k, $v);
-            $xmlPayment->appendChild($buf);
-        }
-
-        $this->appendArray($operation, $additional, $xml);
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
+
         $result = new PaymentResponse($this->response);
 
         return $result;
@@ -438,36 +416,27 @@ class Mpay24Sdk
     /**
      * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
      *
-     * @param string $requestString The callback request to mPAY24
-     * @param string $paymentType   The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+     * @param int    $mpayTid
+     * @param string $paymentType The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+     *
+     * @param int    $amount
+     * @param bool   $cancel
+     * @param null   $order
      *
      * @return PaymentResponse
+     * @internal param string $requestString The callback request to mPAY24
      */
-    public function manualCallback($requestString, $paymentType)
+    public function manualCallback($mpayTid, $paymentType, $amount = null, $cancel = false, $order = null)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'ManualCallback');
+        $request = new ManualCallback($this->config->getMerchantId());
 
-        $requestXML               = new DOMDocument("1.0", "UTF-8");
-        $requestXML->formatOutput = true;
-        $requestXML->loadXML($requestString);
+        $request->setMpayTid($mpayTid);
+        $request->setType($paymentType);
+        $request->setAmount($amount);
+        $request->setCancel($cancel);
+        $request->setOrder($order);
 
-        $requestNode = $requestXML->getElementsByTagName("AcceptPayment")->item(0);
-
-        foreach ($requestNode->childNodes as $child) {
-            $child = $xml->importNode($child, true);
-            $operation->appendChild($child);
-
-            if ($child->nodeName == 'paymentCallback') {
-                $child->setAttributeNS(
-                    'http://www.w3.org/2001/XMLSchema-instance',
-                    'xsi:type',
-                    "etp:Callback$paymentType"
-                );
-            }
-        }
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
@@ -479,33 +448,23 @@ class Mpay24Sdk
     /**
      * Clear a transaction with an amount
      *
-     * @param int $mPAYTid The mPAY24 transaction ID
+     * @param int $mpayTid The mPAY24 transaction ID
      * @param int $amount  The amount to be cleared multiplay by 100
      *
-     * @return ManagePaymentResponse
+     * @return ManualClearResponse
      */
-    public function manualClear($mPAYTid, $amount)
+    public function manualClear($mpayTid, $amount)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'ManualClear');
+        $request = new ManualClear($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setMpayTid($mpayTid);
+        $request->setAmount($amount);
 
-        $clearingDetails = $xml->createElement('clearingDetails');
-        $clearingDetails = $operation->appendChild($clearingDetails);
-
-        $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $clearingDetails->appendChild($xmlMPayTid);
-
-        $price = $xml->createElement('amount', $amount);
-        $clearingDetails->appendChild($price);
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
-        $result = new ManagePaymentResponse($this->response);
+        $result = new ManualClearResponse($this->response);
 
         return $result;
     }
@@ -513,30 +472,23 @@ class Mpay24Sdk
     /**
      * Credit a transaction with an amount
      *
-     * @param int $mPAYTid The mPAY24 transaction ID
+     * @param int $mpayTid The mPAY24 transaction ID
      * @param int $amount  The amount to be credited multiplay by 100
      *
-     * @return ManagePaymentResponse
+     * @return ManualCreditResponse
      */
-    public function ManualCredit($mPAYTid, $amount)
+    public function manualCredit($mpayTid, $amount)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'ManualCredit');
+        $request = new ManualCredit($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setMpayTid($mpayTid);
+        $request->setAmount($amount);
 
-        $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $operation->appendChild($xmlMPayTid);
-
-        $price = $xml->createElement('amount', $amount);
-        $operation->appendChild($price);
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
-        $result = new ManagePaymentResponse($this->response);
+        $result = new ManualCreditResponse($this->response);
 
         return $result;
     }
@@ -544,26 +496,21 @@ class Mpay24Sdk
     /**
      * Cancel a transaction
      *
-     * @param int $mPAYTid The mPAY24 transaction ID for the transaction you want to cancel
+     * @param int $mpayTid The mPAY24 transaction ID for the transaction you want to cancel
      *
-     * @return ManagePaymentResponse
+     * @return ManualReverseResponse
      */
-    public function manualReverse($mPAYTid)
+    public function manualReverse($mpayTid)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'ManualReverse');
+        $request = new ManualReverse($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setMpayTid($mpayTid);
 
-        $xmlMPayTid = $xml->createElement('mpayTID', $mPAYTid);
-        $operation->appendChild($xmlMPayTid);
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
-        $result = new ManagePaymentResponse($this->response);
+        $result = new ManualReverseResponse($this->response);
 
         return $result;
     }
@@ -578,21 +525,12 @@ class Mpay24Sdk
      */
     public function transactionStatus($mpay24tid = null, $tid = null)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'TransactionStatus');
+        $request = new TransactionStatus($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setMpayTid($mpay24tid);
+        $request->setTid($tid);
 
-        if ($mpay24tid) {
-            $xmlMPayTid = $xml->createElement('mpayTID', $mpay24tid);
-            $operation->appendChild($xmlMPayTid);
-        } else {
-            $xmlTid = $xml->createElement('tid', $tid);
-            $operation->appendChild($xmlTid);
-        }
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
@@ -604,22 +542,17 @@ class Mpay24Sdk
     /**
      * Get all the information for a transaction, supported by mPAY24
      *
-     * @param int $mpay24tid The mPAY24 transaction ID
+     * @param int $mpayTid The mPAY24 transaction ID
      *
      * @return TransactionHistoryResponse
      */
-    public function transactionHistory($mpay24tid = null)
+    public function transactionHistory($mpayTid = null)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'TransactionHistory');
+        $request = new TransactionHistory($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
+        $request->setMpayTid($mpayTid);
 
-        $xmlMPayTid = $xml->createElement('mpayTID', $mpay24tid);
-        $operation->appendChild($xmlMPayTid);
-
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
@@ -642,33 +575,14 @@ class Mpay24Sdk
      */
     public function listProfiles($customerId = null, $expiredBy = null, $begin = null, $size = null)
     {
-        $xml       = $this->buildEnvelope();
-        $operation = $this->buildOperation($xml, 'ListProfiles');
+        $request = new ListProfiles($this->config->getMerchantId());
 
-        $merchantID = $xml->createElement('merchantID', $this->config->getMerchantId());
-        $operation->appendChild($merchantID);
-        // TODO: check if you want check the value of $customerId
-        if ($customerId) {
-            $xmlMPayTid = $xml->createElement('customerID', $customerId);
-            $operation->appendChild($xmlMPayTid);
-        }
-        // TODO: check if you want check the value of $customerId
-        if ($expiredBy) {
-            $xmlMPayTid = $xml->createElement('expiredBy', $expiredBy);
-            $operation->appendChild($xmlMPayTid);
-        }
-        // TODO: check if you want check the value of $customerId
-        if ($begin) {
-            $xmlMPayTid = $xml->createElement('begin', $begin);
-            $operation->appendChild($xmlMPayTid);
-        }
-        // TODO: check if you want check the value of $size
-        if ($size) {
-            $xmlMPayTid = $xml->createElement('size', $size);
-            $operation->appendChild($xmlMPayTid);
-        }
+        $request->setCustomerId($customerId);
+        $request->setExpiredBy($expiredBy);
+        $request->setBegin($begin);
+        $request->setSize($size);
 
-        $this->request = $xml->saveXML();
+        $this->request = $request->getXml();
 
         $this->send();
 
@@ -695,45 +609,6 @@ class Mpay24Sdk
         $encryptedParams = $this->ssl_encrypt($this->config->getFlexLinkPassword(), $paramsString);
 
         return $encryptedParams;
-    }
-
-    /**
-     * Create a DOMDocument and prepare it for SOAP request: set Envelope, NameSpaces, create empty Body
-     *
-     * @return DOMDocument
-     */
-    protected function buildEnvelope()
-    {
-        $soap_xml               = new DOMDocument("1.0", "UTF-8");
-        $soap_xml->formatOutput = true;
-
-        $envelope = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV:Envelope');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:etp',
-            'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
-        $envelope->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi',
-            'http://www.w3.org/2001/XMLSchema-instance');
-        $envelope = $soap_xml->appendChild($envelope);
-
-        $body = $soap_xml->createElementNS('http://schemas.xmlsoap.org/soap/envelope/', 'SOAP-ENV:Body');
-        $envelope->appendChild($body);
-
-        return $soap_xml;
-    }
-
-    /**
-     * @param $xml
-     *
-     * @param $operation
-     *
-     * @return mixed
-     */
-    protected function buildOperation($xml, $operation)
-    {
-        $body      = $xml->getElementsByTagNameNS('http://schemas.xmlsoap.org/soap/envelope/', 'Body')->item(0);
-        $operation = $xml->createElementNS('https://www.mpay24.com/soap/etp/1.5/ETP.wsdl', 'etp:' . $operation);
-
-        return $body->appendChild($operation);
     }
 
     /**
@@ -841,28 +716,4 @@ class Mpay24Sdk
 
         return chunk_split(array_shift(unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
     }
-
-    /**
-     * @param DOMNode     $parent
-     * @param array       $list
-     * @param DOMDocument $document
-     */
-    protected function appendArray(DOMNode &$parent, array &$list, &$document = null)
-    {
-        if (is_null($document)) {
-            $document = new DOMDocument();
-        }
-
-        foreach ($list as $name => $value) {
-            if (is_array($value)) {
-                $element = $document->createElement($name);
-                $this->appendArray($element, $value, $document);
-                $parent->appendChild($element);
-            } else {
-                $element = $document->createElement($name, $value);
-                $parent->appendChild($element);
-            }
-        }
-    }
-
 }

@@ -12,12 +12,12 @@ namespace Mpay24\Responses;
  * @filesource ListProfilesResponse.php
  * @license    MIT
  */
-class ListProfilesResponse extends GeneralResponse
+class ListProfilesResponse extends AbstractResponse
 {
     /**
      * @var int
      */
-    protected $profileCountSend = 0;
+    protected $profileCount = 0;
 
     /**
      * @var array
@@ -30,7 +30,7 @@ class ListProfilesResponse extends GeneralResponse
     protected $totalNumber;
 
     /**
-     * Sets the response for the profile Response given  from mPAY24
+     * Sets the response for the profile Response given from mPAY24
      *
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
@@ -39,17 +39,10 @@ class ListProfilesResponse extends GeneralResponse
     {
         parent::__construct($response);
 
-        if ($this->responseAsDom->getElementsByTagName('profile')->length != 0) {
+        if ($this->hasNoError()) {
 
-            $this->profileCountSend = $this->responseAsDom->getElementsByTagName('profile')->length;
-
-            for ($i = 0; $i < $this->profileCountSend; $i++) {
-                $this->profiles[$i]['customerID'] = $this->responseAsDom->getElementsByTagName('customerID')->item($i)->nodeValue;
-                $this->profiles[$i]['updated']    = $this->responseAsDom->getElementsByTagName('updated')->item($i)->nodeValue;
-            }
+            $this->parseResponse($this->getBody('ListProfilesResponse'));
         }
-
-        $this->totalNumber = (int)$this->responseAsDom->getElementsByTagName('all')->item(0)->nodeValue;
     }
 
     /**
@@ -57,9 +50,9 @@ class ListProfilesResponse extends GeneralResponse
      *
      * @return int
      */
-    public function getProfileCountSend()
+    public function getProfileCount()
     {
-        return $this->profileCountSend;
+        return $this->profileCount;
     }
 
     /**
@@ -98,5 +91,30 @@ class ListProfilesResponse extends GeneralResponse
     {
         return $this->totalNumber;
 
+    }
+
+    /**
+     * Parse the ListProfilesResponse message and save the data to the corresponding attributes
+     *
+     * @param \DOMElement $body
+     */
+    protected function parseResponse($body)
+    {
+        $this->totalNumber  = (int)$body->getElementsByTagName('all')->item(0)->nodeValue;
+        $this->profileCount = (int)$body->getElementsByTagName('profile')->length;
+
+        if ($this->profileCount > 0) {
+            for ($i = 0; $i < $this->profileCount; $i++) {
+
+                $profile = $body->getElementsByTagName('profile')->item($i);
+
+                $this->profiles[$i]['customerID'] = $profile->getElementsByTagName('customerID')->item(0)->nodeValue;
+                $this->profiles[$i]['updated']    = $profile->getElementsByTagName('updated')->item(0)->nodeValue;
+
+                if ($profile->getElementsByTagName('payment')->length) {
+                    $this->profiles[$i]['payment'] = $profile->getElementsByTagName('payment')->item(0)->nodeValue;
+                }
+            }
+        }
     }
 }

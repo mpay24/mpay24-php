@@ -8,15 +8,17 @@ use ErrorException;
 /**
  * The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request
  *
- * Class GeneralResponse
+ * Class AbstractResponse
  * @package    Mpay24\Responses
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @filesource GeneralResponse.php
+ * @filesource AbstractResponse.php
  * @license    MIT
  */
-class GeneralResponse
+abstract class AbstractResponse
 {
+     const NAME_SPACE = 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl';
+
     /**
      * The response as Dom Document Object
      *
@@ -85,6 +87,16 @@ class GeneralResponse
             $this->status     = "ERROR";
             $this->returnCode = "The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!";
         }
+    }
+
+    /**
+     * @param $element
+     *
+     * @return \DOMElement
+     */
+    protected function getBody($element)
+    {
+        return $this->responseAsDom->getElementsByTagNameNS(self::NAME_SPACE, $element)->item(0);
     }
 
     /**

@@ -207,7 +207,7 @@ class Mpay24
      * @param string $mpayTid The transaction ID, for the transaction you want to clear
      * @param int    $amount  The amount you want to clear multiply by 100
      *
-     * @return Responses\ManagePaymentResponse
+     * @return Responses\ManualClearResponse
      */
     public function capture($mpayTid, $amount)
     {
@@ -228,7 +228,7 @@ class Mpay24
      * @param string $mpayTid The transaction ID, for the transaction you want to credit
      * @param int    $amount  The amount you want to credit multiply by 100
      *
-     * @return Responses\ManagePaymentResponse
+     * @return Responses\ManualCreditResponse
      */
     public function refund($mpayTid, $amount)
     {
@@ -236,7 +236,7 @@ class Mpay24
 
         $this->validateAmount($amount);
 
-        $creditAmountResult = $this->mpay24Sdk->ManualCredit($mpayTid, $amount);
+        $creditAmountResult = $this->mpay24Sdk->manualCredit($mpayTid, $amount);
 
         $this->recordedLastMessageExchange('RefundAmount');
 
@@ -248,7 +248,7 @@ class Mpay24
      *
      * @param string $mpayTid The transaction ID, for the transaction you want to cancel
      *
-     * @return Responses\ManagePaymentResponse
+     * @return Responses\AbstractTransactionResponse
      */
     public function cancel($mpayTid)
     {

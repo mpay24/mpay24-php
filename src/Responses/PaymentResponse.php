@@ -12,7 +12,7 @@ namespace Mpay24\Responses;
  * @filesource PaymentResponse.php
  * @license    MIT
  */
-class PaymentResponse extends GeneralResponse
+class PaymentResponse extends AbstractResponse
 {
     /**
      * An URL (of the mPAY24 payment fenster), where the customer would be redirected to, in case of successfull request

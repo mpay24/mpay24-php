@@ -12,7 +12,7 @@ namespace Mpay24\Responses;
  * @filesource TransactionHistoryResponse.php
  * @license    MIT
  */
-class TransactionHistoryResponse extends GeneralResponse
+class TransactionHistoryResponse extends AbstractResponse
 {
     /**
      * @var int
@@ -34,22 +34,9 @@ class TransactionHistoryResponse extends GeneralResponse
     {
         parent::__construct($response);
 
-        if ($this->responseAsDom->getElementsByTagName('historyEntry')->length != 0) {
+        if ($this->hasNoError()) {
 
-            $this->historyCount = $this->responseAsDom->getElementsByTagName('historyEntry')->length;
-
-            for ($i = 0; $i < $this->historyCount; $i++) {
-
-                $this->history[$i] = [];
-
-                $transaction = $this->responseAsDom->getElementsByTagName('historyEntry')->item($i);
-
-                for ($j = 0; $j < $transaction->childNodes->length; $j++) {
-
-                    $this->history[$i][$transaction->childNodes->item($j)->tagName] = $transaction->childNodes->item($j)->nodeValue;
-                }
-
-            }
+            $this->parseResponse($this->getBody('TransactionHistoryResponse'));
         }
     }
 
@@ -87,6 +74,34 @@ class TransactionHistoryResponse extends GeneralResponse
             return $this->history[$i];
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Parse the TransactionHistoryResponse message and save the data to the corresponding attributes
+     *
+     * @param \DOMElement $body
+     */
+    protected function parseResponse($body)
+    {
+        $this->historyCount = (int)$body->getElementsByTagName('historyEntry')->length;
+
+        if ($this->historyCount > 0) {
+
+            for ($i = 0; $i < $this->historyCount; $i++) {
+
+                $this->history[$i] = [];
+
+                $historyEntry = $body->getElementsByTagName('historyEntry')->item($i);
+
+                for ($j = 0; $j < $historyEntry->childNodes->length; $j++) {
+
+                    $name  = $historyEntry->childNodes->item($j)->tagName;
+                    $value = $historyEntry->childNodes->item($j)->nodeValue;
+
+                    $this->history[$i][$name] = $value;
+                }
+            }
         }
     }
 }
