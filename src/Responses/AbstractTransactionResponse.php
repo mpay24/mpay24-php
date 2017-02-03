@@ -34,7 +34,7 @@ abstract class AbstractTransactionResponse extends AbstractResponse
      *
      * @var int
      */
-    protected $stateID;
+    protected $stateId;
 
     /**
      * The transaction ID of the shop
@@ -84,9 +84,9 @@ abstract class AbstractTransactionResponse extends AbstractResponse
     /**
      * @return int
      */
-    public function getStateID()
+    public function getStateId()
     {
-        return $this->stateID;
+        return $this->stateId;
     }
 
     /**
@@ -96,11 +96,16 @@ abstract class AbstractTransactionResponse extends AbstractResponse
      */
     protected function parseResponse($body)
     {
-        if ($this->responseAsDom->getElementsByTagName('mpayTID')->length > 0
-            && $this->responseAsDom->getElementsByTagName('tid')->length > 0
-        ) {
-            $this->mpayTid = $this->responseAsDom->getElementsByTagName('mpayTID')->item(0)->nodeValue;
-            $this->tid       = $this->responseAsDom->getElementsByTagName('tid')->item(0)->nodeValue;
+        if ($body->getElementsByTagName('transaction')->length > 0) {
+            $transaction = $body->getElementsByTagName('transaction')->item(0);
+
+            $this->mpayTid = $transaction->getElementsByTagName('mpayTID')->item(0)->nodeValue;
+            $this->tStatus = $transaction->getElementsByTagName('tStatus')->item(0)->nodeValue;
+            $this->tid     = $transaction->getElementsByTagName('tid')->item(0)->nodeValue;
+
+            if ($transaction->getElementsByTagName('stateID')->length > 0) {
+                $this->stateId = $transaction->getElementsByTagName('stateID')->item(0)->nodeValue;
+            }
         }
     }
 }
