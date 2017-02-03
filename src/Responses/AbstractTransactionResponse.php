@@ -44,7 +44,7 @@ abstract class AbstractTransactionResponse extends AbstractResponse
     protected $tid;
 
     /**
-     * GeneralTransactionResponse constructor.
+     * AbstractTransactionResponse constructor.
      *
      * @param string $response
      */
@@ -96,8 +96,8 @@ abstract class AbstractTransactionResponse extends AbstractResponse
      */
     protected function parseResponse($body)
     {
-        if ($this->responseAsDom->getElementsByTagName('mpayTID')->length != 0
-            && $this->responseAsDom->getElementsByTagName('tid')->length != 0
+        if ($this->responseAsDom->getElementsByTagName('mpayTID')->length > 0
+            && $this->responseAsDom->getElementsByTagName('tid')->length > 0
         ) {
             $this->mpayTid = $this->responseAsDom->getElementsByTagName('mpayTID')->item(0)->nodeValue;
             $this->tid       = $this->responseAsDom->getElementsByTagName('tid')->item(0)->nodeValue;

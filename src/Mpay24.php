@@ -59,7 +59,7 @@ class Mpay24
      *
      * @param $mdxi
      *
-     * @return Responses\PaymentResponse
+     * @return Responses\SelectPaymentResponse
      */
     public function paymentPage($mdxi)
     {
@@ -102,7 +102,7 @@ class Mpay24
      * @param        $payment
      * @param        $additional
      *
-     * @return Responses\PaymentResponse
+     * @return Responses\AcceptPaymentResponse
      */
     public function payment($paymentType, $tid, $payment, $additional)
     {
@@ -184,7 +184,7 @@ class Mpay24
      * @param string $paymentType The payment type which will be used for the express checkout (CC)
      * @param array  $additional  Additional parameters
      *
-     * @return Responses\PaymentTokenResponse
+     * @return Responses\CreatePaymentTokenResponse
      */
     public function token($paymentType, array $additional = [])
     {

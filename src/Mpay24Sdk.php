@@ -13,13 +13,15 @@ use Mpay24\Requests\ManualReverse;
 use Mpay24\Requests\SelectPayment;
 use Mpay24\Requests\TransactionHistory;
 use Mpay24\Requests\TransactionStatus;
+use Mpay24\Responses\AcceptPaymentResponse;
+use Mpay24\Responses\CreatePaymentTokenResponse;
 use Mpay24\Responses\ListPaymentMethodsResponse;
 use Mpay24\Responses\ListProfilesResponse;
+use Mpay24\Responses\ManualCallbackResponse;
 use Mpay24\Responses\ManualClearResponse;
 use Mpay24\Responses\ManualCreditResponse;
 use Mpay24\Responses\ManualReverseResponse;
-use Mpay24\Responses\PaymentResponse;
-use Mpay24\Responses\PaymentTokenResponse;
+use Mpay24\Responses\SelectPaymentResponse;
 use Mpay24\Responses\TransactionHistoryResponse;
 use Mpay24\Responses\TransactionStatusResponse;
 
@@ -344,7 +346,7 @@ class Mpay24Sdk
      *
      * @param string $mdxi The mdxi xml, which contains the shopping cart
      *
-     * @return PaymentResponse
+     * @return SelectPaymentResponse
      */
     public function selectPayment($mdxi)
     {
@@ -356,7 +358,7 @@ class Mpay24Sdk
 
         $this->send();
 
-        $result = new PaymentResponse($this->response);
+        $result = new SelectPaymentResponse($this->response);
 
         return $result;
     }
@@ -367,7 +369,7 @@ class Mpay24Sdk
      * @param string $pType The payment type used for the tokenization (currently supported 'CC')
      * @param array  $additional
      *
-     * @return PaymentTokenResponse
+     * @return CreatePaymentTokenResponse
      */
     public function createTokenPayment($pType, array $additional = [])
     {
@@ -380,7 +382,7 @@ class Mpay24Sdk
 
         $this->send();
 
-        $result = new PaymentTokenResponse($this->response);
+        $result = new CreatePaymentTokenResponse($this->response);
 
         return $result;
     }
@@ -393,7 +395,7 @@ class Mpay24Sdk
      * @param array  $payment
      * @param array  $additional
      *
-     * @return PaymentResponse
+     * @return AcceptPaymentResponse
      */
     public function acceptPayment($type, $tid, $payment = [], $additional = [])
     {
@@ -408,7 +410,7 @@ class Mpay24Sdk
 
         $this->send();
 
-        $result = new PaymentResponse($this->response);
+        $result = new AcceptPaymentResponse($this->response);
 
         return $result;
     }
@@ -423,7 +425,7 @@ class Mpay24Sdk
      * @param bool   $cancel
      * @param null   $order
      *
-     * @return PaymentResponse
+     * @return ManualCallbackResponse
      * @internal param string $requestString The callback request to mPAY24
      */
     public function manualCallback($mpayTid, $paymentType, $amount = null, $cancel = false, $order = null)
@@ -440,7 +442,7 @@ class Mpay24Sdk
 
         $this->send();
 
-        $result = new PaymentResponse($this->response);
+        $result = new ManualCallbackResponse($this->response);
 
         return $result;
     }
