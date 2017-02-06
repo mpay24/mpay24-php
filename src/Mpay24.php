@@ -27,7 +27,7 @@ class Mpay24
     {
         $args = func_get_args();
 
-        if (isset($args[0]) && is_a($args[0], Mpay24Config::class)) {
+        if (isset($args[0]) && is_a($args[0], 'Mpay24\Mpay24Config')) {
             $config = $args[0];
         } else {
             $config = new Mpay24Config($args);
