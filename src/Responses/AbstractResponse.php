@@ -41,7 +41,7 @@ abstract class AbstractResponse
     protected $returnCode;
 
     /**
-     * @var \DateTime
+     * @var int
      */
     protected $createdAt;
 
@@ -93,7 +93,7 @@ abstract class AbstractResponse
             $this->returnCode = "The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!";
         }
 
-        $this->createdAt = new \DateTime('now');
+        $this->createdAt = time();
     }
 
     /**
@@ -166,7 +166,7 @@ abstract class AbstractResponse
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
     public function getCreatedAt()
     {
