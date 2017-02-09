@@ -97,13 +97,13 @@ abstract class AbstractResponse
     }
 
     /**
-     * @param $element
+     * Dumps the internal XML tree back into a string
      *
-     * @return \DOMElement
+     * @return string
      */
-    protected function getBody($element)
+	public function getXml()
     {
-        return $this->responseAsDom->getElementsByTagNameNS(self::NAME_SPACE, $element)->item(0);
+        return $this->responseAsDom->saveXML();
     }
 
     /**
@@ -172,4 +172,14 @@ abstract class AbstractResponse
     {
         return $this->createdAt;
     }
+
+	/**
+	 * @param $element
+	 *
+	 * @return \DOMElement
+	 */
+	protected function getBody($element)
+	{
+		return $this->responseAsDom->getElementsByTagNameNS(self::NAME_SPACE, $element)->item(0);
+	}
 }
