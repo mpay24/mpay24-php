@@ -41,7 +41,7 @@ abstract class AbstractResponse
     protected $returnCode;
 
     /**
-     * @var \DateTime
+     * @var int
      */
     protected $createdAt;
 
@@ -93,17 +93,17 @@ abstract class AbstractResponse
             $this->returnCode = "The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!";
         }
 
-        $this->createdAt = new \DateTime('now');
+        $this->createdAt = time();
     }
 
     /**
-     * @param $element
+     * Dumps the internal XML tree back into a string
      *
-     * @return \DOMElement
+     * @return string
      */
-    protected function getBody($element)
+	public function getXml()
     {
-        return $this->responseAsDom->getElementsByTagNameNS(self::NAME_SPACE, $element)->item(0);
+        return $this->responseAsDom->saveXML();
     }
 
     /**
@@ -166,10 +166,20 @@ abstract class AbstractResponse
     }
 
     /**
-     * @return \DateTime
+     * @return int
      */
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
+
+	/**
+	 * @param $element
+	 *
+	 * @return \DOMElement
+	 */
+	protected function getBody($element)
+	{
+		return $this->responseAsDom->getElementsByTagNameNS(self::NAME_SPACE, $element)->item(0);
+	}
 }
