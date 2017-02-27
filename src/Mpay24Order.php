@@ -9,14 +9,14 @@ use DOMXPath;
 /**
  * The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd
  *
- * Class MPay24Order
+ * Class Mpay24Order
  * @package    Mpay24
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
  * @filesource Mpay24Order.php
  * @license    MIT
  */
-class MPay24Order
+class Mpay24Order
 {
     /**
      * The DOMDocument, which the MDXI XML will be build on
