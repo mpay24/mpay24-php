@@ -16,7 +16,7 @@ use DOMXPath;
  * @filesource Mpay24Order.php
  * @license    MIT
  */
-class MPay24Order
+class Mpay24Order
 {
     /**
      * The DOMDocument, which the MDXI XML will be build on
