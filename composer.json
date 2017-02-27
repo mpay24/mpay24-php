@@ -14,11 +14,14 @@
 		"wiki": "https://github.com/PandaHugMonster/mpay24/wiki"
 	},
 	"require": {
-		"php": ">=5.4.0"
+		"php": ">=5.4.0",
+	    "ext-curl": "*",
+		"ext-dom": "*",
+		"ext-mcrypt": "*"
 	},
 	"autoload": {
 		"psr-4": {
-			"MPayAPI\\": "api/"
+			"Mpay24\\": "src/"
 		}
 	}
 }
