@@ -62,6 +62,8 @@ $checkoutURL = $mpay24->selectPayment($mdxi)->location; // redirect location to 
 header('Location: '.$checkoutURL);
 ```
 
+[How to work with ORDER objects](https://github.com/mpay24/mpay24-php/wiki/How-to-work-with-ORDER-objects)
+
 #### Get current transaction status
 
 ```php
