@@ -94,6 +94,8 @@ $paymentPageURL = $mpay24->paymentPage($mdxi)->getLocation(); // redirect locati
 header('Location: '.$paymentPageURL);
 ```
 
+[How to work with ORDER objects](https://github.com/mpay24/mpay24-php/wiki/How-to-work-with-ORDER-objects)
+
 #### Get current transaction status
 With the unique mPAYTID number that we send back in the response messages
 ```php
