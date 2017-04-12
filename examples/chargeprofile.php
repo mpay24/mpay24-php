@@ -1,24 +1,27 @@
 <?php
-  include_once ("../lib/MPAY24.php");
+require("../bootstrap.php");
 
-  $mpay24 = new MPAY24();
+use Mpay24\Mpay24;
 
-  $payment = array(
-    "amount" => "100",
-    "currency" => "EUR"
-  );
+$mpay24 = new Mpay24();
 
-  $additional = array(
-    "customerID" => "customer123",
-    "confirmationURL" => "http://yourdomain.com/confirmation"
-  );
+$payment = array(
+    "amount"   => "100",
+    "currency" => "EUR",
+);
 
-  $type="PROFILE";
+$additional = array(
+    "customerID"      => "customer123",
+    "customerName"    => "Jon Doe",
+    "confirmationURL" => "http://yourdomain.com/confirmation",
+    "order"           => ["description" => "Your description of the Order"], // Optional
+);
 
-  $result = $mpay24->acceptPayment($type, "123", $payment, $additional);
-  echo "Status: ".$result->generalResponse->status;
-  echo "<br>";
-  echo "ReturnCode: ".$result->generalResponse->returnCode;
-  echo "<br>";
-  echo "mPAYTID: ".$result->mpayTID;
-?>
+$type = "PROFILE";
+
+$result = $mpay24->payment($type, "123 TID", $payment, $additional);
+echo "Status: " . $result->getStatus();
+echo "<br>";
+echo "ReturnCode: " . $result->getReturnCode();
+echo "<br>";
+echo "mPAYTID: " . $result->getMpayTid();
