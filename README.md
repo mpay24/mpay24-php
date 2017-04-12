@@ -1,4 +1,14 @@
-# mpay24-php
+# mPAY24 PHP API (PandaHugMonster fork)
+## Offical PHP SDK for SOAP Bindings (It's unofficial fork!!!)
+### [See the steps](https://github.com/mPAY24/mpay24_php_api/wiki/STEP-1)
+***
+
+### NOTE
+This version is a fork of an original repository.
+Added and Modified:
+* Merged last modifications from the main repository (Be careful structure has been changed a lot)
+
+### ABSTRACT
 
 [![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)]()
 
@@ -112,7 +122,7 @@ $mpay24->paymentStatusByTID("123 TID");
 
 In order for the Mpay24 PHP SDK to work, your installation will have to meet the following prerequisites:
 
-* [PHP >= 5.3.3](http://www.php.net/)
+* [PHP >= 5.4](http://www.php.net/)
 * [cURL](http://at2.php.net/manual/de/book.curl.php)
 * [DOM](http://at2.php.net/manual/de/book.dom.php)
 * [Mcrypt](http://at2.php.net/manual/en/mcrypt)
