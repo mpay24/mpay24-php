@@ -138,9 +138,9 @@ class Mpay24Config
         $log_path           = (isset($args[14]) ? $args[14] : MPAY24_LOG_PATH);
         $curl_log_file      = (isset($args[15]) ? $args[15] : MPAY24_CURL_LOG_FILE);
 
+        $this->useTestSystem($testSystem);
         $this->setMerchantID($merchantID);
         $this->setSoapPassword($soapPassword);
-        $this->useTestSystem($testSystem);
         $this->setDebug($debug);
         $this->setProxyHost($proxyHost);
         $this->setProxyPort($proxyPort);

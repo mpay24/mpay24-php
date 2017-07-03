@@ -57,7 +57,7 @@ abstract class AbstractResponse
             $this->responseAsDom = new DOMDocument();
 
             try {
-                $this->responseAsDom->loadXML($response);
+                @$this->responseAsDom->loadXML($response);
             } catch (ErrorException $e) {
                 $this->status     = 'ERROR';
                 $this->returnCode = 'Unknown Error';
