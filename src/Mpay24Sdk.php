@@ -73,7 +73,7 @@ class Mpay24Sdk
      *
      * @const string
      */
-    const VERSION = "4.0.0";
+    const VERSION = "4.1.0";
 
     /**
      * Minimum PHP version Required
