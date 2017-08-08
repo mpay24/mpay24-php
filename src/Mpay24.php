@@ -261,6 +261,25 @@ class Mpay24
         return $cancelTransactionResult;
     }
 
+    /**
+     * Create a customer for recurring payments
+     *
+     * @param string $paymentType The payment type which will be used for the payment (CC or TOKEN)
+     * @param        $customerId
+     * @param        $paymentData
+     * @param        $additional
+     *
+     * @return Responses\CreateCustomerResponse
+     */
+    public function createCustomer($paymentType, $customerId, $payment, $additional = [])
+    {
+        $this->integrityCheck();
+        $createCustomerRes = $this->mpay24Sdk->createCustomer($paymentType, $customerId, $payment, $additional);
+        $this->recordedLastMessageExchange('CreateCustomer');
+
+        return $createCustomerRes;
+    }
+
     protected function integrityCheck()
     {
         if (!$this->mpay24Sdk) {

@@ -13,6 +13,7 @@ use Mpay24\Requests\ManualReverse;
 use Mpay24\Requests\SelectPayment;
 use Mpay24\Requests\TransactionHistory;
 use Mpay24\Requests\TransactionStatus;
+use Mpay24\Requests\CreateCustomer;
 use Mpay24\Responses\AcceptPaymentResponse;
 use Mpay24\Responses\CreatePaymentTokenResponse;
 use Mpay24\Responses\ListPaymentMethodsResponse;
@@ -24,6 +25,7 @@ use Mpay24\Responses\ManualReverseResponse;
 use Mpay24\Responses\SelectPaymentResponse;
 use Mpay24\Responses\TransactionHistoryResponse;
 use Mpay24\Responses\TransactionStatusResponse;
+use Mpay24\Responses\CreateCustomerResponse;
 
 /**
  * Main Mpay24 PHP APIs Class.
@@ -589,6 +591,34 @@ class Mpay24Sdk
         $this->send();
 
         $result = new ListProfilesResponse($this->response);
+
+        return $result;
+    }
+
+    /**
+     * Create a new customer for recurring payments
+     *
+     * @param        $type
+     * @param array  $payment
+     * @param string $customerId
+     * @param array  $additional
+     *
+     * @return CreateCustomerResponse
+     */
+    public function createCustomer($type, $customerId ,$payment = [], $additional = [])
+    {
+        $request = new CreateCustomer($this->config->getMerchantId());
+
+        $request->setPType($type);
+        $request->setPaymentData($payment);
+        $request->setCustomerId($customerId);
+        $request->setAdditional($additional);
+
+        $this->request = $request->getXml();
+
+        $this->send();
+
+        $result = new CreateCustomerResponse($this->response);
 
         return $result;
     }
