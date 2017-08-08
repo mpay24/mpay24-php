@@ -10,11 +10,11 @@ $tokenizer = $mpay24->token("CC", $tokenizerConfig);
 
 ?>
 
-<iframe src="<?php echo $tokenizer->getLocation(); ?>" frameBorder="0"></iframe>
+<iframe src="<?php echo $tokenizer->getLocation(); ?>" frameBorder="0" style="width:500px;"></iframe>
 
 <form method="POST">
     <input name="token" type="hidden" value="<?php echo $tokenizer->getToken(); ?>"/>
-    <button id="paybutton" name="type" value="TOKEN" type="submit">Create Profile</button>
+    <button name="type" value="TOKEN" type="submit">Create Profile</button>
 </form>
 </br>
 <?php
@@ -27,10 +27,10 @@ if (isset($_POST["token"])) {
   $additional = array(
     "billingAddress" => array(
       "mode" => "READONLY",
-      "name" => "Hans Dere",
-      "street" => "stest",
-      "zip" => "1234",
-      "city" => "dere",
+      "name" => "John Doe",
+      "street" => "Mainstreet 1",
+      "zip" => "1050",
+      "city" => "Vienna",
       "countryCode" => "AT"
     )
   );
