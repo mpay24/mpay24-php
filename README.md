@@ -53,7 +53,9 @@ If you want to have a more flexible approach you can create a [configuration obj
 #### Create a token for seamless creditcard payments
 
 ```php
-$tokenizer = $mpay24->token("CC")->getPaymentResponse();
+$tokenizer = $mpay24->token("CC");
+$tokenizerLocation = $tokenizer->getLocation();
+$token = $tokenizer->getToken();
 ```
 
 #### Create a payment
