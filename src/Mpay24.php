@@ -39,6 +39,13 @@ class Mpay24
     }
 
     /**
+     * @param string $curloptCainfoPath
+     */
+    public function setCurloptCainfoPath($curloptCainfoPath) {
+        $this->mpay24Sdk->setCurloptCainfoPath($curloptCainfoPath);
+    }
+
+    /**
      * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
      *
      * @return Responses\ListPaymentMethodsResponse
