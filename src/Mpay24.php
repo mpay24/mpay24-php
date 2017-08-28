@@ -39,6 +39,13 @@ class Mpay24
     }
 
     /**
+     * @param string $caInfoPath
+     */
+    public function setCaInfoPath($caInfoPath) {
+        $this->mpay24Sdk->setCaInfoPath($caInfoPath);
+    }
+
+    /**
      * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
      *
      * @return Responses\ListPaymentMethodsResponse
