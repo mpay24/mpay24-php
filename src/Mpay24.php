@@ -39,10 +39,10 @@ class Mpay24
     }
 
     /**
-     * @param string $curloptCainfoPath
+     * @param string $caInfoPath
      */
-    public function setCurloptCainfoPath($curloptCainfoPath) {
-        $this->mpay24Sdk->setCurloptCainfoPath($curloptCainfoPath);
+    public function setCaInfoPath($caInfoPath) {
+        $this->mpay24Sdk->setCaInfoPath($caInfoPath);
     }
 
     /**

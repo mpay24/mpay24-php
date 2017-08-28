@@ -104,7 +104,7 @@ class Mpay24Sdk
     /**
      * @var string
      */
-    protected $curloptCainfoPath = __DIR__ .  '/bin/';
+    protected $caInfoPath = __DIR__ .  '/bin/';
 
     public function __construct(Mpay24Config &$config = null)
     {
@@ -649,10 +649,10 @@ class Mpay24Sdk
     }
 
     /**
-     * @param string $curloptCainfoPath
+     * @param string $caInfoPath
      */
-    public function setCurloptCainfoPath($curloptCainfoPath) {
-        $this->curloptCainfoPath = $curloptCainfoPath;
+    public function setCaInfoPath($caInfoPath) {
+        $this->caInfoPath = $caInfoPath;
     }
 
     /**
@@ -679,7 +679,7 @@ class Mpay24Sdk
         }
 
         try {
-            curl_setopt($ch, CURLOPT_CAINFO, $this->curloptCainfoPath . 'cacert.pem');
+            curl_setopt($ch, CURLOPT_CAINFO, $this->caInfoPath . 'cacert.pem');
 
             if ($this->config->getProxyHost()) {
                 curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());
