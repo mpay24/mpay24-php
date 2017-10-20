@@ -1,10 +1,12 @@
 <?php
-  include_once ("../lib/MPAY24.php");
+require("../bootstrap.php");
 
-  $mpay24 = new MPAY24();
+use Mpay24\Mpay24;
 
-  $params = $mpay24->transactionStatus(null, "TID"); //example with merchant TransaktionID
+$mpay24 = new Mpay24();
 
-  echo '<pre>'; print_r($params); echo '</pre>';
+$params = $mpay24->paymentStatusByTID("TID"); //example with merchant TransaktionID
+
+echo '<pre>'; print_r($params); echo '</pre>';
 
 ?>
