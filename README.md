@@ -60,7 +60,7 @@ $token = $tokenizer->getToken();
 
 #### Create a payment
 
-Creditcard payment with a token
+[Creditcard payment with a token](https://docs.mpay24.com/docs/tokenizer-integration)
 ```php
 $payment = array(
   "amount" => "100",
@@ -69,7 +69,7 @@ $payment = array(
 );
 $result = $mpay24->payment("TOKEN", "123 TID", $payment);
 ```
-Paypal payment
+[Paypal payment](https://docs.mpay24.com/docs/paypal)
 ```php
 $payment = array(
   "amount" => "100",
@@ -80,7 +80,7 @@ $result = $mpay24->payment("PAYPAL", "123 TID", $payment);
 
 #### Create a payment page
 
-Initialize a minimum payment page
+[Initialize a minimum payment page](https://docs.mpay24.com/docs/redirect-integration)
 ```php
 use Mpay24\Mpay24Order;
 
@@ -99,6 +99,8 @@ header('Location: '.$paymentPageURL);
 [How to work with ORDER objects](https://github.com/mpay24/mpay24-php/wiki/How-to-work-with-ORDER-objects)
 
 #### Get current transaction status
+[Using the Pull method](https://docs.mpay24.com/docs/payment-notification#section-pull-method)
+
 With the unique mPAYTID number that we send back in the response messages
 ```php
 $mpay24->paymentStatus("12345");
