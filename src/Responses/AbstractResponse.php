@@ -3,7 +3,7 @@
 namespace Mpay24\Responses;
 
 use DOMDocument;
-use ErrorException;
+use Exception;
 
 /**
  * The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request
@@ -17,7 +17,7 @@ use ErrorException;
  */
 abstract class AbstractResponse
 {
-     const NAME_SPACE = 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl';
+    const NAME_SPACE = 'https://www.mpay24.com/soap/etp/1.5/ETP.wsdl';
 
     /**
      * The response as Dom Document Object
@@ -56,15 +56,18 @@ abstract class AbstractResponse
         if ('' != $response) {
             $this->responseAsDom = new DOMDocument();
 
+            if (preg_match('/<title>401 Unauthorized<\/title>/', $response) == 1) {
+                $this->status     = 'ERROR';
+                $this->returnCode = "401 Unauthorized: check your merchant ID and password";
+
+                return;
+            }
+
             try {
                 $this->responseAsDom->loadXML($response);
-            } catch (ErrorException $e) {
+            } catch (Exception $e) {
                 $this->status     = 'ERROR';
                 $this->returnCode = 'Unknown Error';
-
-                if (preg_match('/<title>401 Unauthorized<\/title>/', $response) == 1) {
-                    $this->returnCode = "401 Unauthorized: check your merchant ID and password";
-                }
 
                 return;
             }
@@ -101,7 +104,7 @@ abstract class AbstractResponse
      *
      * @return string
      */
-	public function getXml()
+    public function getXml()
     {
         return $this->responseAsDom->saveXML();
     }
@@ -173,13 +176,13 @@ abstract class AbstractResponse
         return $this->createdAt;
     }
 
-	/**
-	 * @param $element
-	 *
-	 * @return \DOMElement
-	 */
-	protected function getBody($element)
-	{
-		return $this->responseAsDom->getElementsByTagNameNS(self::NAME_SPACE, $element)->item(0);
-	}
+    /**
+     * @param $element
+     *
+     * @return \DOMElement
+     */
+    protected function getBody($element)
+    {
+        return $this->responseAsDom->getElementsByTagNameNS(self::NAME_SPACE, $element)->item(0);
+    }
 }

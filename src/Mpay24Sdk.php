@@ -13,6 +13,7 @@ use Mpay24\Requests\ManualReverse;
 use Mpay24\Requests\SelectPayment;
 use Mpay24\Requests\TransactionHistory;
 use Mpay24\Requests\TransactionStatus;
+use Mpay24\Requests\CreateCustomer;
 use Mpay24\Responses\AcceptPaymentResponse;
 use Mpay24\Responses\CreatePaymentTokenResponse;
 use Mpay24\Responses\ListPaymentMethodsResponse;
@@ -24,6 +25,7 @@ use Mpay24\Responses\ManualReverseResponse;
 use Mpay24\Responses\SelectPaymentResponse;
 use Mpay24\Responses\TransactionHistoryResponse;
 use Mpay24\Responses\TransactionStatusResponse;
+use Mpay24\Responses\CreateCustomerResponse;
 
 /**
  * Main Mpay24 PHP APIs Class.
@@ -71,7 +73,7 @@ class Mpay24Sdk
      *
      * @const string
      */
-    const VERSION = "4.0.0";
+    const VERSION = "4.1.0";
 
     /**
      * Minimum PHP version Required
@@ -98,6 +100,11 @@ class Mpay24Sdk
      * @var Mpay24Config
      */
     protected $config;
+
+    /**
+     * @var string
+     */
+    protected $caInfoPath = __DIR__ .  '/bin/';
 
     public function __construct(Mpay24Config &$config = null)
     {
@@ -594,6 +601,34 @@ class Mpay24Sdk
     }
 
     /**
+     * Create a new customer for recurring payments
+     *
+     * @param        $type
+     * @param array  $payment
+     * @param string $customerId
+     * @param array  $additional
+     *
+     * @return CreateCustomerResponse
+     */
+    public function createCustomer($type, $customerId ,$payment = [], $additional = [])
+    {
+        $request = new CreateCustomer($this->config->getMerchantId());
+
+        $request->setPType($type);
+        $request->setPaymentData($payment);
+        $request->setCustomerId($customerId);
+        $request->setAdditional($additional);
+
+        $this->request = $request->getXml();
+
+        $this->send();
+
+        $result = new CreateCustomerResponse($this->response);
+
+        return $result;
+    }
+
+    /**
      * Encoded the parameters (AES256-CBC) for the pay link and return them
      *
      * @param array $params The parameters, which are going to be posted to mPAY24
@@ -611,6 +646,13 @@ class Mpay24Sdk
         $encryptedParams = $this->ssl_encrypt($this->config->getFlexLinkPassword(), $paramsString);
 
         return $encryptedParams;
+    }
+
+    /**
+     * @param string $caInfoPath
+     */
+    public function setCaInfoPath($caInfoPath) {
+        $this->caInfoPath = $caInfoPath;
     }
 
     /**
@@ -637,7 +679,7 @@ class Mpay24Sdk
         }
 
         try {
-            curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/bin/cacert.pem');
+            curl_setopt($ch, CURLOPT_CAINFO, $this->caInfoPath . 'cacert.pem');
 
             if ($this->config->getProxyHost()) {
                 curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());

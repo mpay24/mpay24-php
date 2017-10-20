@@ -16,7 +16,7 @@ use InvalidArgumentException;
  * @property int    PRICE          // length = 11 (e. g. "10" = "0,10")
  * @property string CURRENCY       // length = 3 (ISO currency code, e. g. "EUR")
  * @property string P_TYPE         // CC, ELV, EPS, GIROPAY, MAESTRO, PB, PSC, QUICK, PAYPAL, MPASS, BILLPAY, KLARNA, SOFORT, MASTERPASS
- * @property string BRAND          // AMEX, DINERS, JCB, MASTERCARD, VISA, ATOS, B4P, HOBEX-AT, HOBEX-DE, HOBEX-NL, BILLPAY, INVOICE, HP
+ * @property string BRAND          // MAESTRO, MASTERPASS, MPASS, PB, PAYPAL, PSC, EPS, GIROPAY, SOFORT, QUICK, AMEX, DINERS, JCB, MASTERCARD, VISA, ATOS, B4P, HOBEX-AT, HOBEX-DE, HOBEX-NL, BILLPAY, INVOICE, HP
  * @property int    MPAYTID        // length = 11
  * @property string USER_FIELD
  * @property string ORDERDESC
@@ -46,7 +46,7 @@ class Mpay24Confirmation
         'PRICE'          => '\\d{1,11}',
         'CURRENCY'       => '[A-Z]{3}',
         'P_TYPE'         => '(CC|ELV|EPS|GIROPAY|MAESTRO|PB|PSC|QUICK|PAYPAL|MPASS|BILLPAY|KLARNA|SOFORT|MASTERPASS)',
-        'BRAND'          => '(AMEX|DINERS|JCB|MASTERCARD|VISA|ATOS|B4P|HOBEX-AT|HOBEX-DE|HOBEX-NL|BILLPAY|INVOICE|HP)',
+        'BRAND'          => '(MAESTRO|MASTERPASS|MPASS|PB|PAYPAL|PSC|EPS|GIROPAY|SOFORT|QUICK|AMEX|DINERS|JCB|MASTERCARD|VISA|ATOS|B4P|HOBEX-AT|HOBEX-DE|HOBEX-NL|BILLPAY|INVOICE|HP)',
         'MPAYTID'        => '\\d{1,11}',
         'USER_FIELD'     => '.*',
         'ORDERDESC'      => '.*',

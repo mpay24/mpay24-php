@@ -72,8 +72,10 @@ class Mpay24Order
 
             $value = $args[0];
 
-            if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
-                $value = str_replace(',', '.', $match[0]);
+            if($name != 'Description') {
+                if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
+                    $value = str_replace(',', '.', $match[0]);
+                }
             }
 
             if (preg_match('/\b[0-9]+.[0-9]+\b/', $value, $match) &&
