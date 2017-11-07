@@ -4,3 +4,4 @@
 /tests
 .DS_STORE
 *.log
+/nbproject/
