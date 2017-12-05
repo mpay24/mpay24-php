@@ -10,7 +10,6 @@ $payment = array(
     "currency"       => "EUR",
     "manualClearing" => "false",       // Optional: set to true if you want to do a manual clearing
     "useProfile"     => "false",       // Optional: set if you want to create a profile
-    "profileID"      => "profile123",  // Optional: set the profile ID for the customer
 );
 
 // All fields are optional, but most of them are highly recommended
