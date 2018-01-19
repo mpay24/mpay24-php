@@ -737,7 +737,8 @@ class Mpay24Sdk
 
         $key = substr($salted, 0, $key_len);
         $iv  = substr($salted, $key_len, $iv_len);
-
-        return 'Salted__' . $salt . openssl_encrypt($data, $method, $key, true, $iv);
+        $encrypted_data = openssl_encrypt($data, $method, $key, true, $iv);
+        
+        return chunk_split(array_shift(unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
     }
 }
