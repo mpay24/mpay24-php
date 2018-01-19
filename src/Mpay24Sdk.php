@@ -719,7 +719,7 @@ class Mpay24Sdk
     {
         // Used encryption method
         $method = "aes-256-cbc";
-        $key_len = 32
+        $key_len = 32;
         $iv_len  = openssl_cipher_iv_length($method);
 
         // Set a random salt
