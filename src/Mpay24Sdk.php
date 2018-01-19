@@ -118,17 +118,14 @@ class Mpay24Sdk
     /**
      * @param bool $checkDomExtension
      * @param bool $checkCurlExtension
-     * @param bool $checkMCryptExtension
      */
     public function checkRequirements(
         $checkDomExtension = true,
         $checkCurlExtension = true,
-        $checkMCryptExtension = true
     ) {
         if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true
             || ($checkCurlExtension && !in_array('curl', get_loaded_extensions()))
             || ($checkDomExtension && !in_array('dom', get_loaded_extensions()))
-            || ($checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions()))
         ) {
             $this->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
 
@@ -142,10 +139,6 @@ class Mpay24Sdk
 
             if ($checkDomExtension && !in_array('dom', get_loaded_extensions())) {
                 $this->printMsg("You need DOM extension!<br>");
-            }
-
-            if ($checkMCryptExtension && !in_array('mcrypt', get_loaded_extensions())) {
-                $this->printMsg("You need mcrypt extension!<br>");
             }
 
             $this->dieWithMsg("Please load the required extensions!");
@@ -715,10 +708,8 @@ class Mpay24Sdk
     }
 
     /**
-     * Encode data (AES256-CBC) using a password
-     *
-     * @deprecated As mcrypt is deprecated in PHP7 and it will be removed in PHP7.2 is good idea to switch to OpenSSL
-     *
+     * Encode data (aes-256-cbc) using a password
+    *
      * @param string $pass The password, used for the encoding
      * @param string $data The data, that should be encoded
      *
@@ -726,25 +717,19 @@ class Mpay24Sdk
      */
     protected function ssl_encrypt($pass, $data)
     {
+        // Used encryption method
+        $method = "aes-256-cbc";
+        $key_len = 32
+        $iv_len  = openssl_cipher_iv_length($method);
+
         // Set a random salt
-        $salt = substr(md5(mt_rand(), true), 8);
-
-        $block = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-        $pad   = $block - (strlen($data) % $block);
-
-        $data = $data . str_repeat(chr($pad), $pad);
-
-        // Setup encryption parameters
-        $td = mcrypt_module_open(MCRYPT_RIJNDAEL_128, "", MCRYPT_MODE_CBC, "");
-
-        $key_len = mcrypt_enc_get_key_size($td);
-        $iv_len  = mcrypt_enc_get_iv_size($td);
+        $salt = openssl_random_pseudo_bytes(8);
 
         $total_len = $key_len + $iv_len;
         $salted    = '';
         $dx        = '';
 
-        // Salt the key and iv
+        // Generate key and iv, see: EVP_BytesToKey
         while (strlen($salted) < $total_len) {
             $dx = md5($dx . $pass . $salt, true);
             $salted .= $dx;
@@ -753,11 +738,6 @@ class Mpay24Sdk
         $key = substr($salted, 0, $key_len);
         $iv  = substr($salted, $key_len, $iv_len);
 
-        mcrypt_generic_init($td, $key, $iv);
-        $encrypted_data = mcrypt_generic($td, $data);
-        mcrypt_generic_deinit($td);
-        mcrypt_module_close($td);
-
-        return chunk_split(array_shift(unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
+        return 'Salted__' . $salt . openssl_encrypt($data, $method, $key, true, $iv);
     }
 }
