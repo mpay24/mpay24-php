@@ -1,6 +1,6 @@
 # mpay24-php
 
-[![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)]()
+[![Packagist](https://img.shields.io/github/license/mpay24/mpay24-php.svg)]()
 
 Offical PHP SDK for SOAP Bindings
 
@@ -119,6 +119,5 @@ In order for the Mpay24 PHP SDK to work, your installation will have to meet the
 * [PHP >= 5.3.3](http://www.php.net/)
 * [cURL](http://at2.php.net/manual/de/book.curl.php)
 * [DOM](http://at2.php.net/manual/de/book.dom.php)
-* [Mcrypt](http://at2.php.net/manual/en/mcrypt)
 
 Please refer to http://www.php.net/phpinfo or consult your systems administrator in order to find out if your system fulfills the prerequisites.
