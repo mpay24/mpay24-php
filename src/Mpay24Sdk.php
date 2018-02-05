@@ -121,7 +121,7 @@ class Mpay24Sdk
      */
     public function checkRequirements(
         $checkDomExtension = true,
-        $checkCurlExtension = true,
+        $checkCurlExtension = true
     ) {
         if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true
             || ($checkCurlExtension && !in_array('curl', get_loaded_extensions()))
@@ -738,7 +738,7 @@ class Mpay24Sdk
         $key = substr($salted, 0, $key_len);
         $iv  = substr($salted, $key_len, $iv_len);
         $encrypted_data = openssl_encrypt($data, $method, $key, true, $iv);
-        
+
         return chunk_split(array_shift(unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
     }
 }
