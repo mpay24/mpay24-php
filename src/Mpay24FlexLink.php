@@ -53,7 +53,7 @@ class Mpay24FlexLink
             $this->mpay24Sdk = new Mpay24Sdk($config);
         }
 
-        $this->mpay24Sdk->checkRequirements(false, false, true);
+        $this->mpay24Sdk->checkRequirements(false, false);
     }
 
     /**

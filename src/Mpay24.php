@@ -35,7 +35,7 @@ class Mpay24
 
         $this->mpay24Sdk = new Mpay24Sdk($config);
 
-        $this->mpay24Sdk->checkRequirements(true, true, false);
+        $this->mpay24Sdk->checkRequirements(true, true);
     }
 
     /**
