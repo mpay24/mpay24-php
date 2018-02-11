@@ -113,6 +113,16 @@ class Mpay24Config
      */
     protected $log_path;
 
+	/**
+	 * @var string
+	 */
+	protected $ca_cert_path;
+
+	/**
+	 * @var string
+	 */
+	protected $ca_cert_file_name;
+
     public function __construct()
     {
         $args = func_get_args();
@@ -120,6 +130,10 @@ class Mpay24Config
         if (isset($args[0]) && is_array($args[0])) {
             $args = $args[0];
         }
+
+        // define if not defined, for backwards compatibility
+	    defined('MPAY24_CA_CERT_PATH') or define('MPAY24_CA_CERT_PATH', dirname(__FILE__) . '/bin/');
+	    defined('MPAY24_CA_CERT_FILE_NAME') or define('MPAY24_CA_CERT_FILE_NAME', 'cacert.pem');
 
         $merchantID         = (isset($args[0]) ? $args[0] : MPAY24_MERCHANT_ID);
         $soapPassword       = (isset($args[1]) ? $args[1] : MPAY24_SOAP_PASS);
@@ -137,6 +151,8 @@ class Mpay24Config
         $log_file           = (isset($args[13]) ? $args[13] : MPAY24_LOG_FILE);
         $log_path           = (isset($args[14]) ? $args[14] : MPAY24_LOG_PATH);
         $curl_log_file      = (isset($args[15]) ? $args[15] : MPAY24_CURL_LOG_FILE);
+        $ca_cert_path       = (isset($args[16]) ? $args[16] : MPAY24_CA_CERT_PATH);
+        $ca_cert_file_name  = (isset($args[17]) ? $args[17] : MPAY24_CA_CERT_FILE_NAME);
 
         $this->useTestSystem($testSystem);
         $this->setMerchantID($merchantID);
@@ -154,6 +170,8 @@ class Mpay24Config
         $this->setLogFile($log_file);
         $this->setLogPath($log_path);
         $this->setCurlLogFile($curl_log_file);
+        $this->setCaCertPath($ca_cert_path);
+        $this->setCaCertFileName($ca_cert_file_name);
     }
 
     /**
@@ -433,4 +451,36 @@ class Mpay24Config
     {
         $this->curl_log_file = ltrim($curl_log_file, "\\");
     }
+
+	/**
+	 * @return string
+	 */
+	public function getCaCertPath()
+	{
+		return $this->ca_cert_path;
+	}
+
+	/**
+	 * @param string $ca_cert_path
+	 */
+	public function setCaCertPath($ca_cert_path)
+	{
+		$this->ca_cert_path = $ca_cert_path;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCaCertFileName()
+	{
+		return $this->ca_cert_file_name;
+	}
+
+	/**
+	 * @param string $ca_cert_file_name
+	 */
+	public function setCaCertFileName($ca_cert_file_name)
+	{
+		$this->ca_cert_file_name = $ca_cert_file_name;
+	}
 }

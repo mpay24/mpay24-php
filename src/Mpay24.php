@@ -39,13 +39,6 @@ class Mpay24
     }
 
     /**
-     * @param string $caInfoPath
-     */
-    public function setCaInfoPath($caInfoPath) {
-        $this->mpay24Sdk->setCaInfoPath($caInfoPath);
-    }
-
-    /**
      * Get a list which includes all the payment methods (activated by mPAY24) for your mechant ID
      *
      * @return Responses\ListPaymentMethodsResponse
@@ -273,7 +266,7 @@ class Mpay24
      *
      * @param string $paymentType The payment type which will be used for the payment (CC or TOKEN)
      * @param        $customerId
-     * @param        $paymentData
+     * @param        $payment
      * @param        $additional
      *
      * @return Responses\CreateCustomerResponse

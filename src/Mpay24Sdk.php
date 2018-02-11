@@ -101,11 +101,6 @@ class Mpay24Sdk
      */
     protected $config;
 
-    /**
-     * @var string
-     */
-    protected $caInfoPath = __DIR__ .  '/bin/';
-
     public function __construct(Mpay24Config &$config = null)
     {
         if (is_null($config)) {
@@ -642,13 +637,6 @@ class Mpay24Sdk
     }
 
     /**
-     * @param string $caInfoPath
-     */
-    public function setCaInfoPath($caInfoPath) {
-        $this->caInfoPath = $caInfoPath;
-    }
-
-    /**
      * Create a curl request and send the created SOAP XML
      */
     protected function send()
@@ -672,7 +660,7 @@ class Mpay24Sdk
         }
 
         try {
-            curl_setopt($ch, CURLOPT_CAINFO, $this->caInfoPath . 'cacert.pem');
+            curl_setopt($ch, CURLOPT_CAINFO, $this->config->getCaCertPath() . $this->config->getCaCertFileName());
 
             if ($this->config->getProxyHost()) {
                 curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());
@@ -702,7 +690,7 @@ class Mpay24Sdk
             echo $dieMSG;
         }
 
-        if ($this->config->isEnableCurlLog()) {
+        if (isset($fh) && $this->config->isEnableCurlLog()) {
             fclose($fh);
         }
     }
