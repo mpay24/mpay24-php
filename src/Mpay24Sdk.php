@@ -14,6 +14,7 @@ use Mpay24\Requests\SelectPayment;
 use Mpay24\Requests\TransactionHistory;
 use Mpay24\Requests\TransactionStatus;
 use Mpay24\Requests\CreateCustomer;
+use Mpay24\Requests\DeleteProfile;
 use Mpay24\Responses\AcceptPaymentResponse;
 use Mpay24\Responses\CreatePaymentTokenResponse;
 use Mpay24\Responses\ListPaymentMethodsResponse;
@@ -26,6 +27,7 @@ use Mpay24\Responses\SelectPaymentResponse;
 use Mpay24\Responses\TransactionHistoryResponse;
 use Mpay24\Responses\TransactionStatusResponse;
 use Mpay24\Responses\CreateCustomerResponse;
+use Mpay24\Responses\DeleteProfileResponse;
 
 /**
  * Main Mpay24 PHP APIs Class.
@@ -618,6 +620,27 @@ class Mpay24Sdk
 
         $result = new CreateCustomerResponse($this->response);
 
+        return $result;
+    }
+
+    /**
+     * Deletes a profile.
+     *
+     * @param string      $customerId
+     * @param string|null $profileId
+     *
+     * @return DeleteProfileResponse
+     */
+    public function deleteProfile($customerId, $profileId = null)
+    {
+        $request = new DeleteProfile($this->config->getMerchantId());
+        $request->setCustomerId($customerId);
+        $request->setProfileId($profileId);
+
+        $this->request = $request->getXml();
+        $this->send();
+
+        $result = new DeleteProfileResponse($this->response);
         return $result;
     }
 
