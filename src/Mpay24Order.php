@@ -71,8 +71,9 @@ class Mpay24Order
             $attributeName = substr($method, 3);
 
             $value = $args[0];
+            $match = [];
 
-            if($name != 'Description') {
+            if($attributeName != 'Description') {
                 if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
                     $value = str_replace(',', '.', $match[0]);
                 }
