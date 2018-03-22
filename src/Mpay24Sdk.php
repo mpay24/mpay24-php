@@ -104,7 +104,7 @@ class Mpay24Sdk
     /**
      * @var string
      */
-    protected $caInfoPath = __DIR__ .  '/bin/';
+    protected $caInfoPath;
 
     public function __construct(Mpay24Config &$config = null)
     {
@@ -113,6 +113,8 @@ class Mpay24Sdk
         }
 
         $this->config = $config;
+        
+        $this->caInfoPath = __DIR__ . '/bin/';
     }
 
     /**
