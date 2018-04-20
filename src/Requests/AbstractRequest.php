@@ -104,6 +104,9 @@ abstract class AbstractRequest
     protected function appendArray(DOMNode &$parent, array &$list)
     {
         foreach ($list as $name => $value) {
+            if (strpos($name, 'item-') === 0) {
+                $name = explode_and_trim("-", $name)[0];
+            }
             if (is_array($value)) {
                 $element = $this->document->createElement($name);
                 $this->appendArray($element, $value);
