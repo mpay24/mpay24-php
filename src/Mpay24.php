@@ -280,6 +280,23 @@ class Mpay24
         return $createCustomerRes;
     }
 
+    /**
+     * Delete a profile.
+     *
+     * @param string      $customerId
+     * @param string|null $profileId
+     *
+     * @return Responses\DeleteProfileResponse
+     */
+    public function deleteProfile($customerId, $profileId = null)
+    {
+        $this->integrityCheck();
+
+        $response = $this->mpay24Sdk->deleteProfile($customerId, $profileId);
+        $this->recordedLastMessageExchange('DeleteProfile');
+        return $response;
+    }
+
     protected function integrityCheck()
     {
         if (!$this->mpay24Sdk) {
