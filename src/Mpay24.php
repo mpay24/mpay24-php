@@ -35,14 +35,7 @@ class Mpay24
 
         $this->mpay24Sdk = new Mpay24Sdk($config);
 
-        $this->mpay24Sdk->checkRequirements(true, true, false);
-    }
-
-    /**
-     * @param string $caInfoPath
-     */
-    public function setCaInfoPath($caInfoPath) {
-        $this->mpay24Sdk->setCaInfoPath($caInfoPath);
+        $this->mpay24Sdk->checkRequirements(true, true);
     }
 
     /**
@@ -273,7 +266,7 @@ class Mpay24
      *
      * @param string $paymentType The payment type which will be used for the payment (CC or TOKEN)
      * @param        $customerId
-     * @param        $paymentData
+     * @param        $payment
      * @param        $additional
      *
      * @return Responses\CreateCustomerResponse

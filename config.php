@@ -15,3 +15,5 @@ define('MPAY24_FLEX_LINK_TEST_SYSTEM', true);
 define('MPAY24_LOG_FILE', 'mpay24.log');
 define('MPAY24_LOG_PATH', dirname(__FILE__) . '/logs');
 define('MPAY24_CURL_LOG_FILE', 'curllog.log');
+define('MPAY24_CA_CERT_PATH', dirname(__FILE__) . '/src/bin/');
+define('MPAY24_CA_CERT_FILE_NAME', 'cacert.pem');
