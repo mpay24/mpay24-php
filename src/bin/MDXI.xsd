@@ -57,6 +57,9 @@
       <xs:enumeration value="SAFETYPAY"/>
       <xs:enumeration value="KLARNA"/>
       <xs:enumeration value="SOFORT"/>
+      <xs:enumeration value="MASTERPASS"/>
+      <xs:enumeration value="PAYOLUTION"/>
+      <xs:enumeration value="ELVSECURE"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="PaymentBrandType">
@@ -86,6 +89,9 @@
       <xs:enumeration value="INVOICE"/>
       <xs:enumeration value="HP"/>
       <xs:enumeration value="INTERNATIONAL"/>
+      <xs:enumeration value="MASTERPASS"/>
+      <xs:enumeration value="PAYOLUTION"/>
+      <xs:enumeration value="PAYSAFECASH"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="PaymentSubBrandType">
@@ -138,6 +144,7 @@
   </xs:simpleType>
   <xs:attributeGroup name="BasicAttributes">
     <xs:attribute name="Style" type="xs:string"/>
+    <xs:attribute name="HeaderStyle" type="xs:string"/>
     <xs:attribute name="LogoStyle" type="xs:string"/>
     <xs:attribute name="PageHeaderStyle" type="xs:string"/>
     <xs:attribute name="PageCaptionStyle" type="xs:string"/>
