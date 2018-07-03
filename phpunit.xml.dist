@@ -5,7 +5,7 @@
          colors="true">
     <testsuites>
         <testsuite name="mpay24-php">
-            <directory>./test</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 

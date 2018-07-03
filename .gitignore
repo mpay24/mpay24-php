@@ -2,7 +2,6 @@
 /.idea
 /.buildpath
 /.settings
-/tests
 .DS_STORE
 *.log
 /nbproject/
