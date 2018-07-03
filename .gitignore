@@ -1,3 +1,4 @@
+/composer.lock
 /.idea
 /.buildpath
 /.settings
@@ -5,3 +6,4 @@
 .DS_STORE
 *.log
 /nbproject/
+/vendor
