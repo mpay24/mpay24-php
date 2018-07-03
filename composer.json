@@ -6,9 +6,17 @@
       "Mpay24\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Mpay24Test\\": "test/"
+    }
+  },
   "require": {
     "php": ">=5.3.3",
     "ext-curl": "*",
     "ext-dom": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.2"
   }
 }
