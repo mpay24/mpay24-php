@@ -22,7 +22,7 @@ class ListProfilesResponse extends AbstractResponse
     /**
      * @var array
      */
-    protected $profiles = [];
+    protected $profiles = array();
 
     /**
      * @var int
@@ -113,8 +113,38 @@ class ListProfilesResponse extends AbstractResponse
 
                 if ($profile->getElementsByTagName('payment')->length) {
                     $this->profiles[$i]['payment'] = $profile->getElementsByTagName('payment')->item(0)->nodeValue;
+                    $this->profiles[$i]['paymentProfiles'] = $this->parsePaymentProfiles($profile->getElementsByTagName('payment'));
                 }
             }
         }
+    }
+
+    /**
+     * @param \DOMNodeList $paymentNodeList
+     * @return array
+     */
+    private function parsePaymentProfiles(\DOMNodeList $paymentNodeList)
+    {
+        $data = array();
+        foreach ($paymentNodeList as $paymentNode) {
+            $data[] = $this->parseSinglePaymentProfile($paymentNode);
+        }
+        return $data;
+    }
+
+    /**
+     * @param \DOMElement $paymentNode
+     * @return array
+     */
+    private function parseSinglePaymentProfile(\DOMElement $paymentNode)
+    {
+        $data = array();
+        /** @var \DOMElement $childNode */
+        foreach ($paymentNode->childNodes as $childNode) {
+            if ($childNode instanceof \DOMElement) {
+                $data[$childNode->nodeName] = trim($childNode->textContent);
+            }
+        }
+        return $data;
     }
 }
