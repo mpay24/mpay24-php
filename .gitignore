@@ -6,3 +6,4 @@
 *.log
 /nbproject/
 /vendor
+/config.php
