@@ -35,7 +35,7 @@ require_once('bootstrap.php');
 
 #### Configuration
 
-You can use the config.php file in the root directory
+You can use the config.php file in the root directory rename the sample file sample-config.php and configure your settings.
 
 You also can handover the parameters while crating the Mpay24 Object
 
