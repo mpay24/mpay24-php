@@ -84,6 +84,9 @@ abstract class AbstractPaymentResponse extends AbstractResponse
      */
     protected function parseResponse($body)
     {
+        if (!$body instanceof \DOMElement) {
+            return;
+        }
         if ($body->getElementsByTagName('mpayTID')->length > 0) {
             $this->mpayTid = (int)$body->getElementsByTagName('mpayTID')->item(0)->nodeValue;
         }

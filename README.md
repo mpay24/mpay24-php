@@ -1,6 +1,7 @@
 # mpay24-php
 
 [![Packagist](https://img.shields.io/github/license/mpay24/mpay24-php.svg)]()
+[![Build Status](https://travis-ci.org/mpay24/mpay24-php.svg?branch=master)](https://travis-ci.org/mpay24/mpay24-php)
 
 Offical PHP SDK for SOAP Bindings
 

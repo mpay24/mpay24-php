@@ -53,8 +53,8 @@ abstract class AbstractResponse
      */
     public function __construct($response)
     {
+        $this->responseAsDom = new DOMDocument();
         if ('' != $response) {
-            $this->responseAsDom = new DOMDocument();
 
             if (preg_match('/<title>401 Unauthorized<\/title>/', $response) == 1) {
                 $this->status     = 'ERROR';
