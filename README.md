@@ -45,7 +45,8 @@ require_once("../bootstrap.php");
 use Mpay24\Mpay24;
 use Mpay24\Mpay24Order; //if you are using paymentPage
 
-$mpay24 = new Mpay24('9****', '*********');
+$mpay24 = new Mpay24('9****', '*********', true); //Testsystem
+$mpay24 = new Mpay24('7****', '*********', false); //Livesystem
 
 ```
 
