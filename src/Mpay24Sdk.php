@@ -82,7 +82,7 @@ class Mpay24Sdk
      *
      * @const string
      */
-    const MIN_PHP_VERSION = "5.3.3";
+    const MIN_PHP_VERSION = "5.6";
 
     /**
      * The whole soap-xml (envelope and body), which is to be sent to mPAY24 as request

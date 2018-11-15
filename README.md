@@ -118,7 +118,7 @@ $mpay24->paymentStatusByTID("123 TID");
 
 In order for the Mpay24 PHP SDK to work, your installation will have to meet the following prerequisites:
 
-* [PHP >= 5.3.3](http://www.php.net/)
+* [PHP >= 5.6](http://www.php.net/)
 * [cURL](http://at2.php.net/manual/de/book.curl.php)
 * [DOM](http://at2.php.net/manual/de/book.dom.php)
 
