@@ -60,6 +60,7 @@
       <xs:enumeration value="MASTERPASS"/>
       <xs:enumeration value="PAYOLUTION"/>
       <xs:enumeration value="ELVSECURE"/>
+      <xs:enumeration value="IDEAL"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="PaymentBrandType">
