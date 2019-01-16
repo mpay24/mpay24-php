@@ -13,8 +13,7 @@
                 <updated>2018-06-05T10:54:02Z</updated>
                 <payment>
                     <pMethodID>5</pMethodID>
-                    <profileID>
-                    </profileID>
+                    <profileID></profileID>
                     <updated>2018-06-01T12:05:08Z</updated>
                     <identifier>************1111</identifier>
                     <expires>2025-05-01</expires>

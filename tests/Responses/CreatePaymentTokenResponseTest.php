@@ -27,6 +27,10 @@ class CreatePaymentTokenResponseTest extends TestCase
         $this->assertSame('random+token3COK46edPNN68cg1DRFkxoXkbcRW4Owp', $response->getToken());
         $this->assertSame('random1api2key3nyp8xbmsaxdrudwx3zm6cgzvoeskccz7vnjdm35wwjusnjfce', $response->getApiKey());
         $this->assertSame('https://example.com/location', $response->getLocation());
+
+        $this->assertTrue($response->hasNoException());
+        $this->assertTrue($response->hasNoError());
+        $this->assertTrue($response->hasStatusOk());
     }
 
     public function testConstructErrorProfileNotFound()
@@ -41,6 +45,10 @@ class CreatePaymentTokenResponseTest extends TestCase
         $this->assertNull($response->getToken());
         $this->assertNull($response->getApiKey());
         $this->assertNull($response->getLocation());
+
+        $this->assertTrue($response->hasNoException());
+        $this->assertFalse($response->hasNoError());
+        $this->assertFalse($response->hasStatusOk());
     }
 
     public function testConstructErrorPTypeMismatch()
@@ -54,5 +62,9 @@ class CreatePaymentTokenResponseTest extends TestCase
         $this->assertNull($response->getToken());
         $this->assertNull($response->getApiKey());
         $this->assertNull($response->getLocation());
+
+        $this->assertFalse($response->hasNoException());
+        $this->assertFalse($response->hasNoError());
+        $this->assertFalse($response->hasStatusOk());
     }
 }

@@ -34,6 +34,10 @@ class ListProfilesResponseTest extends TestCase
 
         $this->assertSame($expectedProfiles, $response->getProfiles());
         $this->assertSame($expectedProfiles[0], $response->getProfile(0));
+
+        $this->assertTrue($response->hasNoException());
+        $this->assertTrue($response->hasNoError());
+        $this->assertTrue($response->hasStatusOk());
     }
 
     public function testConstructSingleCustomerWithPaymentProfiles()
@@ -74,5 +78,9 @@ class ListProfilesResponseTest extends TestCase
         ];
 
         $this->assertSame($expectedPaymentProfiles, $profile['paymentProfiles']);
+
+        $this->assertTrue($response->hasNoException());
+        $this->assertTrue($response->hasNoError());
+        $this->assertTrue($response->hasStatusOk());
     }
 }
