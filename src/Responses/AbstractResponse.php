@@ -4,6 +4,11 @@ namespace Mpay24\Responses;
 
 use DOMDocument;
 use Exception;
+use Mpay24\Exception\CouldNotLoadResponseXMLException;
+use Mpay24\Exception\EmptyResponseException;
+use Mpay24\Exception\MissingResponseReturnCodeException;
+use Mpay24\Exception\MissingResponseStatusException;
+use Mpay24\Exception\UnauthorizedAccessException;
 
 /**
  * The GeneralResponse class contains the status of a response and return code, which was delivered by mPAY24 as an answer of your request
@@ -46,57 +51,63 @@ abstract class AbstractResponse
     protected $createdAt;
 
     /**
+     * @var Exception
+     */
+    protected $exception;
+
+    /**
      * Sets the basic values from the response from mPAY24: status and return code
      *
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
+     *
+     * @throws CouldNotLoadResponseXMLException
+     * @throws EmptyResponseException
+     * @throws UnauthorizedAccessException
+     * @throws MissingResponseStatusException
+     * @throws MissingResponseReturnCodeException
      */
     public function __construct($response)
     {
         $this->responseAsDom = new DOMDocument();
-        if ('' != $response) {
+        $this->createdAt     = time();
+
+        try {
+            if ('' != $response) {
+                throw new EmptyResponseException();
+            }
 
             if (preg_match('/<title>401 Unauthorized<\/title>/', $response) == 1) {
-                $this->status     = 'ERROR';
-                $this->returnCode = "401 Unauthorized: check your merchant ID and password";
-
-                return;
+                throw new UnauthorizedAccessException();
             }
 
             try {
                 $this->responseAsDom->loadXML($response);
-            } catch (Exception $e) {
-                $this->status     = 'ERROR';
-                $this->returnCode = 'Unknown Error';
-
-                return;
+            } catch (Exception $exception) {
+                throw new CouldNotLoadResponseXMLException($exception->getMessage());
             }
 
-            if (!empty($this->responseAsDom) && is_object($this->responseAsDom)) {
-                if ($this->responseAsDom->getElementsByTagName('status')->length == 0
-                    || $this->responseAsDom->getElementsByTagName('returnCode')->length == 0
-                ) {
-                    $this->status     = "ERROR";
-                    $this->returnCode = urldecode($response);
-
-                    if ($this->responseAsDom->getElementsByTagName('faultcode')->length > 0
-                        && $this->responseAsDom->getElementsByTagName('faultstring')->length > 0
-                    ) {
-                        $this->returnCode = $this->responseAsDom->getElementsByTagName('faultcode')->item(0)->nodeValue;
-                        $this->returnCode .= ' - ';
-                        $this->returnCode .= $this->responseAsDom->getElementsByTagName('faultstring')->item(0)->nodeValue;
-                    }
-                } else {
-                    $this->status     = $this->responseAsDom->getElementsByTagName('status')->item(0)->nodeValue;
-                    $this->returnCode = $this->responseAsDom->getElementsByTagName('returnCode')->item(0)->nodeValue;
-                }
+            if (empty($this->responseAsDom)) {
+                throw new EmptyResponseException();
             }
-        } else {
-            $this->status     = "ERROR";
-            $this->returnCode = "The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!";
+
+            if ($this->responseAsDom->getElementsByTagName('status')->length == 0) {
+                throw new MissingResponseStatusException($this->getFaultMessage());
+            }
+
+            if ($this->responseAsDom->getElementsByTagName('returnCode')->length == 0) {
+                throw new MissingResponseReturnCodeException($this->getFaultMessage());
+            }
+        } catch (Exception $exception) {
+            $this->setStatus('ERROR');
+            $this->setReturnCode($exception->getMessage());
+            $this->exception = $exception;
+
+            return;
         }
 
-        $this->createdAt = time();
+        $this->setStatus($this->responseAsDom->getElementsByTagName('status')->item(0)->nodeValue);
+        $this->setReturnCode($this->responseAsDom->getElementsByTagName('returnCode')->item(0)->nodeValue);
     }
 
     /**
@@ -140,6 +151,14 @@ abstract class AbstractResponse
     /**
      * @return bool
      */
+    public function hasNoException()
+    {
+        return is_null($this->exception);
+    }
+
+    /**
+     * @return bool
+     */
     public function hasStatusOk()
     {
         return $this->getStatus() == 'OK';
@@ -160,12 +179,28 @@ abstract class AbstractResponse
      * Set the return code in the response, which was delivered by mPAY24
      *
      * @param $returnCode
-     *
-     * @return mixed
      */
     protected function setReturnCode($returnCode)
     {
-        return $this->returnCode = $returnCode;
+        $this->returnCode = $returnCode;
+    }
+
+    /**
+     * @return string|null
+     */
+    protected function getFaultMessage()
+    {
+        if ($this->responseAsDom->getElementsByTagName('faultcode')->length > 0
+            && $this->responseAsDom->getElementsByTagName('faultstring')->length > 0
+        ) {
+            $message = $this->responseAsDom->getElementsByTagName('faultcode')->item(0)->nodeValue;
+            $message .= ' - ';
+            $message .= $this->responseAsDom->getElementsByTagName('faultstring')->item(0)->nodeValue;
+
+            return $message;
+        }
+
+        return null;
     }
 
     /**

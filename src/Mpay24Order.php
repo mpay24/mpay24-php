@@ -139,6 +139,8 @@ class Mpay24Order
                 return new Mpay24Order($this->doc, $node);
             }
         }
+
+        return null;
     }
 
     /**
@@ -212,20 +214,6 @@ class Mpay24Order
     public function toXML()
     {
         return $this->doc->saveXML();
-    }
-
-    /**
-     * Validate the ORDER with the schema, defined in the constant MDXI_SCHEMA and return TRUE if the validation was successful or FALSE
-     *
-     * @return bool
-     *
-     * @deprecated 5.0.0
-     */
-    public function validate()
-    {
-        $mdxi = "/bin/MDXI.xsd";
-
-        return $this->doc->schemaValidate(__DIR__ . $mdxi);
     }
 
     /**

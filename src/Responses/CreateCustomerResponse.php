@@ -31,7 +31,7 @@ class CreateCustomerResponse extends AbstractResponse
     {
         parent::__construct($response);
 
-        if ($this->hasNoError()) {
+        if ($this->hasNoException()) {
 
             $this->parseResponse($this->getBody('CreateCustomerResponse'));
         }

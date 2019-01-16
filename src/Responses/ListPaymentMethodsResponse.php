@@ -59,7 +59,7 @@ class ListPaymentMethodsResponse extends AbstractResponse
     {
         parent::__construct($response);
 
-        if ($this->hasNoError()) {
+        if ($this->hasNoException()) {
 
             $this->parseResponse($this->getBody('ListPaymentMethodsResponse'));
         }

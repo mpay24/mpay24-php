@@ -23,7 +23,7 @@ class ManualCreditResponse extends AbstractTransactionResponse
     {
         parent::__construct($response);
 
-        if ($this->hasNoError()) {
+        if ($this->hasNoException()) {
 
             $this->parseResponse($this->getBody('ManualCreditResponse'));
         }
