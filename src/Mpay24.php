@@ -73,20 +73,6 @@ class Mpay24
 
         $mdxiXML = $mdxi->toXML();
 
-        if (!$this->mpay24Sdk->proxyUsed()) {
-            if (!$mdxi->validate()) {
-                $errors = "";
-
-                foreach (libxml_get_errors() as $error) {
-                    $errors .= trim($error->message) . "<br>";
-                }
-
-                $this->mpay24Sdk->dieWithMsg("The schema you have created is not valid!" . "<br><br>" . $errors . "<textarea cols='100' rows='30'>$mdxiXML</textarea>");
-            }
-        }
-
-        $mdxiXML = $mdxi->toXML();
-
         $payResult = $this->mpay24Sdk->selectPayment($mdxiXML);
 
         $this->recordedLastMessageExchange('PaymentPage');
@@ -294,6 +280,7 @@ class Mpay24
 
         $response = $this->mpay24Sdk->deleteProfile($customerId, $profileId);
         $this->recordedLastMessageExchange('DeleteProfile');
+
         return $response;
     }
 

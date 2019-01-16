@@ -63,7 +63,7 @@ class Mpay24Order
      *                       The first argument must be a positive integer (will be used as a index)
      *                       The second argument is optional and would be used as value for the DOMNode
      *
-     * @return Mpay24Order
+     * @return Mpay24Order|null
      */
     public function __call($method, $args)
     {
@@ -73,7 +73,7 @@ class Mpay24Order
             $value = $args[0];
             $match = [];
 
-            if($attributeName != 'Description') {
+            if ($attributeName != 'Description') {
                 if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
                     $value = str_replace(',', '.', $match[0]);
                 }
@@ -218,6 +218,8 @@ class Mpay24Order
      * Validate the ORDER with the schema, defined in the constant MDXI_SCHEMA and return TRUE if the validation was successful or FALSE
      *
      * @return bool
+     *
+     * @deprecated 5.0.0
      */
     public function validate()
     {
