@@ -60,12 +60,6 @@ abstract class AbstractResponse
      *
      * @param string $response
      *          The SOAP response from mPAY24 (in XML form)
-     *
-     * @throws CouldNotLoadResponseXMLException
-     * @throws EmptyResponseException
-     * @throws UnauthorizedAccessException
-     * @throws MissingResponseStatusException
-     * @throws MissingResponseReturnCodeException
      */
     public function __construct($response)
     {
