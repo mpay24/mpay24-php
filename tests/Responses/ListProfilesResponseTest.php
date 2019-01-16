@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class ListProfilesResponseTest
- * @package Mpay24Test\Responses
+ * @package    Mpay24Test\Responses
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
  * @author     Stefan Polzer <develop@ps-webdesign.com>
@@ -20,7 +20,7 @@ class ListProfilesResponseTest extends TestCase
     {
         $response = new ListProfilesResponse(file_get_contents(__DIR__ . '/_files/list-profiles.response.no-payment-profiles.xml'));
         $this->assertSame('OK', $response->getStatus());
-        $this->assertEquals('OK', $response->getReturnCode());
+        $this->assertSame('OK', $response->getReturnCode());
 
         $this->assertSame(1, $response->getProfileCount());
         $this->assertSame(1, $response->getTotalNumber());
@@ -40,7 +40,7 @@ class ListProfilesResponseTest extends TestCase
     {
         $response = new ListProfilesResponse(file_get_contents(__DIR__ . '/_files/list-profiles.response.with-payment-profiles.xml'));
         $this->assertSame('OK', $response->getStatus());
-        $this->assertEquals('OK', $response->getReturnCode());
+        $this->assertSame('OK', $response->getReturnCode());
 
         $this->assertSame(1, $response->getProfileCount());
         $this->assertSame(1, $response->getTotalNumber());

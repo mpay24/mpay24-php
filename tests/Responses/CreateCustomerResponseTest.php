@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class CreateCustomerResponseTest
- * @package Mpay24Test\Responses
+ * @package    Mpay24Test\Responses
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
  * @author     Stefan Polzer <develop@ps-webdesign.com>
@@ -20,7 +20,7 @@ class CreateCustomerResponseTest extends TestCase
     {
         $response = new CreateCustomerResponse(file_get_contents(__DIR__ . '/_files/create-customer.response.ok.xml'));
         $this->assertSame('OK', $response->getStatus());
-        $this->assertEquals('PROFILE_CREATED', $response->getReturnCode());
+        $this->assertSame('PROFILE_CREATED', $response->getReturnCode());
 
         $this->assertNull($response->getErrNo());
 
@@ -33,7 +33,7 @@ class CreateCustomerResponseTest extends TestCase
     {
         $response = new CreateCustomerResponse(file_get_contents(__DIR__ . '/_files/create-customer.response.error.xml'));
         $this->assertSame('ERROR', $response->getStatus());
-        $this->assertEquals('PROFILEID_NOT_CORRECT', $response->getReturnCode());
+        $this->assertSame('PROFILEID_NOT_CORRECT', $response->getReturnCode());
 
         $this->assertSame(7, $response->getErrNo());
 

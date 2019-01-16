@@ -5,9 +5,9 @@
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                    xmlns:etp="https://www.mpay24.com/soap/etp/1.5/ETP.wsdl">
     <SOAP-ENV:Body>
-        <etp:CreateCustomerResponse>
-            <status>OK</status>
-            <returnCode>PROFILE_CREATED</returnCode>
-        </etp:CreateCustomerResponse>
+        <SOAP-ENV:Fault>
+            <faultcode>SOAP-ENV:Client</faultcode>
+            <faultstring>Validation constraint violation: data type mismatch in element 'pType'</faultstring>
+        </SOAP-ENV:Fault>
     </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

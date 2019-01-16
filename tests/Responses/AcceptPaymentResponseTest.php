@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Class AcceptPaymentResponseTest
- * @package Mpay24Test\Responses
+ * @package    Mpay24Test\Responses
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
  * @author     Stefan Polzer <develop@ps-webdesign.com>
@@ -20,7 +20,7 @@ class AcceptPaymentResponseTest extends TestCase
     {
         $response = new AcceptPaymentResponse(file_get_contents(__DIR__ . '/_files/accept-payment.response.ok.xml'));
         $this->assertSame('OK', $response->getStatus());
-        $this->assertEquals('OK', $response->getReturnCode());
+        $this->assertSame('OK', $response->getReturnCode());
 
         $this->assertSame(12345, $response->getMpayTid());
         $this->assertNull($response->getErrNo());
@@ -36,7 +36,7 @@ class AcceptPaymentResponseTest extends TestCase
     {
         $response = new AcceptPaymentResponse(file_get_contents(__DIR__ . '/_files/accept-payment.response.error.xml'));
         $this->assertSame('ERROR', $response->getStatus());
-        $this->assertEquals('EXTERNAL_ERROR', $response->getReturnCode());
+        $this->assertSame('EXTERNAL_ERROR', $response->getReturnCode());
 
         $this->assertSame(12345, $response->getMpayTid());
         $this->assertSame(100, $response->getErrNo());
@@ -52,7 +52,7 @@ class AcceptPaymentResponseTest extends TestCase
     {
         $response = new AcceptPaymentResponse('');
         $this->assertSame('ERROR', $response->getStatus());
-        $this->assertEquals('The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!', $response->getReturnCode());
+        $this->assertSame('The response is empty! Probably your request to mPAY24 was not sent! Please see your server log for more information!', $response->getReturnCode());
 
         $this->assertNull($response->getMpayTid());
         $this->assertNull($response->getErrNo());

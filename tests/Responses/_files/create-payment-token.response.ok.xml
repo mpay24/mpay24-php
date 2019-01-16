@@ -5,9 +5,12 @@
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                    xmlns:etp="https://www.mpay24.com/soap/etp/1.5/ETP.wsdl">
     <SOAP-ENV:Body>
-        <etp:CreateCustomerResponse>
+        <etp:CreatePaymentTokenResponse>
             <status>OK</status>
-            <returnCode>PROFILE_CREATED</returnCode>
-        </etp:CreateCustomerResponse>
+            <returnCode>REDIRECT</returnCode>
+            <token>random+token3COK46edPNN68cg1DRFkxoXkbcRW4Owp</token>
+            <apiKey>random1api2key3nyp8xbmsaxdrudwx3zm6cgzvoeskccz7vnjdm35wwjusnjfce</apiKey>
+            <location>https://example.com/location</location>
+        </etp:CreatePaymentTokenResponse>
     </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
