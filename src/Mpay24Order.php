@@ -40,14 +40,14 @@ class Mpay24Order
      */
     public function __construct($doc = null, $node = null)
     {
-        if ($doc) {
+        if ($doc instanceof DOMNode) {
             $this->doc = $doc;
         } else {
             $this->doc               = new DOMDocument("1.0", "UTF-8");
             $this->doc->formatOutput = true;
         }
 
-        if ($node) {
+        if ($node instanceof DOMNode) {
             $this->node = $node;
         } else {
             $this->node = $this->doc;

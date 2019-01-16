@@ -38,6 +38,14 @@ class CreateCustomerResponse extends AbstractResponse
     }
 
     /**
+     * @return int
+     */
+    public function getErrNo()
+    {
+        return $this->errNo;
+    }
+
+    /**
      * Parse the CreateCustomerResponse message and save the data to the corresponding attributes
      *
      * @param \DOMElement $body

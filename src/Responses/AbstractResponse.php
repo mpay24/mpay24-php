@@ -67,7 +67,7 @@ abstract class AbstractResponse
         $this->createdAt     = time();
 
         try {
-            if ('' != $response) {
+            if ('' == $response) {
                 throw new EmptyResponseException();
             }
 

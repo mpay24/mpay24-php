@@ -2,8 +2,6 @@
 
 namespace Mpay24\Requests;
 
-use InvalidArgumentException;
-
 /**
  * The ListPaymentMethods class create the body for te SOAP Requests
  *
