@@ -25,6 +25,10 @@ class AcceptPaymentResponse extends AbstractPaymentResponse
     public function __construct($response)
     {
         parent::__construct($response);
-        $this->parseResponse($this->getBody('AcceptPaymentResponse'));
+
+        if ($this->hasNoError()) {
+
+            $this->parseResponse($this->getBody('AcceptPaymentResponse'));
+        }
     }
 }

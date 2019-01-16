@@ -13,8 +13,13 @@ namespace Mpay24\Responses;
  * @filesource CreateCustomerResponse.php
  * @license    MIT
  */
-class CreateCustomerResponse extends AbstractPaymentResponse
+class CreateCustomerResponse extends AbstractResponse
 {
+    /**
+     * @var int
+     */
+    protected $errNo;
+
     /**
      * CreateCustomerResponse constructor.
      *      The SOAP response from mPAY24 (in XML form)
@@ -25,6 +30,22 @@ class CreateCustomerResponse extends AbstractPaymentResponse
     public function __construct($response)
     {
         parent::__construct($response);
-        $this->parseResponse($this->getBody('CreateCustomerResponse'));
+
+        if ($this->hasNoError()) {
+
+            $this->parseResponse($this->getBody('CreateCustomerResponse'));
+        }
+    }
+
+    /**
+     * Parse the CreateCustomerResponse message and save the data to the corresponding attributes
+     *
+     * @param \DOMElement $body
+     */
+    protected function parseResponse($body)
+    {
+        if ($body->getElementsByTagName('errNo')->length > 0) {
+            $this->errNo = (int)$body->getElementsByTagName('errNo')->item(0)->nodeValue;
+        }
     }
 }
