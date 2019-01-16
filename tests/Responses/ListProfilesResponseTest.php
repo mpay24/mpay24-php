@@ -2,25 +2,35 @@
 
 namespace Mpay24Test\Responses;
 
-
 use Mpay24\Responses\ListProfilesResponse;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class ListProfilesResponseTest
+ * @package Mpay24Test\Responses
+ *
+ * @author     mPAY24 GmbH <support@mpay24.com>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
+ * @filesource ListProfilesResponseTest.php
+ * @license    MIT
+ */
 class ListProfilesResponseTest extends TestCase
 {
     public function testConstructSingleCustomerWithNoPaymentProfiles()
     {
-        $response = new ListProfilesResponse(file_get_contents(__DIR__.'/_files/list-profiles.response.no-payment-profiles.xml'));
+        $response = new ListProfilesResponse(file_get_contents(__DIR__ . '/_files/list-profiles.response.no-payment-profiles.xml'));
+        $this->assertSame('OK', $response->getStatus());
+        $this->assertEquals('OK', $response->getReturnCode());
 
         $this->assertSame(1, $response->getProfileCount());
         $this->assertSame(1, $response->getTotalNumber());
 
-        $expectedProfiles = array(
-            array(
+        $expectedProfiles = [
+            [
                 'customerID' => '1234',
-                'updated' => '2018-06-05T10:54:02Z',
-            ),
-        );
+                'updated'    => '2018-06-05T10:54:02Z',
+            ]
+        ];
 
         $this->assertSame($expectedProfiles, $response->getProfiles());
         $this->assertSame($expectedProfiles[0], $response->getProfile(0));
@@ -28,7 +38,9 @@ class ListProfilesResponseTest extends TestCase
 
     public function testConstructSingleCustomerWithPaymentProfiles()
     {
-        $response = new ListProfilesResponse(file_get_contents(__DIR__.'/_files/list-profiles.response.with-payment-profiles.xml'));
+        $response = new ListProfilesResponse(file_get_contents(__DIR__ . '/_files/list-profiles.response.with-payment-profiles.xml'));
+        $this->assertSame('OK', $response->getStatus());
+        $this->assertEquals('OK', $response->getReturnCode());
 
         $this->assertSame(1, $response->getProfileCount());
         $this->assertSame(1, $response->getTotalNumber());
@@ -44,24 +56,23 @@ class ListProfilesResponseTest extends TestCase
 
         $this->assertCount(2, $profile['paymentProfiles']);
 
-        $expectedPaymentProfiles = array(
-            array(
-                'pMethodID' => '5',
-                'profileID' => '',
-                'updated' => '2018-06-01T12:05:08Z',
+        $expectedPaymentProfiles = [
+            [
+                'pMethodID'  => '5',
+                'profileID'  => '',
+                'updated'    => '2018-06-01T12:05:08Z',
                 'identifier' => '************1111',
-                'expires' => '2025-05-01',
-            ),
-            array(
-                'pMethodID' => '5',
-                'profileID' => 'testprofile3',
-                'updated' => '2018-07-02T12:45:35Z',
+                'expires'    => '2025-05-01',
+            ],
+            [
+                'pMethodID'  => '5',
+                'profileID'  => 'testprofile3',
+                'updated'    => '2018-07-02T12:45:35Z',
                 'identifier' => '************1234',
-                'expires' => '2026-06-02',
-            ),
-        );
+                'expires'    => '2026-06-02',
+            ]
+        ];
 
         $this->assertSame($expectedPaymentProfiles, $profile['paymentProfiles']);
-
     }
 }
