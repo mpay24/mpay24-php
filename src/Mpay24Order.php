@@ -176,8 +176,6 @@ class Mpay24Order
         $xpath = new DOMXPath($this->doc);
         $qry   = $xpath->query($name, $this->node);
 
-        $value = str_replace('&', '&amp;', $value);
-
         if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
             $value = str_replace(',', '.', $match[0]);
         }
@@ -185,11 +183,9 @@ class Mpay24Order
         if (preg_match('/\b[0-9]+.[0-9]+\b/', $value, $match) &&
             $value == $match[0] &&
             $name != 'shippingCosts' &&
-            (is_int(strpos($name, 'price')) ||
-                is_int(strpos($name, 'Price')) ||
-                is_int(strpos($name, 'Tax')) ||
-                is_int(strpos($name, 'cost')) ||
-                is_int(strpos($name, 'Cost'))
+            (is_int(strpos(strtolower($name), 'price'))
+                || is_int(strpos(strtolower($name), 'tax'))
+                || is_int(strpos(strtolower($name), 'cost'))
             )
         ) {
             $value = number_format(floatval($match[0]), 2, '.', '');
@@ -197,6 +193,8 @@ class Mpay24Order
 
         if (strpos($value, "<") || strpos($value, ">")) {
             $value = "<![CDATA[" . $this->xmlEncode($value) . "]]>";
+        } else {
+            $value = $this->doc->createTextNode($value);
         }
 
         if ($qry->length > 0) {
@@ -216,6 +214,7 @@ class Mpay24Order
         return $this->doc->saveXML();
     }
 
+    /**
      * Encode the XML-characters in a string
      *
      * @param string $txt A string to be encoded

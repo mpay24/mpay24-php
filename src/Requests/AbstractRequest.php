@@ -109,7 +109,8 @@ abstract class AbstractRequest
                 $this->appendArray($element, $value);
                 $parent->appendChild($element);
             } else {
-                $element = $this->document->createElement($name, $value);
+                $element = $this->document->createElement($name);
+                $element->appendChild($this->document->createTextNode($value));
                 $parent->appendChild($element);
             }
         }
