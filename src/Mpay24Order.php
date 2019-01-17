@@ -3,8 +3,9 @@
 namespace Mpay24;
 
 use DOMDocument;
-use DOMNode;
+use DOMElement;
 use DOMXPath;
+use InvalidArgumentException;
 
 /**
  * The ORDER class provides the functioanallity to create a XML, which is validatable with the MDXI.xsd
@@ -23,35 +24,32 @@ class Mpay24Order
      *
      * @var DOMDocument
      */
-    protected $doc;
+    protected $document;
 
     /**
      * A DOMNode from the MDXI XML, or the whole MDXI XML, represented as DOMDocument
      *
-     * @var DOMDocument|DOMNode
+     * @var DOMElement
      */
     protected $node;
 
     /**
      * Create a DOMDocument or a ORDER-Object with root $doc
      *
-     * @param DOMNode $doc  The root DOMNode of an XML tree
-     * @param DOMNode $node The child DOMNode
+     * @param DOMDocument $document The root DOMNode of an XML tree
+     * @param DOMElement  $node     The child DOMNode
      */
-    public function __construct($doc = null, $node = null)
+    public function __construct($document = null, $node = null)
     {
-        if ($doc instanceof DOMNode) {
-            $this->doc = $doc;
-        } else {
-            $this->doc               = new DOMDocument("1.0", "UTF-8");
-            $this->doc->formatOutput = true;
+        if (!is_a($document, DOMDocument::class)) {
+            $document = new DOMDocument("1.0", "UTF-8");
+
+            $document->formatOutput = true;
         }
 
-        if ($node instanceof DOMNode) {
-            $this->node = $node;
-        } else {
-            $this->node = $this->doc;
-        }
+        $this->document = $document;
+
+        $this->node = is_a($node, DOMElement::class) ? $node : $this->document;
     }
 
     /**
@@ -63,84 +61,57 @@ class Mpay24Order
      *                       The first argument must be a positive integer (will be used as a index)
      *                       The second argument is optional and would be used as value for the DOMNode
      *
-     * @return Mpay24Order|null
+     * @return Mpay24Order
+     *
+     * @throws InvalidArgumentException
      */
     public function __call($method, $args)
     {
-        if (substr($method, 0, 3) == "set" && $args[0] != '') {
+        if (substr($method, 0, 3) == "set" && isset($args[0])) {
             $attributeName = substr($method, 3);
 
             $value = $args[0];
-            $match = [];
 
-            if ($attributeName != 'Description') {
-                if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
-                    $value = str_replace(',', '.', $match[0]);
-                }
-            }
-
-            if (preg_match('/\b[0-9]+.[0-9]+\b/', $value, $match) &&
-                $value == $match[0] &&
-                $attributeName != 'shippingCosts' &&
-                (is_int(strpos($attributeName, 'price')) ||
-                    is_int(strpos($attributeName, 'Price')) ||
-                    is_int(strpos($attributeName, 'Tax')) ||
-                    is_int(strpos($attributeName, 'cost')) ||
-                    is_int(strpos($attributeName, 'Cost'))
-                )
-            ) {
-                $value = number_format(floatval($match[0]), 2, '.', '');
+            if ($this->isDecimalAttribute($attributeName)) {
+                $value = $this->formatDecimal($value);
             }
 
             $this->node->setAttribute($attributeName, $value);
-        } elseif ($args[0] != '') {
+        } elseif (isset($args[0])) {
             if (sizeof($args) > 2) {
-                die("It is not allowed to set more than 2 arguments for the node '$method'!");
+                throw new InvalidArgumentException("It is not allowed to set more than 2 arguments for the node '$method'!");
             }
             if (!is_int($args[0]) || $args[0] < 1) {
-                die("The first argument for the node '$method' must be whole number, bigger than 0!");
+                throw new InvalidArgumentException("The first argument for the node '$method' must be whole number, bigger than 0!");
             }
 
             $name = $method . '[' . $args[0] . ']';
 
-            $xpath = new DOMXPath($this->doc);
-            $qry   = $xpath->query($name, $this->node);
+            $xpath = new DOMXPath($this->document);
+            $query = $xpath->query($name, $this->node);
 
-            if ($qry->length > 0) {
-                return new Mpay24Order($this->doc, $qry->item(0));
+            if ($query->length > 0) {
+                return new Mpay24Order($this->document, $query->item(0));
             } else {
-                if (array_key_exists(1, $args)) {
+                if (isset($args[1])) {
                     $value = $args[1];
 
-                    if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
-                        $value = str_replace(',', '.', $match[0]);
+                    if ($this->isDecimalElement($method)) {
+                        $value = $this->formatDecimal($value);
                     }
 
-                    if (preg_match('/\b[0-9]+.[0-9]+\b/', $value, $match) &&
-                        $value == $match[0] &&
-                        $name != 'shippingCosts' &&
-                        (is_int(strpos($name, 'price')) ||
-                            is_int(strpos($name, 'Price')) ||
-                            is_int(strpos($name, 'Tax')) ||
-                            is_int(strpos($name, 'cost')) ||
-                            is_int(strpos($name, 'Cost'))
-                        )
-                    ) {
-                        $value = number_format(floatval($match[0]), 2, '.', '');
-                    }
-
-                    $node = $this->doc->createElement($method, $value);
+                    $node = $this->document->createElement($method, $value);
                 } else {
-                    $node = $this->doc->createElement($method);
+                    $node = $this->document->createElement($method);
                 }
 
                 $node = $this->node->appendChild($node);
 
-                return new Mpay24Order($this->doc, $node);
+                return new Mpay24Order($this->document, $node);
             }
         }
 
-        return null;
+        throw new InvalidArgumentException("At least one Argument must be provided for node '$method'!");
     }
 
     /**
@@ -152,16 +123,16 @@ class Mpay24Order
      */
     public function __get($name)
     {
-        $xpath = new DOMXPath($this->doc);
-        $qry   = $xpath->query($name, $this->node);
+        $xpath = new DOMXPath($this->document);
+        $query = $xpath->query($name, $this->node);
 
-        if ($qry->length > 0) {
-            return new Mpay24Order($this->doc, $qry->item(0));
+        if ($query->length > 0) {
+            return new Mpay24Order($this->document, $query->item(0));
         } else {
-            $node = $this->doc->createElement($name);
+            $node = $this->document->createElement($name);
             $node = $this->node->appendChild($node);
 
-            return new Mpay24Order($this->doc, $node);
+            return new Mpay24Order($this->document, $node);
         }
     }
 
@@ -173,34 +144,23 @@ class Mpay24Order
      */
     public function __set($name, $value)
     {
-        $xpath = new DOMXPath($this->doc);
-        $qry   = $xpath->query($name, $this->node);
+        $xpath = new DOMXPath($this->document);
+        $query = $xpath->query($name, $this->node);
 
-        if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
-            $value = str_replace(',', '.', $match[0]);
-        }
-
-        if (preg_match('/\b[0-9]+.[0-9]+\b/', $value, $match) &&
-            $value == $match[0] &&
-            $name != 'shippingCosts' &&
-            (is_int(strpos(strtolower($name), 'price'))
-                || is_int(strpos(strtolower($name), 'tax'))
-                || is_int(strpos(strtolower($name), 'cost'))
-            )
-        ) {
-            $value = number_format(floatval($match[0]), 2, '.', '');
+        if ($this->isDecimalElement($name)) {
+            $value = $this->formatDecimal($value);
         }
 
         if (strpos($value, "<") || strpos($value, ">")) {
             $value = "<![CDATA[" . $this->xmlEncode($value) . "]]>";
         } else {
-            $value = $this->doc->createTextNode($value);
+            $value = $this->document->createTextNode($value);
         }
 
-        if ($qry->length > 0) {
-            $qry->item(0)->nodeValue = $value;
+        if ($query->length > 0) {
+            $query->item(0)->nodeValue = $value;
         } else {
-            $node       = $this->doc->createElement($name, $value);
+            $node       = $this->document->createElement($name, $value);
             $this->node = $this->node->appendChild($node);
         }
     }
@@ -211,7 +171,7 @@ class Mpay24Order
      */
     public function toXML()
     {
-        return $this->doc->saveXML();
+        return $this->document->saveXML();
     }
 
     /**
@@ -223,11 +183,73 @@ class Mpay24Order
      */
     protected function xmlEncode($txt)
     {
+        $txt = str_replace('&', '&amp;', $txt);
         $txt = str_replace('<', '&lt;', $txt);
         $txt = str_replace('>', '&gt;', $txt);
-        $txt = str_replace('&amp;apos;', "'", $txt);
-        $txt = str_replace('&amp;quot;', '"', $txt);
+        $txt = str_replace('&apos;', "'", $txt);
+        $txt = str_replace('&quot;', '"', $txt);
 
         return $txt;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return boolean
+     */
+    protected function isDecimalAttribute($name)
+    {
+        switch ($name) {
+            case 'Tax':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return boolean
+     */
+    protected function isDecimalElement($name)
+    {
+        switch ($name) {
+            case 'Price':
+            case 'ItemPrice':
+            case 'SubTotal':
+            case 'Discount':
+            case 'ShippingCosts':
+            case 'Tax':
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @param string|integer|float $value
+     *
+     * @return string
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function formatDecimal($value)
+    {
+        switch (gettype($value)) {
+            case 'integer':
+                break;
+            case 'double':
+                break;
+            case 'string':
+                if (preg_match('/\b[0-9]+,[0-9]+\b/', $value, $match)) {
+                    $value = str_replace(',', '.', $match[0]);
+                }
+                break;
+            default:
+                throw new InvalidArgumentException('A value of the type "' . gettype($value) . '" can not converted into a decimal.');
+        }
+
+        return number_format(floatval($value), 2, '.', '');
     }
 }
