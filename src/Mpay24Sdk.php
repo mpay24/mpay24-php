@@ -143,27 +143,6 @@ class Mpay24Sdk
     }
 
     /**
-     * Set the basic (mandatory) settings for the requests
-     *
-     * @param string $spid
-     *          The SPID of your account, supported by mPAY24
-     * @param string $password
-     *          The flexLINK password, supported by mPAY24
-     * @param bool   $test
-     *          TRUE - when you want to use the TEST system
-     *
-     *          FALSE - when you want to use the LIVE system
-     *
-     * @deprecated Use Configuration Object instated
-     */
-    public function configureFlexLINK($spid, $password, $test)
-    {
-        $this->config->setSpid($spid);
-        $this->config->setFlexLinkPassword($password);
-        $this->config->useFlexLinkTestSystem($test);
-    }
-
-    /**
      * Get the merchant ID, which was set by the function configure(Config $config)
      *
      * @return string
@@ -171,26 +150,6 @@ class Mpay24Sdk
     public function getMerchantID()
     {
         return $this->config->getMerchantId();
-    }
-
-    /**
-     * Get the SPID, which was set by the function configureFlexLINK($spid, $password, $test)
-     *
-     * @return string
-     */
-    public function getSpid()
-    {
-        return $this->config->getSPID();
-    }
-
-    /**
-     * Get the system, which should be used for flexLINK (test -> 'test' or live -> 'www')
-     *
-     * @return string
-     */
-    public function getFlexLinkSystem()
-    {
-        return $this->config->isFlexLinkTestSystem() ? 'test' : 'www';
     }
 
     /**
@@ -640,26 +599,6 @@ class Mpay24Sdk
     }
 
     /**
-     * Encoded the parameters (AES256-CBC) for the pay link and return them
-     *
-     * @param array $params The parameters, which are going to be posted to mPAY24
-     *
-     * @return string
-     */
-    public function flexLink($params)
-    {
-        $paramsString = "";
-
-        foreach ($params as $key => $value) {
-            $paramsString .= "$key=$value&";
-        }
-
-        $encryptedParams = $this->ssl_encrypt($this->config->getFlexLinkPassword(), $paramsString);
-
-        return $encryptedParams;
-    }
-
-    /**
      * Create a curl request and send the created SOAP XML
      */
     protected function send()
@@ -669,8 +608,7 @@ class Mpay24Sdk
         $ch = curl_init($this->getEtpURL());
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_USERPWD,
-            'u' . $this->config->getMerchantId() . ':' . $this->config->getSoapPassword());
+        curl_setopt($ch, CURLOPT_USERPWD, 'u' . $this->config->getMerchantId() . ':' . $this->config->getSoapPassword());
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->request);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -689,8 +627,7 @@ class Mpay24Sdk
                 curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());
 
                 if ($this->config->getProxyUser()) {
-                    curl_setopt($ch, CURLOPT_PROXYUSERPWD,
-                        $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
                 }
 
                 if ($this->config->isVerifyPeer() !== true) {
@@ -703,9 +640,9 @@ class Mpay24Sdk
 
         } catch (\Exception $e) {
             if ($this->config->isTestSystem()) {
-                $dieMSG = "Your request couldn't be sent because of the following error:" . "\n" . curl_error(
-                        $ch
-                    ) . "\n" . $e->getMessage() . ' in ' . $e->getFile() . ', line: ' . $e->getLine() . '.';
+                $dieMSG = "Your request couldn't be sent because of the following error:" . "\n"
+                    . curl_error($ch) . "\n"
+                    . $e->getMessage() . ' in ' . $e->getFile() . ', line: ' . $e->getLine() . '.';
             } else {
                 $dieMSG = self::LIVE_ERROR_MSG;
             }
@@ -716,40 +653,5 @@ class Mpay24Sdk
         if (isset($fh) && $this->config->isEnableCurlLog()) {
             fclose($fh);
         }
-    }
-
-    /**
-     * Encode data (aes-256-cbc) using a password
-    *
-     * @param string $pass The password, used for the encoding
-     * @param string $data The data, that should be encoded
-     *
-     * @return string
-     */
-    protected function ssl_encrypt($pass, $data)
-    {
-        // Used encryption method
-        $method = "aes-256-cbc";
-        $key_len = 32;
-        $iv_len  = openssl_cipher_iv_length($method);
-
-        // Set a random salt
-        $salt = openssl_random_pseudo_bytes(8);
-
-        $total_len = $key_len + $iv_len;
-        $salted    = '';
-        $dx        = '';
-
-        // Generate key and iv, see: EVP_BytesToKey
-        while (strlen($salted) < $total_len) {
-            $dx = md5($dx . $pass . $salt, true);
-            $salted .= $dx;
-        }
-
-        $key = substr($salted, 0, $key_len);
-        $iv  = substr($salted, $key_len, $iv_len);
-        $encrypted_data = openssl_encrypt($data, $method, $key, true, $iv);
-
-        return chunk_split(array_shift(unpack('H*', 'Salted__' . $salt . $encrypted_data)), 32, "\r\n");
     }
 }
