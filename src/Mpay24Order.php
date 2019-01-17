@@ -216,7 +216,6 @@ class Mpay24Order
         return $this->doc->saveXML();
     }
 
-    /**
      * Encode the XML-characters in a string
      *
      * @param string $txt A string to be encoded
