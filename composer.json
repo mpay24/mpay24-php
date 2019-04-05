@@ -11,6 +11,7 @@
       "Mpay24Test\\": "test/"
     }
   },
+  "license": "MIT",
   "require": {
     "php": ">=7.2",
     "ext-curl": "*",
