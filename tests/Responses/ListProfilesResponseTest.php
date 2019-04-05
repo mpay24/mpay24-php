@@ -54,9 +54,9 @@ class ListProfilesResponseTest extends TestCase
         $this->assertSame('1234', $profile['customerID']);
         $this->assertSame('2018-06-05T10:54:02Z', $profile['updated']);
 
-        $this->assertContains('2018-06-01T12:05:08Z', $profile['payment']);
-        $this->assertContains('************1111', $profile['payment']);
-        $this->assertContains('2025-05-01', $profile['payment']);
+        $this->assertStringContainsString('2018-06-01T12:05:08Z', $profile['payment']);
+        $this->assertStringContainsString('************1111', $profile['payment']);
+        $this->assertStringContainsString('2025-05-01', $profile['payment']);
 
         $this->assertCount(2, $profile['paymentProfiles']);
 
