@@ -2,8 +2,14 @@
 
 namespace Mpay24;
 
+use Exception;
+use Mpay24\Exception\CanNotOpenFileException;
+use Mpay24\Exception\InvalidArgumentException;
+use Mpay24\Exception\RequirementException;
 use Mpay24\Requests\AcceptPayment;
+use Mpay24\Requests\CreateCustomer;
 use Mpay24\Requests\CreatePaymentToken;
+use Mpay24\Requests\DeleteProfile;
 use Mpay24\Requests\ListPaymentMethods;
 use Mpay24\Requests\ListProfiles;
 use Mpay24\Requests\ManualCallback;
@@ -13,10 +19,10 @@ use Mpay24\Requests\ManualReverse;
 use Mpay24\Requests\SelectPayment;
 use Mpay24\Requests\TransactionHistory;
 use Mpay24\Requests\TransactionStatus;
-use Mpay24\Requests\CreateCustomer;
-use Mpay24\Requests\DeleteProfile;
 use Mpay24\Responses\AcceptPaymentResponse;
+use Mpay24\Responses\CreateCustomerResponse;
 use Mpay24\Responses\CreatePaymentTokenResponse;
+use Mpay24\Responses\DeleteProfileResponse;
 use Mpay24\Responses\ListPaymentMethodsResponse;
 use Mpay24\Responses\ListProfilesResponse;
 use Mpay24\Responses\ManualCallbackResponse;
@@ -26,8 +32,6 @@ use Mpay24\Responses\ManualReverseResponse;
 use Mpay24\Responses\SelectPaymentResponse;
 use Mpay24\Responses\TransactionHistoryResponse;
 use Mpay24\Responses\TransactionStatusResponse;
-use Mpay24\Responses\CreateCustomerResponse;
-use Mpay24\Responses\DeleteProfileResponse;
 
 /**
  * Main Mpay24 PHP APIs Class.
@@ -48,7 +52,7 @@ class Mpay24Sdk
      * An error message, that will be displayed to the user in case you are using the LIVE system
      * @const LIVE_ERROR_MSG
      */
-    const LIVE_ERROR_MSG = "We are sorry, an error occured - please contact the merchant!";
+    const LIVE_ERROR_MSG = "We are sorry, an error occurred - please contact the merchant!";
 
     /**
      * The link where the requests should be sent to if you use the
@@ -105,16 +109,14 @@ class Mpay24Sdk
 
     public function __construct(Mpay24Config &$config = null)
     {
-        if (is_null($config)) {
-            $config = new Mpay24Config();
-        }
-
-        $this->config = $config;
+        $this->config = is_null($config) ? new Mpay24Config() : $config;
     }
 
     /**
      * @param bool $checkDomExtension
      * @param bool $checkCurlExtension
+     *
+     * @throws RequirementException
      */
     public function checkRequirements(
         $checkDomExtension = true,
@@ -124,21 +126,17 @@ class Mpay24Sdk
             || ($checkCurlExtension && !in_array('curl', get_loaded_extensions()))
             || ($checkDomExtension && !in_array('dom', get_loaded_extensions()))
         ) {
-            $this->printMsg("ERROR: You don't meet the needed requirements for this example shop.<br>");
-
             if (version_compare(phpversion(), self::MIN_PHP_VERSION, '<') === true) {
-                $this->printMsg('You need PHP version ' . self::MIN_PHP_VERSION . ' or newer!<br>');
+                throw new RequirementException('You need PHP version ' . self::MIN_PHP_VERSION . ' or newer!');
             }
 
             if ($checkCurlExtension && !in_array('curl', get_loaded_extensions())) {
-                $this->printMsg("You need cURL extension!<br>");
+                throw new RequirementException('You need cURL extension!');
             }
 
             if ($checkDomExtension && !in_array('dom', get_loaded_extensions())) {
-                $this->printMsg("You need DOM extension!<br>");
+                throw new RequirementException("You need DOM extension!");
             }
-
-            $this->dieWithMsg("Please load the required extensions!");
         }
     }
 
@@ -233,33 +231,45 @@ class Mpay24Sdk
     }
 
     /**
+     * @param string $message The message, which is shown to the user
+     *
+     * @throws InvalidArgumentException
+     */
+    public function invalidArgument($message)
+    {
+        $message = $this->config->isTestSystem() ? $message : '';
+
+        throw new InvalidArgumentException($message);
+    }
+
+    /**
      * In case the test system is used, show die with the real error message, otherwise, show the defined constant error LIVE_ERROR_MSG
      *
      * @param string $msg The message, which is shown to the user
      *
      * @throws \Exception
+     *
+     * @deprecated 5.0.0
      */
     public function dieWithMsg($msg)
     {
-        if ($this->config->isTestSystem()) {
-            throw new \Exception($msg);
-        } else {
-            throw new \Exception();
-        }
+        $msg = $this->config->isTestSystem() ? $msg : self::LIVE_ERROR_MSG;
+
+        throw new \Exception($msg);
     }
 
     /**
      * In case the test system is used, show print the real error message, otherwise, show the defined constant error LIVE_ERROR_MSG
      *
      * @param string $msg The message, which is shown to the user
+     *
+     * @deprecated 5.0.0
      */
     public function printMsg($msg)
     {
-        if ($this->config->isTestSystem()) {
-            print($msg);
-        } else {
-            print(self::LIVE_ERROR_MSG);
-        }
+        $msg = $this->config->isTestSystem() ? $msg : self::LIVE_ERROR_MSG;
+
+        print($msg);
     }
 
     /**
@@ -274,7 +284,8 @@ class Mpay24Sdk
             strpos($message, 'fopen(') + 6,
             strpos($message, ')') - (strpos($message, 'fopen(') + 6)
         );
-        $this->dieWithMsg("Can't open file '$path'! Please set the needed read/write rights!");
+
+        throw new CanNotOpenFileException($path);
     }
 
     /**
@@ -559,7 +570,7 @@ class Mpay24Sdk
      *
      * @return CreateCustomerResponse
      */
-    public function createCustomer($type, $customerId ,$payment = [], $additional = [])
+    public function createCustomer($type, $customerId, $payment = [], $additional = [])
     {
         $request = new CreateCustomer($this->config->getMerchantId());
 
@@ -595,6 +606,7 @@ class Mpay24Sdk
         $this->send();
 
         $result = new DeleteProfileResponse($this->response);
+
         return $result;
     }
 
@@ -608,7 +620,8 @@ class Mpay24Sdk
         $ch = curl_init($this->getEtpURL());
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_USERPWD, 'u' . $this->config->getMerchantId() . ':' . $this->config->getSoapPassword());
+        curl_setopt($ch, CURLOPT_USERPWD,
+            'u' . $this->config->getMerchantId() . ':' . $this->config->getSoapPassword());
         curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $this->request);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -627,7 +640,8 @@ class Mpay24Sdk
                 curl_setopt($ch, CURLOPT_PROXY, $this->config->getProxyHost() . ':' . $this->config->getProxyPort());
 
                 if ($this->config->getProxyUser()) {
-                    curl_setopt($ch, CURLOPT_PROXYUSERPWD, $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
+                    curl_setopt($ch, CURLOPT_PROXYUSERPWD,
+                        $this->config->getProxyUser() . ':' . $this->config->getProxyPass());
                 }
 
                 if ($this->config->isVerifyPeer() !== true) {
@@ -638,16 +652,13 @@ class Mpay24Sdk
             $this->response = curl_exec($ch);
             curl_close($ch);
 
-        } catch (\Exception $e) {
-            if ($this->config->isTestSystem()) {
-                $dieMSG = "Your request couldn't be sent because of the following error:" . "\n"
-                    . curl_error($ch) . "\n"
-                    . $e->getMessage() . ' in ' . $e->getFile() . ', line: ' . $e->getLine() . '.';
-            } else {
-                $dieMSG = self::LIVE_ERROR_MSG;
-            }
+        } catch (Exception $exception) {
+            $message = $this->config->isTestSystem()
+                ? "Your request couldn't be sent because of the following error:" . "\n" . curl_error($ch) . "\n"
+                . $exception->getMessage() . ' in ' . $exception->getFile() . ', line: ' . $exception->getLine() . '.'
+                : self::LIVE_ERROR_MSG;
 
-            echo $dieMSG;
+            echo $message;
         }
 
         if (isset($fh) && $this->config->isEnableCurlLog()) {

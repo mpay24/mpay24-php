@@ -2,6 +2,10 @@
 
 namespace Mpay24;
 
+use Mpay24\Exception\CanNotOpenFileException;
+use Mpay24\Exception\IntegrityException;
+use Mpay24\Exception\InvalidArgumentException;
+
 /**
  * The Mpay24 class provides functions, which are used to make a payment or a request to mPAY24
  *
@@ -68,7 +72,7 @@ class Mpay24
         libxml_use_internal_errors(true);
 
         if (!$mdxi || !$mdxi instanceof Mpay24Order) {
-            $this->mpay24Sdk->dieWithMsg("To be able to use the Mpay24Api you must create an Mpay24Order object (Mpay24Order.php) and fulfill it with a MDXI!");
+            $this->mpay24Sdk->invalidArgument("To be able to use the Mpay24Api you must create an Mpay24Order object (Mpay24Order.php) and fulfill it with a MDXI!");
         }
 
         $mdxiXML = $mdxi->toXML();
@@ -171,13 +175,15 @@ class Mpay24
      * @param array  $additional  Additional parameters
      *
      * @return Responses\CreatePaymentTokenResponse
+     *
+     * @throws InvalidArgumentException
      */
     public function token($paymentType, array $additional = [])
     {
         $this->integrityCheck();
 
         if ($paymentType !== 'CC') {
-            die("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
+            throw new InvalidArgumentException("The payment type '$paymentType' is not allowed! Currently allowed is only: 'CC'");
         }
 
         $tokenResult = $this->mpay24Sdk->createTokenPayment($paymentType, $additional);
@@ -284,11 +290,16 @@ class Mpay24
         return $response;
     }
 
+    /**
+     * @throws IntegrityException
+     */
     protected function integrityCheck()
     {
-        if (!$this->mpay24Sdk) {
-            die("You are not allowed to define a constructor in the child class of Mpay24!");
+        if ($this->mpay24Sdk instanceof Mpay24Sdk) {
+            return;
         }
+
+        throw new IntegrityException();
     }
 
     /**
@@ -309,6 +320,8 @@ class Mpay24
      *
      * @param string $operation   The operation, which is to log: GetPaymentMethods, Pay, PayWithProfile, Confirmation, UpdateTransactionStatus, ClearAmount, CreditAmount, CancelTransaction, etc.
      * @param string $info_to_log The information, which is to log: request, response, etc.
+     *
+     * @throws CanNotOpenFileException
      */
     protected function writeLog($operation, $info_to_log)
     {
@@ -318,7 +331,12 @@ class Mpay24
             $serverName = $_SERVER['SERVER_NAME'];
         }
 
-        $fh = fopen($this->mpay24Sdk->getMpay24LogPath(), 'a+') or die("can't open file");
+        $fh = fopen($this->mpay24Sdk->getMpay24LogPath(), 'a+');
+
+        if (!$fh) {
+            throw new CanNotOpenFileException($this->mpay24Sdk->getMpay24LogPath());
+        }
+
         $MessageDate = date("Y-m-d H:i:s");
         $Message     = $MessageDate . " " . $serverName . " Mpay24 : ";
         $result      = $Message . "$operation : $info_to_log\n";
@@ -350,7 +368,7 @@ class Mpay24
     protected function validateTid($tid, $mpayTid)
     {
         if (!$mpayTid) {
-            $this->mpay24Sdk->dieWithMsg("The transaction '$tid' you send us could not assigned to a unique mPAYTID and maybe does not exist in the mPAY24 data base!");
+            $this->mpay24Sdk->invalidArgument("The transaction '$tid' you send us could not assigned to a unique mPAYTID and maybe does not exist in the mPAY24 data base!");
         }
     }
 
@@ -360,7 +378,7 @@ class Mpay24
     protected function validateAmount($amount)
     {
         if (!$amount || !is_numeric($amount)) {
-            $this->mpay24Sdk->dieWithMsg("The amount '$amount' you are trying to credit is not valid!");
+            $this->mpay24Sdk->invalidArgument("The amount '$amount' you are trying to credit is not valid!");
         }
     }
 
@@ -370,7 +388,7 @@ class Mpay24
     protected function validateCurrency($currency)
     {
         if (!$currency || strlen($currency) != 3) {
-            $this->mpay24Sdk->dieWithMsg("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
+            $this->mpay24Sdk->invalidArgument("The currency code '$currency' for the amount you are trying to clear is not valid (3-digit ISO-Currency-Code)!");
         }
     }
 
@@ -380,7 +398,7 @@ class Mpay24
     protected function validateShippingCosts($shippingCosts)
     {
         if (!$shippingCosts || !is_numeric($shippingCosts)) {
-            $this->mpay24Sdk->dieWithMsg("The shipping costs '$shippingCosts' you are trying to set are not valid!");
+            $this->mpay24Sdk->invalidArgument("The shipping costs '$shippingCosts' you are trying to set are not valid!");
         }
     }
 }
