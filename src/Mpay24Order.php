@@ -153,8 +153,6 @@ class Mpay24Order
 
         if (strpos($value, "<") || strpos($value, ">")) {
             $value = "<![CDATA[" . $this->xmlEncode($value) . "]]>";
-        } else {
-            $value = $this->document->createTextNode($value);
         }
 
         if ($query->length > 0) {
