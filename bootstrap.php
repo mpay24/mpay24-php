@@ -12,9 +12,3 @@ if (!class_exists('Mpay24\Mpay24Autoloader')) {
 }
 
 Mpay24\Mpay24Autoloader::register();
-
-if (!class_exists('Mpay24Test\Mpay24Autoloader')) {
-    require __DIR__ . '/tests/Mpay24Autoloader.php';
-}
-
-Mpay24Test\Mpay24Autoloader::register();
