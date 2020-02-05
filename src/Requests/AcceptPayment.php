@@ -9,7 +9,7 @@ namespace Mpay24\Requests;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource AcceptPayment.php
  * @license    MIT
  */
@@ -21,7 +21,7 @@ class AcceptPayment extends AbstractRequest
     protected $tid;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $pType;
 

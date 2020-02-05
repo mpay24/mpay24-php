@@ -172,7 +172,7 @@ abstract class AbstractResponse
     /**
      * Set the return code in the response, which was delivered by mPAY24
      *
-     * @param $returnCode
+     * @param string $returnCode
      */
     protected function setReturnCode($returnCode)
     {
@@ -206,7 +206,7 @@ abstract class AbstractResponse
     }
 
     /**
-     * @param $element
+     * @param string $element
      *
      * @return \DOMElement
      */

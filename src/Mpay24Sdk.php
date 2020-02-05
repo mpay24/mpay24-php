@@ -43,6 +43,7 @@ use Mpay24\Responses\TransactionStatusResponse;
  * @package    Mpay24
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource Mpay24SDK.php
  * @license    MIT
  */
@@ -357,7 +358,7 @@ class Mpay24Sdk
     /**
      * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
      *
-     * @param        $type
+     * @param string $type
      * @param string $tid The TID used for the transaction
      * @param array  $payment
      * @param array  $additional
@@ -385,12 +386,12 @@ class Mpay24Sdk
     /**
      * Initialize a manual callback to mPAY24 in order to check the information provided by PayPal
      *
-     * @param int    $mpayTid
-     * @param string $paymentType The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
+     * @param integer $mpayTid
+     * @param string  $paymentType The payment type which will be used for the express checkout (PAYPAL or MASTERPASS)
      *
-     * @param int    $amount
-     * @param bool   $cancel
-     * @param null   $order
+     * @param integer $amount
+     * @param bool    $cancel
+     * @param null    $order
      *
      * @return ManualCallbackResponse
      * @internal param string $requestString The callback request to mPAY24
@@ -417,8 +418,8 @@ class Mpay24Sdk
     /**
      * Clear a transaction with an amount
      *
-     * @param int $mpayTid The mPAY24 transaction ID
-     * @param int $amount  The amount to be cleared multiplay by 100
+     * @param integer $mpayTid The mPAY24 transaction ID
+     * @param integer $amount  The amount to be cleared multiplay by 100
      *
      * @return ManualClearResponse
      */
@@ -441,8 +442,8 @@ class Mpay24Sdk
     /**
      * Credit a transaction with an amount
      *
-     * @param int $mpayTid The mPAY24 transaction ID
-     * @param int $amount  The amount to be credited multiplay by 100
+     * @param integer $mpayTid The mPAY24 transaction ID
+     * @param integer $amount  The amount to be credited multiplay by 100
      *
      * @return ManualCreditResponse
      */
@@ -465,7 +466,7 @@ class Mpay24Sdk
     /**
      * Cancel a transaction
      *
-     * @param int $mpayTid The mPAY24 transaction ID for the transaction you want to cancel
+     * @param integer $mpayTid The mPAY24 transaction ID for the transaction you want to cancel
      *
      * @return ManualReverseResponse
      */
@@ -487,8 +488,8 @@ class Mpay24Sdk
     /**
      * Get all the information for a transaction, supported by mPAY24
      *
-     * @param int    $mpay24tid The mPAY24 transaction ID
-     * @param string $tid       The transaction ID from your shop
+     * @param integer $mpay24tid The mPAY24 transaction ID
+     * @param string  $tid       The transaction ID from your shop
      *
      * @return TransactionStatusResponse
      */
@@ -511,7 +512,7 @@ class Mpay24Sdk
     /**
      * Get all the information for a transaction, supported by mPAY24
      *
-     * @param int $mpayTid The mPAY24 transaction ID
+     * @param integer $mpayTid The mPAY24 transaction ID
      *
      * @return TransactionHistoryResponse
      */
@@ -533,10 +534,10 @@ class Mpay24Sdk
     /**
      * Get all the information for a transaction, supported by mPAY24
      *
-     * @param string $customerId
-     * @param string $expiredBy
-     * @param int    $begin
-     * @param int    $size
+     * @param string  $customerId
+     * @param string  $expiredBy
+     * @param integer $begin
+     * @param integer $size
      *
      * @return ListProfilesResponse
      * @internal param int $mpay24tid The mPAY24 transaction ID
@@ -563,10 +564,10 @@ class Mpay24Sdk
     /**
      * Create a new customer for recurring payments
      *
-     * @param        $type
-     * @param array  $payment
-     * @param string $customerId
-     * @param array  $additional
+     * @param string     $type
+     * @param string     $customerId
+     * @param array|null $payment
+     * @param array|null $additional
      *
      * @return CreateCustomerResponse
      */

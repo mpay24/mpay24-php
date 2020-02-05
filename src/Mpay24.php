@@ -13,7 +13,7 @@ use Mpay24\Exception\InvalidArgumentException;
  * @package    Mpay24
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource Mpay24.php
  * @license    MIT
  */
@@ -61,7 +61,7 @@ class Mpay24
     /**
      * Return a redirect URL to start a payment
      *
-     * @param $mdxi
+     * @param Mpay24Order $mdxi
      *
      * @return Responses\SelectPaymentResponse
      */
@@ -88,9 +88,9 @@ class Mpay24
      * Start a backend to backend payment
      *
      * @param string $paymentType The payment type which will be used for the payment (EPS, SOFORT, PAYPAL, MASTERPASS or TOKEN)
-     * @param        $tid
-     * @param        $payment
-     * @param        $additional
+     * @param string $tid
+     * @param string $payment
+     * @param string $additional
      *
      * @return Responses\AcceptPaymentResponse
      */
@@ -148,10 +148,10 @@ class Mpay24
     /**
      * Get all profile according to the given parameters
      *
-     * @param string $customerId
-     * @param string $expiredBy
-     * @param int    $begin
-     * @param int    $size
+     * @param string  $customerId
+     * @param string  $expiredBy
+     * @param integer $begin
+     * @param integer $size
      *
      * @return Responses\ListProfilesResponse
      * @internal param string $mpayTid
@@ -196,8 +196,8 @@ class Mpay24
     /**
      * Capture an amount of an authorized transaction
      *
-     * @param string $mpayTid The transaction ID, for the transaction you want to clear
-     * @param int    $amount  The amount you want to clear multiply by 100
+     * @param string  $mpayTid The transaction ID, for the transaction you want to clear
+     * @param integer $amount  The amount you want to clear multiply by 100
      *
      * @return Responses\ManualClearResponse
      */
@@ -217,8 +217,8 @@ class Mpay24
     /**
      * Refund an amount of a captured transaction
      *
-     * @param string $mpayTid The transaction ID, for the transaction you want to credit
-     * @param int    $amount  The amount you want to credit multiply by 100
+     * @param string  $mpayTid The transaction ID, for the transaction you want to credit
+     * @param integer $amount  The amount you want to credit multiply by 100
      *
      * @return Responses\ManualCreditResponse
      */
@@ -256,10 +256,10 @@ class Mpay24
     /**
      * Create a customer for recurring payments
      *
-     * @param string $paymentType The payment type which will be used for the payment (CC or TOKEN)
-     * @param        $customerId
-     * @param        $payment
-     * @param        $additional
+     * @param string     $paymentType The payment type which will be used for the payment (CC or TOKEN)
+     * @param string     $customerId
+     * @param array      $payment
+     * @param array|null $additional
      *
      * @return Responses\CreateCustomerResponse
      */
@@ -303,7 +303,7 @@ class Mpay24
     }
 
     /**
-     * @param $messageExchange
+     * @param string $messageExchange
      */
     protected function recordedLastMessageExchange($messageExchange)
     {
@@ -362,8 +362,8 @@ class Mpay24
     }
 
     /**
-     * @param $tid
-     * @param $mpayTid
+     * @param string $tid
+     * @param string $mpayTid
      */
     protected function validateTid($tid, $mpayTid)
     {
@@ -373,7 +373,7 @@ class Mpay24
     }
 
     /**
-     * @param $amount
+     * @param integer $amount
      */
     protected function validateAmount($amount)
     {
@@ -383,7 +383,7 @@ class Mpay24
     }
 
     /**
-     * @param $currency
+     * @param string $currency
      */
     protected function validateCurrency($currency)
     {
@@ -393,7 +393,7 @@ class Mpay24
     }
 
     /**
-     * @param $shippingCosts
+     * @param integer $shippingCosts
      */
     protected function validateShippingCosts($shippingCosts)
     {

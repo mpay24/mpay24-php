@@ -9,19 +9,19 @@ namespace Mpay24\Requests;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ManualReverse.php
  * @license    MIT
  */
 class ManualReverse extends AbstractRequest
 {
     /**
-     * @var int
+     * @var integer
      */
     protected $mpayTid;
 
     /**
-     * @param int $mpayTid
+     * @param integer $mpayTid
      */
     public function setMpayTid($mpayTid)
     {

@@ -10,26 +10,26 @@ use InvalidArgumentException;
  * Class Mpay24Confirmation
  * @package    Mpay24
  *
- * @property string OPERATION      // CONFIRMATION
- * @property string TID            // length <= 32
- * @property string STATUS         // RESERVED, BILLED, REVERSED, CREDITED, ERROR
- * @property int    PRICE          // length = 11 (e. g. "10" = "0,10")
- * @property string CURRENCY       // length = 3 (ISO currency code, e. g. "EUR")
- * @property string P_TYPE         // CC, ELV, EPS, GIROPAY, MAESTRO, PB, PSC, QUICK, PAYPAL, MPASS, BILLPAY, KLARNA, SOFORT, MASTERPASS
- * @property string BRAND          // MAESTRO, MASTERPASS, MPASS, PB, PAYPAL, PSC, EPS, GIROPAY, SOFORT, QUICK, AMEX, DINERS, JCB, MASTERCARD, VISA, ATOS, B4P, HOBEX-AT, HOBEX-DE, HOBEX-NL, BILLPAY, INVOICE, HP
- * @property int    MPAYTID        // length = 11
- * @property string USER_FIELD
- * @property string ORDERDESC
- * @property string CUSTOMER
- * @property string CUSTOMER_EMAIL
- * @property string LANGUAGE       // length = 2
- * @property string CUSTOMER_ID    // length = 11
- * @property string PROFILE_ID     //
- * @property string PROFILE_STATUS // IGNORED, USED, ERROR, CREATED, UPDATED, DELETED
- * @property string FILTER_STATUS
- * @property string APPR_CODE
+ * @property string $OPERATION      // CONFIRMATION
+ * @property string $TID            // length <= 32
+ * @property string $STATUS         // RESERVED, BILLED, REVERSED, CREDITED, ERROR
+ * @property int    $PRICE          // length = 11 (e. g. "10" = "0,10")
+ * @property string $CURRENCY       // length = 3 (ISO currency code, e. g. "EUR")
+ * @property string $P_TYPE         // CC, ELV, EPS, GIROPAY, MAESTRO, PB, PSC, QUICK, PAYPAL, MPASS, BILLPAY, KLARNA, SOFORT, MASTERPASS
+ * @property string $BRAND          // MAESTRO, MASTERPASS, MPASS, PB, PAYPAL, PSC, EPS, GIROPAY, SOFORT, QUICK, AMEX, DINERS, JCB, MASTERCARD, VISA, ATOS, B4P, HOBEX-AT, HOBEX-DE, HOBEX-NL, BILLPAY, INVOICE, HP
+ * @property int    $MPAYTID        // length = 11
+ * @property string $USER_FIELD
+ * @property string $ORDERDESC
+ * @property string $CUSTOMER
+ * @property string $CUSTOMER_EMAIL
+ * @property string $LANGUAGE       // length = 2
+ * @property string $CUSTOMER_ID    // length = 11
+ * @property string $PROFILE_ID     //
+ * @property string $PROFILE_STATUS // IGNORED, USED, ERROR, CREATED, UPDATED, DELETED
+ * @property string $FILTER_STATUS
+ * @property string $APPR_CODE
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource Mpay24Confirmation.php
  * @license    MIT
  */
@@ -136,7 +136,7 @@ class Mpay24Confirmation
     }
 
     /**
-     * @param $property
+     * @param string $property
      *
      * @return void
      * @throws InvalidArgumentException

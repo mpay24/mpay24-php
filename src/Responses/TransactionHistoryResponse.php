@@ -8,7 +8,7 @@ namespace Mpay24\Responses;
  * Class TransactionHistoryResponse
  * @package    Mpay24\Responses
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource TransactionHistoryResponse.php
  * @license    MIT
  */
@@ -63,7 +63,7 @@ class TransactionHistoryResponse extends AbstractResponse
     /**
      * Get the transaction values, returned from mPAY24
      *
-     * @param int $i
+     * @param integer $i
      *          The index of the transaction history
      *
      * @return array|bool

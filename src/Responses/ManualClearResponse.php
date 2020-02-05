@@ -8,7 +8,7 @@ namespace Mpay24\Responses;
  * Class ManualClearResponse
  * @package    Mpay24\Responses
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ManualClearResponse.php
  * @license    MIT
  */

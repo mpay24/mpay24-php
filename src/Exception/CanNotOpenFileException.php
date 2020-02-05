@@ -18,7 +18,7 @@ class CanNotOpenFileException extends Exception
      * CanNotOpenFileException constructor.
      *
      * @param string         $path
-     * @param int            $code
+     * @param integer        $code
      * @param Exception|null $previous
      */
     public function __construct($path, $code = 0, Exception $previous = null)

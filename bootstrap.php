@@ -2,7 +2,7 @@
 /**
  * Just include this file once to have access to all classes in the Mpay24 Namespace
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource bootstrap.php
  * @license    MIT
  */
@@ -12,3 +12,9 @@ if (!class_exists('Mpay24\Mpay24Autoloader')) {
 }
 
 Mpay24\Mpay24Autoloader::register();
+
+if (!class_exists('Mpay24Test\Mpay24Autoloader')) {
+    require __DIR__ . '/tests/Mpay24Autoloader.php';
+}
+
+Mpay24Test\Mpay24Autoloader::register();

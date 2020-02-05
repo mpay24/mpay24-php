@@ -18,7 +18,7 @@ class RequirementException extends Exception
      * RequirementException constructor.
      *
      * @param string         $details
-     * @param int            $code
+     * @param integer        $code
      * @param Exception|null $previous
      */
     public function __construct($details, $code = 0, Exception $previous = null)

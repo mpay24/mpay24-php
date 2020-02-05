@@ -1,12 +1,12 @@
 <?php
 
-namespace Mpay24;
+namespace Mpay24Test;
 
 /**
- * The autoloader class load all classes in the Mpay24 namespaces
+ * The autoloader class load all classes in the Mpay24Test namespaces
  *
  * Class Autoloader
- * @package    Mpay24
+ * @package    Mpay24Test
  *
  * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource Mpay24Autoloader.php
@@ -38,7 +38,7 @@ class Mpay24Autoloader
      */
     public static function autoload($class)
     {
-        if (strpos($class, 'Mpay24\\') === 0) {
+        if (strpos($class, 'Mpay24Test\\') === 0) {
             $fileName = __DIR__ . strtr(substr($class, 6), '\\', '/') . '.php';
 
             if (file_exists($fileName)) {

@@ -9,19 +9,19 @@ namespace Mpay24\Requests;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ManualClear.php
  * @license    MIT
  */
 class ManualClear extends AbstractRequest
 {
     /**
-     * @var int
+     * @var integer
      */
     protected $mpayTid;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $amount;
 
@@ -31,7 +31,7 @@ class ManualClear extends AbstractRequest
     protected $order;
 
     /**
-     * @param int $mpayTid
+     * @param integer $mpayTid
      */
     public function setMpayTid($mpayTid)
     {
@@ -47,7 +47,7 @@ class ManualClear extends AbstractRequest
     }
 
     /**
-     * @param int $amount
+     * @param integer $amount
      */
     public function setAmount($amount)
     {

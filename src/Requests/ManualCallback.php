@@ -11,14 +11,14 @@ use InvalidArgumentException;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ManualCallback.php
  * @license    MIT
  */
 class ManualCallback extends AbstractRequest
 {
     /**
-     * @var int
+     * @var integer
      */
     protected $mpayTid;
 
@@ -28,7 +28,7 @@ class ManualCallback extends AbstractRequest
     protected $type;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $amount;
 
@@ -43,7 +43,7 @@ class ManualCallback extends AbstractRequest
     protected $order;
 
     /**
-     * @param int $mpayTid
+     * @param integer $mpayTid
      */
     public function setMpayTid($mpayTid)
     {

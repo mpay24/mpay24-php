@@ -9,29 +9,29 @@ namespace Mpay24\Requests;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ManualCredit.php
  * @license    MIT
  */
 class ManualCredit extends AbstractRequest
 {
     /**
-     * @var int
+     * @var integer
      */
     protected $mpayTid;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $stateId;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $amount;
 
     /**
-     * @param int $mpayTid
+     * @param integer $mpayTid
      */
     public function setMpayTid($mpayTid)
     {
@@ -39,7 +39,7 @@ class ManualCredit extends AbstractRequest
     }
 
     /**
-     * @param int $stateId
+     * @param integer $stateId
      */
     public function setStateId($stateId)
     {
@@ -47,7 +47,7 @@ class ManualCredit extends AbstractRequest
     }
 
     /**
-     * @param int $amount
+     * @param integer $amount
      */
     public function setAmount($amount)
     {
