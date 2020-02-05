@@ -1,8 +1,9 @@
-/composer.lock
-/.idea
 /.buildpath
+/.idea
 /.settings
-.DS_STORE
-*.log
-/nbproject/
+/nbproject
 /vendor
+*.log
+.DS_STORE
+.phpunit.result.cache
+composer.lock
