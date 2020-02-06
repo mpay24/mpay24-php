@@ -8,7 +8,7 @@ namespace Mpay24\Requests;
  * Class ListProfiles
  * @package    Mpay24\Request
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ListProfiles.php
  * @license    MIT
  */
@@ -25,12 +25,12 @@ class ListProfiles extends AbstractRequest
     protected $expiredBy;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $begin;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $size;
 
@@ -52,7 +52,7 @@ class ListProfiles extends AbstractRequest
     }
 
     /**
-     * @param int $begin
+     * @param integer $begin
      */
     public function setBegin($begin)
     {
@@ -60,7 +60,7 @@ class ListProfiles extends AbstractRequest
     }
 
     /**
-     * @param int $size
+     * @param integer $size
      */
     public function setSize($size)
     {

@@ -34,7 +34,7 @@ class TransactionStatusResponse extends AbstractResponse
     {
         parent::__construct($response);
 
-        if ($this->hasNoError()) {
+        if ($this->hasNoException()) {
 
             $this->parseResponse($this->getBody('TransactionStatusResponse'));
         }
@@ -66,15 +66,11 @@ class TransactionStatusResponse extends AbstractResponse
      * @param string $name
      *          The name of a parameter (for example: STATUS, PRICE, CURRENCY, etc)
      *
-     * @return string|bool
+     * @return string|null
      */
     public function getParam($name)
     {
-        if (isset($this->transaction[$name])) {
-            return $this->transaction[$name];
-        } else {
-            return false;
-        }
+        return isset($this->transaction[$name]) ? $this->transaction[$name] : null;
     }
 
     /**

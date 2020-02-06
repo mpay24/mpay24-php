@@ -2,8 +2,6 @@
 
 namespace Mpay24\Requests;
 
-use InvalidArgumentException;
-
 /**
  * The ListPaymentMethods class create the body for te SOAP Requests
  *
@@ -11,14 +9,14 @@ use InvalidArgumentException;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ListPaymentMethods.php
  * @license    MIT
  */
 class ListPaymentMethods extends AbstractRequest
 {
     /**
-     * @var int
+     * @var integer
      */
     protected $pType;
 

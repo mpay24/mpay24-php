@@ -8,16 +8,17 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Mpay24Test\\": "test/"
+      "Mpay24Test\\": "tests/"
     }
   },
   "license": "MIT",
   "require": {
-    "php": ">=5.3.3",
+    "php": ">=7.2",
     "ext-curl": "*",
     "ext-dom": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.2"
+    "phpunit/phpunit": "^8.5",
+    "phpstan/phpstan": "^0.12.9"
   }
 }

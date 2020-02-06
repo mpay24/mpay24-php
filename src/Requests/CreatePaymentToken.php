@@ -2,8 +2,6 @@
 
 namespace Mpay24\Requests;
 
-use InvalidArgumentException;
-
 /**
  * The CreatePaymentToken class create the body for te SOAP Requests
  *
@@ -11,7 +9,7 @@ use InvalidArgumentException;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource CreatePaymentToken.php
  * @license    MIT
  */
@@ -131,7 +129,6 @@ class CreatePaymentToken extends AbstractRequest
         $merchantID = $this->document->createElement('merchantID', $this->merchantId);
         $operation->appendChild($merchantID);
 
-
         $pType = $this->document->createElement('pType', $this->pType);
         $operation->appendChild($pType);
 
@@ -159,7 +156,6 @@ class CreatePaymentToken extends AbstractRequest
             $domain = $this->document->createElement('domain', $this->domain);
             $operation->appendChild($domain);
         }
-
 
         if ($this->language) {
             $language = $this->document->createElement('language', $this->language);

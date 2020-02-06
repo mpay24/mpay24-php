@@ -8,7 +8,7 @@ namespace Mpay24\Responses;
  * Class ManualCreditResponse
  * @package    Mpay24\Responses
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource ManualCreditResponse.php
  * @license    MIT
  */
@@ -23,7 +23,7 @@ class ManualCreditResponse extends AbstractTransactionResponse
     {
         parent::__construct($response);
 
-        if ($this->hasNoError()) {
+        if ($this->hasNoException()) {
 
             $this->parseResponse($this->getBody('ManualCreditResponse'));
         }

@@ -12,7 +12,7 @@ use DOMNode;
  * @package    Mpay24\Request
  *
  * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource AbstractResponse.php
  * @license    MIT
  */
@@ -28,14 +28,14 @@ abstract class AbstractRequest
     protected $document;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $merchantId;
 
     /**
      * AbstractRequest constructor.
      *
-     * @param $merchantId
+     * @param integer $merchantId
      */
     public function __construct($merchantId)
     {
@@ -109,7 +109,8 @@ abstract class AbstractRequest
                 $this->appendArray($element, $value);
                 $parent->appendChild($element);
             } else {
-                $element = $this->document->createElement($name, $value);
+                $element = $this->document->createElement($name);
+                $element->appendChild($this->document->createTextNode($value));
                 $parent->appendChild($element);
             }
         }

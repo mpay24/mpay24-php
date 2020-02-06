@@ -5,9 +5,10 @@
                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                    xmlns:etp="https://www.mpay24.com/soap/etp/1.5/ETP.wsdl">
     <SOAP-ENV:Body>
-        <etp:CreateCustomerResponse>
-            <status>OK</status>
-            <returnCode>PROFILE_CREATED</returnCode>
-        </etp:CreateCustomerResponse>
+        <etp:CreatePaymentTokenResponse>
+            <status>ERROR</status>
+            <returnCode>PROFILE_NOT_FOUND</returnCode>
+            <errNo>20</errNo>
+        </etp:CreatePaymentTokenResponse>
     </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>

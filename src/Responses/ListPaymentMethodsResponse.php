@@ -59,7 +59,7 @@ class ListPaymentMethodsResponse extends AbstractResponse
     {
         parent::__construct($response);
 
-        if ($this->hasNoError()) {
+        if ($this->hasNoException()) {
 
             $this->parseResponse($this->getBody('ListPaymentMethodsResponse'));
         }
@@ -118,7 +118,7 @@ class ListPaymentMethodsResponse extends AbstractResponse
     /**
      * Get payment type, returned from mPAY24
      *
-     * @param int $i
+     * @param integer $i
      *          The index of a payment type
      *
      * @return string
@@ -131,7 +131,7 @@ class ListPaymentMethodsResponse extends AbstractResponse
     /**
      * Get brand, returned from mPAY24
      *
-     * @param int $i
+     * @param integer $i
      *          The index of a brand
      *
      * @return string
@@ -144,7 +144,7 @@ class ListPaymentMethodsResponse extends AbstractResponse
     /**
      * Get description, returned from mPAY24
      *
-     * @param int $i
+     * @param integer $i
      *          The index of a description
      *
      * @return string
@@ -157,7 +157,7 @@ class ListPaymentMethodsResponse extends AbstractResponse
     /**
      * Get payment method ID, returned from mPAY24
      *
-     * @param int $i
+     * @param integer $i
      *          The index of an payment method ID
      *
      * @return int

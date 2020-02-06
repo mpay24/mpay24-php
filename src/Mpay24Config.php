@@ -11,7 +11,7 @@ include_once(dirname(__FILE__) . '/../config.php');
  * Class Mpay24Config
  * @package    Mpay24
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource Mpay24Config.php
  * @license    MIT
  */
@@ -77,28 +77,6 @@ class Mpay24Config
     protected $enableCurlLog;
 
     /**
-     * SPID (supported from mPAY24).
-     *
-     * @var string
-     */
-    protected $spid;
-
-    /**
-     * The flexLink password (supproted from mPAY24)
-     *
-     * @var string
-     */
-    protected $flexLinkPassword;
-
-    /**
-     * @var bool $testSystem
-     *          true - when you want to use the TEST system
-     *
-     *          false - when you want to use the LIVE system
-     */
-    protected $flexLinkTestSystem;
-
-    /**
      * @var string
      */
     protected $curl_log_file;
@@ -113,15 +91,15 @@ class Mpay24Config
      */
     protected $log_path;
 
-	/**
-	 * @var string
-	 */
-	protected $ca_cert_path;
+    /**
+     * @var string
+     */
+    protected $ca_cert_path;
 
-	/**
-	 * @var string
-	 */
-	protected $ca_cert_file_name;
+    /**
+     * @var string
+     */
+    protected $ca_cert_file_name;
 
     public function __construct()
     {
@@ -132,27 +110,24 @@ class Mpay24Config
         }
 
         // define if not defined, for backwards compatibility
-	    defined('MPAY24_CA_CERT_PATH') or define('MPAY24_CA_CERT_PATH', dirname(__FILE__) . '/bin/');
-	    defined('MPAY24_CA_CERT_FILE_NAME') or define('MPAY24_CA_CERT_FILE_NAME', 'cacert.pem');
+        defined('MPAY24_CA_CERT_PATH') or define('MPAY24_CA_CERT_PATH', dirname(__FILE__) . '/bin/');
+        defined('MPAY24_CA_CERT_FILE_NAME') or define('MPAY24_CA_CERT_FILE_NAME', 'cacert.pem');
 
-        $merchantID         = (isset($args[0]) ? $args[0] : MPAY24_MERCHANT_ID);
-        $soapPassword       = (isset($args[1]) ? $args[1] : MPAY24_SOAP_PASS);
-        $testSystem         = (isset($args[2]) ? $args[2] : MPAY24_TEST_SYSTEM);
-        $debug              = (isset($args[3]) ? $args[3] : MPAY24_DEBUG);
-        $proxyHost          = (isset($args[4]) ? $args[4] : MPAY24_PROXY_HOST);
-        $proxyPort          = (isset($args[5]) ? $args[5] : MPAY24_PROXY_PORT);
-        $proxyUser          = (isset($args[6]) ? $args[6] : MPAY24_PROXY_USER);
-        $proxyPass          = (isset($args[7]) ? $args[7] : MPAY24_PROXY_PASS);
-        $verifyPeer         = (isset($args[8]) ? $args[8] : MPAY24_VERIFY_PEER);
-        $enableCurlLog      = (isset($args[9]) ? $args[9] : MPAY24_ENABLE_CURL_LOG);
-        $spid               = (isset($args[10]) ? $args[10] : MPAY24_SPID);
-        $flexLinkPassword   = (isset($args[11]) ? $args[11] : MPAY24_FLEX_LINK_PASS);
-        $flexLinkTestSystem = (isset($args[12]) ? $args[12] : MPAY24_FLEX_LINK_TEST_SYSTEM);
-        $log_file           = (isset($args[13]) ? $args[13] : MPAY24_LOG_FILE);
-        $log_path           = (isset($args[14]) ? $args[14] : MPAY24_LOG_PATH);
-        $curl_log_file      = (isset($args[15]) ? $args[15] : MPAY24_CURL_LOG_FILE);
-        $ca_cert_path       = (isset($args[16]) ? $args[16] : MPAY24_CA_CERT_PATH);
-        $ca_cert_file_name  = (isset($args[17]) ? $args[17] : MPAY24_CA_CERT_FILE_NAME);
+        $merchantID        = (isset($args[0]) ? $args[0] : MPAY24_MERCHANT_ID);
+        $soapPassword      = (isset($args[1]) ? $args[1] : MPAY24_SOAP_PASS);
+        $testSystem        = (isset($args[2]) ? $args[2] : MPAY24_TEST_SYSTEM);
+        $debug             = (isset($args[3]) ? $args[3] : MPAY24_DEBUG);
+        $proxyHost         = (isset($args[4]) ? $args[4] : MPAY24_PROXY_HOST);
+        $proxyPort         = (isset($args[5]) ? $args[5] : MPAY24_PROXY_PORT);
+        $proxyUser         = (isset($args[6]) ? $args[6] : MPAY24_PROXY_USER);
+        $proxyPass         = (isset($args[7]) ? $args[7] : MPAY24_PROXY_PASS);
+        $verifyPeer        = (isset($args[8]) ? $args[8] : MPAY24_VERIFY_PEER);
+        $enableCurlLog     = (isset($args[9]) ? $args[9] : MPAY24_ENABLE_CURL_LOG);
+        $log_file          = (isset($args[10]) ? $args[10] : MPAY24_LOG_FILE);
+        $log_path          = (isset($args[11]) ? $args[11] : MPAY24_LOG_PATH);
+        $curl_log_file     = (isset($args[12]) ? $args[12] : MPAY24_CURL_LOG_FILE);
+        $ca_cert_path      = (isset($args[13]) ? $args[13] : MPAY24_CA_CERT_PATH);
+        $ca_cert_file_name = (isset($args[14]) ? $args[14] : MPAY24_CA_CERT_FILE_NAME);
 
         $this->useTestSystem($testSystem);
         $this->setMerchantID($merchantID);
@@ -164,9 +139,6 @@ class Mpay24Config
         $this->setProxyPass($proxyPass);
         $this->setVerifyPeer($verifyPeer);
         $this->setEnableCurlLog($enableCurlLog);
-        $this->setSpid($spid);
-        $this->setFlexLinkPassword($flexLinkPassword);
-        $this->useFlexLinkTestSystem($flexLinkTestSystem);
         $this->setLogFile($log_file);
         $this->setLogPath($log_path);
         $this->setCurlLogFile($curl_log_file);
@@ -274,7 +246,7 @@ class Mpay24Config
     }
 
     /**
-     * @param int $proxyPort
+     * @param integer $proxyPort
      *
      * @throws InvalidArgumentException
      * @throws Exception
@@ -359,54 +331,6 @@ class Mpay24Config
     /**
      * @return string
      */
-    public function getSPID()
-    {
-        return $this->spid;
-    }
-
-    /**
-     * @param string $spid
-     */
-    public function setSpid($spid)
-    {
-        $this->spid = $spid;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFlexLinkPassword()
-    {
-        return $this->flexLinkPassword;
-    }
-
-    /**
-     * @param string $flexLinkPassword
-     */
-    public function setFlexLinkPassword($flexLinkPassword)
-    {
-        $this->flexLinkPassword = $flexLinkPassword;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isFlexLinkTestSystem()
-    {
-        return $this->flexLinkTestSystem;
-    }
-
-    /**
-     * @param bool $flexLinkTestSystem
-     */
-    public function useFlexLinkTestSystem($flexLinkTestSystem)
-    {
-        $this->flexLinkTestSystem = (bool)$flexLinkTestSystem;
-    }
-
-    /**
-     * @return string
-     */
     public function getLogFile()
     {
         return $this->log_file;
@@ -452,35 +376,35 @@ class Mpay24Config
         $this->curl_log_file = ltrim($curl_log_file, "\\");
     }
 
-	/**
-	 * @return string
-	 */
-	public function getCaCertPath()
-	{
-		return $this->ca_cert_path;
-	}
+    /**
+     * @return string
+     */
+    public function getCaCertPath()
+    {
+        return $this->ca_cert_path;
+    }
 
-	/**
-	 * @param string $ca_cert_path
-	 */
-	public function setCaCertPath($ca_cert_path)
-	{
-		$this->ca_cert_path = $ca_cert_path;
-	}
+    /**
+     * @param string $ca_cert_path
+     */
+    public function setCaCertPath($ca_cert_path)
+    {
+        $this->ca_cert_path = $ca_cert_path;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCaCertFileName()
-	{
-		return $this->ca_cert_file_name;
-	}
+    /**
+     * @return string
+     */
+    public function getCaCertFileName()
+    {
+        return $this->ca_cert_file_name;
+    }
 
-	/**
-	 * @param string $ca_cert_file_name
-	 */
-	public function setCaCertFileName($ca_cert_file_name)
-	{
-		$this->ca_cert_file_name = $ca_cert_file_name;
-	}
+    /**
+     * @param string $ca_cert_file_name
+     */
+    public function setCaCertFileName($ca_cert_file_name)
+    {
+        $this->ca_cert_file_name = $ca_cert_file_name;
+    }
 }

@@ -2,7 +2,7 @@
 /**
  * Just include this file once to have access to all classes in the Mpay24 Namespace
  *
- * @author     Stefan Polzer <develop@posit.at>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>
  * @filesource bootstrap.php
  * @license    MIT
  */
