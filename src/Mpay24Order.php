@@ -77,6 +77,8 @@ class Mpay24Order
             }
 
             $this->node->setAttribute($attributeName, $value);
+
+            return $this;
         } elseif (isset($args[0])) {
             if (sizeof($args) > 2) {
                 throw new InvalidArgumentException("It is not allowed to set more than 2 arguments for the node '$method'!");
