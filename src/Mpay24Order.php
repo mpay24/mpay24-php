@@ -152,15 +152,15 @@ class Mpay24Order
             $value = $this->formatDecimal($value);
         }
 
-        if (strpos($value, "<") || strpos($value, ">")) {
-            $value = "<![CDATA[" . $this->xmlEncode($value) . "]]>";
-        }
-
         if ($query->length > 0) {
-            $query->item(0)->nodeValue = $value;
+            $query->item(0)->textContent = $value;
         } else {
-            $node       = $this->document->createElement($name, $value);
-            $this->node = $this->node->appendChild($node);
+            $element = $this->document->createElement($name);
+            if (!empty($value)) {
+                $txtnode = $this->document->createTextNode($value);
+                $element->appendChild($txtnode);
+            }
+            $this->node = $this->node->appendChild($element);
         }
     }
 
@@ -171,24 +171,6 @@ class Mpay24Order
     public function toXML()
     {
         return $this->document->saveXML();
-    }
-
-    /**
-     * Encode the XML-characters in a string
-     *
-     * @param string $txt A string to be encoded
-     *
-     * @return string
-     */
-    protected function xmlEncode($txt)
-    {
-        $txt = str_replace('&', '&amp;', $txt);
-        $txt = str_replace('<', '&lt;', $txt);
-        $txt = str_replace('>', '&gt;', $txt);
-        $txt = str_replace('&apos;', "'", $txt);
-        $txt = str_replace('&quot;', '"', $txt);
-
-        return $txt;
     }
 
     /**
