@@ -77,7 +77,6 @@ class Mpay24Order
             }
 
             $this->node->setAttribute($attributeName, $value);
-
             return $this;
         } elseif (isset($args[0])) {
             if (sizeof($args) > 2) {
