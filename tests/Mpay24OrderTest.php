@@ -46,6 +46,7 @@ class Mpay24OrderTest extends TestCase
         $mdxi = new Mpay24Order();
         $mdxi->Order->setLogoStyle("");
 
+        $mdxi->Order->UserField = "My User Field&apos;&quot;&lt;&amp;&gt;";
         $mdxi->Order->Tid       = "My Transaction ID'\"<&>";
 
         $mdxi->Order->TemplateSet->setLanguage("DE");
@@ -98,6 +99,7 @@ class Mpay24OrderTest extends TestCase
 
         $this->assertSame('<?xml version="1.0" encoding="UTF-8"?>', $xml[0]);
         $this->assertSame('<Order LogoStyle="">', $xml[1]);
+        $this->assertSame('<UserField>My User Field\'"&lt;&amp;&gt;</UserField>', $xml[2]);
         $this->assertSame('<Tid>My Transaction ID\'"&lt;&amp;&gt;</Tid>', $xml[3]);
         $this->assertSame('<TemplateSet Language="DE" CSSName="MODERN"/>', $xml[4]);
         $this->assertSame('<PaymentTypes Enable="true">', $xml[5]);
