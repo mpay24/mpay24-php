@@ -153,7 +153,11 @@ class Mpay24Order
         }
 
         if ($query->length > 0) {
-            $query->item(0)->textContent = $value;
+            if ($this->isAlreadyXMLEncoded($value)) {
+                $query->item(0)->nodeValue = $value;
+            } else {
+                $query->item(0)->textContent = $value;
+            }
         } else {
             $element = $this->createTextElement($name,$value);
             $this->node = $this->node->appendChild($element);
@@ -192,18 +196,26 @@ class Mpay24Order
      */
     protected function createTextElement($name, $value)
     {
-        $encoded = htmlentities($value, ENT_XML1, "UTF-8", false); // detect if already encoded
-
-        if ($value === $encoded) { // already encoded
+        if ($this->isAlreadyXMLEncoded($value)) {
             return $this->document->createElement($name, $value);
         }
-
         $element = $this->document->createElement($name);
         if (!empty($value)) {
             $txtnode = $this->document->createTextNode($value);
             $element->appendChild($txtnode);
         }
         return $element;
+    }
+
+    /**
+     * @param string $source
+     *
+     * @return boolean
+     */
+    protected function isAlreadyXMLEncoded($source)
+    {
+        $encoded = htmlentities($source, ENT_XML1, "UTF-8", false); // detect if already encoded
+        return ($source === $encoded); // already encoded
     }
 
     /**

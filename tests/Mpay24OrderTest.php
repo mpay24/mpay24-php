@@ -93,6 +93,10 @@ class Mpay24OrderTest extends TestCase
         $mdxi->Order->BillingAddr->Country->setCode("AT");
         $mdxi->Order->BillingAddr->Email = "a.b@c.de";
 
+        // overwrite adding entities
+        $mdxi->Order->BillingAddr->Name = "Max Musterman'\"<&>";
+        $mdxi->Order->BillingAddr->Street = "Teststreet 1&apos;&quot;&lt;&amp;&gt;";
+
         $xml = array_map('trim', explode("\n", $mdxi->toXML()));
 
         $this->assertGreaterThanOrEqual(42, count($xml));
@@ -130,8 +134,8 @@ class Mpay24OrderTest extends TestCase
         $this->assertSame('<Currency>USD</Currency>', $xml[30]);
         $this->assertSame('<Customer UseProfile="true" Id="98765\'&quot;&lt;&amp;&gt;">Hans Mayer</Customer>', $xml[31]);
         $this->assertSame('<BillingAddr Mode="ReadOnly">', $xml[32]);
-        $this->assertSame('<Name>Max Musterman</Name>', $xml[33]);
-        $this->assertSame('<Street>Teststreet 1</Street>', $xml[34]);
+        $this->assertSame('<Name>Max Musterman\'"&lt;&amp;&gt;</Name>', $xml[33]);
+        $this->assertSame('<Street>Teststreet 1\'"&lt;&amp;&gt;</Street>', $xml[34]);
         $this->assertSame('<Street2>Teststreet 2</Street2>', $xml[35]);
         $this->assertSame('<Zip>1010</Zip>', $xml[36]);
         $this->assertSame('<City>Wien</City>', $xml[37]);
