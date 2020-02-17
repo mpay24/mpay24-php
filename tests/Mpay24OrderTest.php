@@ -46,8 +46,7 @@ class Mpay24OrderTest extends TestCase
         $mdxi = new Mpay24Order();
         $mdxi->Order->setLogoStyle("");
 
-        $mdxi->Order->UserField = "My User Field";
-        $mdxi->Order->Tid       = "My Transaction ID";
+        $mdxi->Order->Tid       = "My Transaction ID'\"<&>";
 
         $mdxi->Order->TemplateSet->setLanguage("DE");
         $mdxi->Order->TemplateSet->setCSSName("MODERN");
@@ -81,7 +80,7 @@ class Mpay24OrderTest extends TestCase
         $mdxi->Order->Currency = "USD";
 
         $mdxi->Order->Customer->setUseProfile("true");
-        $mdxi->Order->Customer->setId("98765");
+        $mdxi->Order->Customer->setId("98765'\"<&>");
         $mdxi->Order->Customer = "Hans Mayer";
 
         $mdxi->Order->BillingAddr->setMode("ReadOnly");
@@ -99,8 +98,7 @@ class Mpay24OrderTest extends TestCase
 
         $this->assertSame('<?xml version="1.0" encoding="UTF-8"?>', $xml[0]);
         $this->assertSame('<Order LogoStyle="">', $xml[1]);
-        $this->assertSame('<UserField>My User Field</UserField>', $xml[2]);
-        $this->assertSame('<Tid>My Transaction ID</Tid>', $xml[3]);
+        $this->assertSame('<Tid>My Transaction ID\'"&lt;&amp;&gt;</Tid>', $xml[3]);
         $this->assertSame('<TemplateSet Language="DE" CSSName="MODERN"/>', $xml[4]);
         $this->assertSame('<PaymentTypes Enable="true">', $xml[5]);
         $this->assertSame('<Payment Type="CC" Brand="VISA"/>', $xml[6]);
@@ -128,7 +126,7 @@ class Mpay24OrderTest extends TestCase
         $this->assertSame('</ShoppingCart>', $xml[28]);
         $this->assertSame('<Price>30.35</Price>', $xml[29]);
         $this->assertSame('<Currency>USD</Currency>', $xml[30]);
-        $this->assertSame('<Customer UseProfile="true" Id="98765">Hans Mayer</Customer>', $xml[31]);
+        $this->assertSame('<Customer UseProfile="true" Id="98765\'&quot;&lt;&amp;&gt;">Hans Mayer</Customer>', $xml[31]);
         $this->assertSame('<BillingAddr Mode="ReadOnly">', $xml[32]);
         $this->assertSame('<Name>Max Musterman</Name>', $xml[33]);
         $this->assertSame('<Street>Teststreet 1</Street>', $xml[34]);
