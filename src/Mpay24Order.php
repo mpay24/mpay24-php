@@ -101,7 +101,7 @@ class Mpay24Order
                         $value = $this->formatDecimal($value);
                     }
 
-                    $node = $this->document->createElement($method, $value);
+                    $node = $this->createTextElement($method, $value);
                 } else {
                     $node = $this->document->createElement($method);
                 }
@@ -155,11 +155,7 @@ class Mpay24Order
         if ($query->length > 0) {
             $query->item(0)->textContent = $value;
         } else {
-            $element = $this->document->createElement($name);
-            if (!empty($value)) {
-                $txtnode = $this->document->createTextNode($value);
-                $element->appendChild($txtnode);
-            }
+            $element = $this->createTextElement($name,$value);
             $this->node = $this->node->appendChild($element);
         }
     }
@@ -186,6 +182,28 @@ class Mpay24Order
             default:
                 return false;
         }
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return DOMElement element created
+     */
+    protected function createTextElement($name, $value)
+    {
+        $encoded = htmlentities($value, ENT_XML1, "UTF-8", false); // detect if already encoded
+
+        if ($value === $encoded) { // already encoded
+            return $this->document->createElement($name, $value);
+        }
+
+        $element = $this->document->createElement($name);
+        if (!empty($value)) {
+            $txtnode = $this->document->createTextNode($value);
+            $element->appendChild($txtnode);
+        }
+        return $element;
     }
 
     /**
