@@ -101,7 +101,7 @@ class Mpay24Order
                         $value = $this->formatDecimal($value);
                     }
 
-                    $node = $this->document->createElement($method, $value);
+                    $node = $this->createTextElement($method, $value);
                 } else {
                     $node = $this->document->createElement($method);
                 }
@@ -152,15 +152,15 @@ class Mpay24Order
             $value = $this->formatDecimal($value);
         }
 
-        if (strpos($value, "<") || strpos($value, ">")) {
-            $value = "<![CDATA[" . $this->xmlEncode($value) . "]]>";
-        }
-
         if ($query->length > 0) {
-            $query->item(0)->nodeValue = $value;
+            if ($this->isAlreadyXMLEncoded($value)) {
+                $query->item(0)->nodeValue = $value;
+            } else {
+                $query->item(0)->textContent = $value;
+            }
         } else {
-            $node       = $this->document->createElement($name, $value);
-            $this->node = $this->node->appendChild($node);
+            $element = $this->createTextElement($name,$value);
+            $this->node = $this->node->appendChild($element);
         }
     }
 
@@ -171,24 +171,6 @@ class Mpay24Order
     public function toXML()
     {
         return $this->document->saveXML();
-    }
-
-    /**
-     * Encode the XML-characters in a string
-     *
-     * @param string $txt A string to be encoded
-     *
-     * @return string
-     */
-    protected function xmlEncode($txt)
-    {
-        $txt = str_replace('&', '&amp;', $txt);
-        $txt = str_replace('<', '&lt;', $txt);
-        $txt = str_replace('>', '&gt;', $txt);
-        $txt = str_replace('&apos;', "'", $txt);
-        $txt = str_replace('&quot;', '"', $txt);
-
-        return $txt;
     }
 
     /**
@@ -204,6 +186,36 @@ class Mpay24Order
             default:
                 return false;
         }
+    }
+
+    /**
+     * @param string $name
+     * @param string $value
+     *
+     * @return DOMElement element created
+     */
+    protected function createTextElement($name, $value)
+    {
+        if ($this->isAlreadyXMLEncoded($value)) {
+            return $this->document->createElement($name, $value);
+        }
+        $element = $this->document->createElement($name);
+        if (!empty($value)) {
+            $txtnode = $this->document->createTextNode($value);
+            $element->appendChild($txtnode);
+        }
+        return $element;
+    }
+
+    /**
+     * @param string $source
+     *
+     * @return boolean
+     */
+    protected function isAlreadyXMLEncoded($source)
+    {
+        $encoded = htmlentities($source, ENT_XML1, "UTF-8", false); // detect if already encoded
+        return ($source === $encoded); // already encoded
     }
 
     /**
