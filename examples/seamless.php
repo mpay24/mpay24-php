@@ -13,13 +13,14 @@ $tokenizerConfig = array(
 $tokenizer = $mpay24->token("CC", $tokenizerConfig);
 ?>
 
-<iframe src="<?php echo $tokenizer->getLocation(); ?>" frameBorder="0"></iframe>
-
-<form action="pay.php" method="POST">
-    <input name="token" type="hidden" value="<?php echo $tokenizer->getToken(); ?>"/>
-    <button id="paybutton" name="type" value="TOKEN" type="submit" disabled="true">Pay with creditcard</button>
-    <button name="type" value="PAYPAL" type="submit">Pay with paypal</button>
-</form>
+<div style="text-align: center; width: 500px;">
+    <iframe src="<?php echo $tokenizer->getLocation(); ?>" frameBorder="0" width="100%"></iframe>
+    <form action="pay.php" method="POST">
+        <input name="token" type="hidden" value="<?php echo $tokenizer->getToken(); ?>"/>
+        <button id="paybutton" name="type" value="TOKEN" type="submit" disabled="true">Pay with creditcard</button>
+        <button name="type" value="PAYPAL" type="submit">Pay with paypal</button>
+    </form>
+</div>
 
 <script>
     window.addEventListener("message", checkValid, false);
