@@ -9,6 +9,7 @@ use Mpay24\Exception\RequirementException;
 use Mpay24\Requests\AcceptPayment;
 use Mpay24\Requests\CreateCustomer;
 use Mpay24\Requests\CreatePaymentToken;
+use Mpay24\Requests\CreateApplePayToken;
 use Mpay24\Requests\DeleteProfile;
 use Mpay24\Requests\ListPaymentMethods;
 use Mpay24\Requests\ListProfiles;
@@ -22,6 +23,7 @@ use Mpay24\Requests\TransactionStatus;
 use Mpay24\Responses\AcceptPaymentResponse;
 use Mpay24\Responses\CreateCustomerResponse;
 use Mpay24\Responses\CreatePaymentTokenResponse;
+use Mpay24\Responses\CreateApplePayTokenResponse;
 use Mpay24\Responses\DeleteProfileResponse;
 use Mpay24\Responses\ListPaymentMethodsResponse;
 use Mpay24\Responses\ListProfilesResponse;
@@ -42,8 +44,8 @@ use Mpay24\Responses\TransactionStatusResponse;
  * Class Mpay24Sdk
  * @package    Mpay24
  *
- * @author     mPAY24 GmbH <support@mpay24.com>
- * @author     Stefan Polzer <develop@ps-webdesign.com>
+ * @author     Unzer Austria GmbH <online.support.at@unzer.com>
+ * @author     Stefan Polzer <develop@ps-webdesign.com>, Milko Daskalov <milko.daskalov@unzer.com>
  * @filesource Mpay24SDK.php
  * @license    MIT
  */
@@ -80,7 +82,7 @@ class Mpay24Sdk
      *
      * @const string
      */
-    const VERSION = "4.1.0";
+    const VERSION = "5.1.0";
 
     /**
      * Minimum PHP version Required
@@ -351,6 +353,34 @@ class Mpay24Sdk
         $this->send();
 
         $result = new CreatePaymentTokenResponse($this->response);
+
+        return $result;
+    }
+
+    /**
+     * Start Apple Pay payment integraged into your web page
+     *
+     * @param integer $amount Total payment amount shown to the customer
+     * @param string $currency Currency used for the payment
+     * @param string $domain Web page domain where Apple Pay will be integrated (https://www.yourdomain.com)
+     * @param string $language Language used for the Apple Pay session
+     *
+     * @return CreateApplePayTokenResponse
+     */
+    public function createApplePayPayment($amount, $currency, $domain = null, $language = null)
+    {
+        $request = new CreateApplePayToken($this->config->getMerchantId());
+
+        $request->setAmount($amount);
+        $request->setCurrency($currency);
+        $request->setDomain($domain);
+        $request->setLanguage($language);
+
+        $this->request = $request->getXml();
+
+        $this->send();
+
+        $result = new CreateApplePayTokenResponse($this->response);
 
         return $result;
     }

@@ -194,6 +194,27 @@ class Mpay24
     }
 
     /**
+     * Create a token to integrate Apple Pay into your web page
+     *
+     * @param integer $amount Total payment amount shown to the customer
+     * @param string $currency Currency used for the payment
+     * @param string $domain Web page domain where Apple Pay will be integrated (https://www.yourdomain.com)
+     * @param string $language Language used for the Apple Pay session
+     *
+     * @return Responses\CreateApplePayTokenResponse
+     */
+    public function applePayToken($amount, $currency, $domain = null, $language = null)
+    {
+        $this->integrityCheck();
+
+        $applePayTokenResult = $this->mpay24Sdk->createApplePayPayment($amount, $currency, $domain, $language);
+
+        $this->recordedLastMessageExchange('CreateApplePayToken');
+
+        return $applePayTokenResult;
+    }
+
+    /**
      * Capture an amount of an authorized transaction
      *
      * @param string  $mpayTid The transaction ID, for the transaction you want to clear
