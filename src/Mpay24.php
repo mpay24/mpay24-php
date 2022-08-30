@@ -215,6 +215,26 @@ class Mpay24
     }
 
     /**
+     * Create a token to integrate Google Pay into your web page
+     *
+     * @param integer $amount Total payment amount shown to the customer
+     * @param string $currency Currency used for the payment
+     * @param string $language Language used for the Google Pay session
+     *
+     * @return Responses\CreateGooglePayTokenResponse
+     */
+    public function googlePayToken($amount, $currency, $language = null)
+    {
+        $this->integrityCheck();
+
+        $googlePayTokenResult = $this->mpay24Sdk->createGooglePayPayment($amount, $currency, $language);
+
+        $this->recordedLastMessageExchange('CreateGooglePayToken');
+
+        return $googlePayTokenResult;
+    }
+
+    /**
      * Capture an amount of an authorized transaction
      *
      * @param string  $mpayTid The transaction ID, for the transaction you want to clear
