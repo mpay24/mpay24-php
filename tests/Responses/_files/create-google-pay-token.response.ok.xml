@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:etp="https://www.mpay24.com/soap/etp/1.5/ETP.wsdl">
+    <SOAP-ENV:Body>
+        <etp:CreateGooglePayTokenResponse>
+            <status>OK</status>
+            <returnCode>OK</returnCode>
+            <token>YnBK851+oVyb69nXOHo10yXq0MWU3g7VuesjY6i5sMY=</token>
+            <apiKey>2976790ea6022d7755d58c9068b3f94ea5822a767d4b074e4fdebb8b13e41edd</apiKey>
+          </etp:CreateGooglePayTokenResponse>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

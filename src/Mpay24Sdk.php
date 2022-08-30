@@ -10,6 +10,7 @@ use Mpay24\Requests\AcceptPayment;
 use Mpay24\Requests\CreateCustomer;
 use Mpay24\Requests\CreatePaymentToken;
 use Mpay24\Requests\CreateApplePayToken;
+use Mpay24\Requests\CreateGooglePayToken;
 use Mpay24\Requests\DeleteProfile;
 use Mpay24\Requests\ListPaymentMethods;
 use Mpay24\Requests\ListProfiles;
@@ -24,6 +25,7 @@ use Mpay24\Responses\AcceptPaymentResponse;
 use Mpay24\Responses\CreateCustomerResponse;
 use Mpay24\Responses\CreatePaymentTokenResponse;
 use Mpay24\Responses\CreateApplePayTokenResponse;
+use Mpay24\Responses\CreateGooglePayTokenResponse;
 use Mpay24\Responses\DeleteProfileResponse;
 use Mpay24\Responses\ListPaymentMethodsResponse;
 use Mpay24\Responses\ListProfilesResponse;
@@ -381,6 +383,32 @@ class Mpay24Sdk
         $this->send();
 
         $result = new CreateApplePayTokenResponse($this->response);
+
+        return $result;
+    }
+
+    /**
+     * Start Google Pay payment integraged into your web page
+     *
+     * @param integer $amount Total payment amount shown to the customer
+     * @param string $currency Currency used for the payment
+     * @param string $language Language used for the Google Pay session
+     *
+     * @return CreateGooglePayTokenResponse
+     */
+    public function createGooglePayPayment($amount, $currency, $language = null)
+    {
+        $request = new CreateGooglePayToken($this->config->getMerchantId());
+
+        $request->setAmount($amount);
+        $request->setCurrency($currency);
+        $request->setLanguage($language);
+
+        $this->request = $request->getXml();
+
+        $this->send();
+
+        $result = new CreateGooglePayTokenResponse($this->response);
 
         return $result;
     }
