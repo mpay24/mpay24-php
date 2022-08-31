@@ -1,6 +1,8 @@
 # mpay24-php
 
-[![Packagist](https://img.shields.io/github/license/mpay24/mpay24-php.svg)]()
+[![Packagist](https://img.shields.io/github/license/mpay24/mpay24-php.svg)](https://packagist.org/packages/mpay24/mpay24-php)
+[![Packagist Version](https://img.shields.io/packagist/v/mpay24/mpay24-php)](https://packagist.org/packages/mpay24/mpay24-php)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/mpay24/mpay24-php)](https://packagist.org/packages/mpay24/mpay24-php)
 
 Offical PHP SDK for SOAP Bindings
 
