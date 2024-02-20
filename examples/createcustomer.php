@@ -21,10 +21,14 @@ $tokenizer = $mpay24->token("CC", $tokenizerConfig);
 
 if (isset($_POST["token"])) {
   $payment = array(
-      "token" => $_POST["token"]
+      "token" => $_POST["token"],
+	    "validate" => "true"
   );
 
   $additional = array(
+    "successURL"      => "http://yourdomain.com/success",
+    "errorURL"        => "http://yourdomain.com/error",
+    "confirmationURL" => "http://yourdomain.com/confirmation",
     "billingAddress" => array(
       "mode" => "READONLY",
       "name" => "John Doe",
@@ -36,7 +40,11 @@ if (isset($_POST["token"])) {
   );
   $result = $mpay24->createCustomer("TOKEN", "123456", $payment, $additional);
 
-  echo $result->getReturnCode();
+    if ($result->getReturnCode() == "REDIRECT") {
+        header("Location: " . $result->getLocation());
+    } else {
+        echo $result->getReturnCode();
+    }
 }
 
 ?>
