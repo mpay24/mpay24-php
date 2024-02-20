@@ -19,6 +19,16 @@ class CreateCustomerResponse extends AbstractResponse
      * @var int
      */
     protected $errNo;
+	
+	/**
+     * @var string
+     */
+    protected $errText;
+
+    /**
+     * @var string
+     */
+    protected $location;
 
     /**
      * CreateCustomerResponse constructor.
@@ -44,6 +54,22 @@ class CreateCustomerResponse extends AbstractResponse
     {
         return $this->errNo;
     }
+	
+	/**
+     * @return string
+     */
+    public function getErrText()
+    {
+        return $this->errText;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
 
     /**
      * Parse the CreateCustomerResponse message and save the data to the corresponding attributes
@@ -52,8 +78,15 @@ class CreateCustomerResponse extends AbstractResponse
      */
     protected function parseResponse($body)
     {
+        $this->location = $body->getElementsByTagName('location')->item(0)->nodeValue;
+
+
         if ($body->getElementsByTagName('errNo')->length > 0) {
             $this->errNo = (int)$body->getElementsByTagName('errNo')->item(0)->nodeValue;
+        }
+
+        if ($body->getElementsByTagName('errText')->length > 0) {
+            $this->errText = $body->getElementsByTagName('errText')->item(0)->nodeValue;
         }
     }
 }
